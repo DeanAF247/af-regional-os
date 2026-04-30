@@ -68,7 +68,7 @@ export default function TrainingManager({ records: initial, staff }: Props) {
   const f = (k: keyof FormState, v: string) => setForm((p) => ({ ...p, [k]: v }));
 
   function openCreate() { setForm({ ...EMPTY, staff_id: staff[0]?.id ?? "" }); setEditId(null); setModal("create"); }
-  function openEdit(r: Record) {
+  function openEdit(r: TrainingRecord) {
     setForm({ staff_id: r.staff_id, training_name: r.training_name,
       completed_date: r.completed_date ?? "", expiry_date: r.expiry_date ?? "",
       certification_url: r.certification_url ?? "", notes: r.notes ?? "" });
