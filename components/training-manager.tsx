@@ -6,14 +6,14 @@ import { useRouter } from "next/navigation";
 import { Plus, X, GraduationCap, Pencil, Trash2, Loader2, ChevronDown, AlertTriangle, ExternalLink } from "lucide-react";
 
 interface Staff  { id: string; name: string; club: { name: string } | null }
-interface Record {
+interface TrainingRecord {
   id: string; staff_id: string; training_name: string;
   completed_date: string | null; expiry_date: string | null;
   certification_url: string | null; notes: string | null;
   staff: { name: string; club: { name: string } | null } | null;
 }
 
-interface Props { records: Record[]; staff: Staff[] }
+interface Props { records: TrainingRecord[]; staff: Staff[] }
 
 type Filter = "all" | "expired" | "expiring" | "valid";
 
