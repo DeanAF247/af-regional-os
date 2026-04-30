@@ -23,7 +23,7 @@ export default async function TrainingPage() {
         title="Training & Certifications"
         subtitle="Track staff training completion and certification expiry dates"
       />
-      <TrainingManager records={records ?? []} staff={staff ?? []} />
+      <TrainingManager records={records as any ?? []} staff={staff as any ?? []} />
     </div>
   );
 }
