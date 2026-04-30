@@ -1,0 +1,323 @@
+import { createClient } from "@/lib/supabase/server";
+import KpiCard from "@/components/kpi-card";
+import ClubCard from "@/components/club-card";
+import SectionLabel from "@/components/section-label";
+import PageHeader from "@/components/page-header";
+import GroupTrendCharts from "@/components/group-trend-charts";
+import PeriodSelector from "@/components/period-selector";
+import Link from "next/link";
+import { formatCurrency, formatPercent, pct } from "@/lib/utils";
+import { UploadCloud } from "lucide-react";
+
+// Slug mapping for club names → URL slugs
+const CLUB_SLUGS: Record<string, string> = {
+  "Greenhills":     "greenhills",
+  "Thornton":       "thornton",
+  "Newcastle West": "newcastle-west",
+  "Kotara":         "kotara",
+  "Edgeworth":      "edgeworth",
+  "Lake Haven":     "lake-haven",
+};
+
+export default async function OverviewPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ period?: string }>;
+}) {
+  const supabase = await createClient();
+  const { period: periodParam } = await searchParams;
+
+  // Get all KPI periods (for selector + trend)
+  const { data: allPeriods } = await supabase
+    .from("kpi_periods")
+    .select("id, period_label, period_date")
+    .order("period_date", { ascending: false });
+
+  // Resolve the active period
+  const activePeriod = periodParam
+    ? (allPeriods?.find((p) => p.period_label === periodParam) ?? allPeriods?.[0] ?? null)
+    : (allPeriods?.[0] ?? null);
+
+  const latestPeriod = activePeriod;
+
+  // Get all clubs
+  const { data: clubs } = await supabase
+    .from("clubs")
+    .select("*")
+    .eq("status", "active")
+    .order("name");
+
+  // Get KPIs for active period
+  let clubKpis: Record<string, any> = {};
+  if (latestPeriod) {
+    const { data: kpis } = await supabase
+      .from("club_kpis")
+      .select("*, club:clubs(id, name)")
+      .eq("period_id", latestPeriod.id);
+
+    kpis?.forEach((k) => {
+      clubKpis[k.club_id] = k;
+    });
+  }
+
+  // Use last 8 periods for trend data (most recent 8)
+  const trendPeriods = allPeriods?.slice(0, 8) ?? [];
+
+  let trendData: any[] = [];
+  if (trendPeriods && trendPeriods.length > 0) {
+    const periodIds = trendPeriods.map((p) => p.id);
+    const { data: trendKpis } = await supabase
+      .from("club_kpis")
+      .select("period_id, leads_actual, leads_target, sales_actual, sales_target, spend_actual, nnm_actual")
+      .in("period_id", periodIds);
+
+    // Aggregate by period
+    trendData = [...trendPeriods].reverse().map((period) => {
+      const periodKpis = trendKpis?.filter((k) => k.period_id === period.id) ?? [];
+      return {
+        label: period.period_label,
+        leads_actual: periodKpis.reduce((s, k) => s + (k.leads_actual ?? 0), 0),
+        leads_target: periodKpis.reduce((s, k) => s + (k.leads_target ?? 0), 0),
+        sales_actual: periodKpis.reduce((s, k) => s + (k.sales_actual ?? 0), 0),
+        sales_target: periodKpis.reduce((s, k) => s + (k.sales_target ?? 0), 0),
+        spend_actual: periodKpis.reduce((s, k) => s + (k.spend_actual ?? 0), 0),
+        nnm_actual:   periodKpis.reduce((s, k) => s + (k.nnm_actual ?? 0), 0),
+      };
+    });
+  }
+
+  // Compute group totals
+  const allKpis = Object.values(clubKpis);
+  const totalLeads   = allKpis.reduce((s, k) => s + (k.leads_actual ?? 0), 0);
+  const targetLeads  = allKpis.reduce((s, k) => s + (k.leads_target ?? 0), 0);
+  const totalSales   = allKpis.reduce((s, k) => s + (k.sales_actual ?? 0), 0);
+  const targetSales  = allKpis.reduce((s, k) => s + (k.sales_target ?? 0), 0);
+  const totalNnm     = allKpis.reduce((s, k) => s + (k.nnm_actual ?? 0), 0);
+  const totalSpend   = allKpis.reduce((s, k) => s + (k.spend_actual ?? 0), 0);
+  const totalBudget  = allKpis.reduce((s, k) => s + (k.spend_budget ?? 0), 0);
+  const leadsPct     = pct(totalLeads, targetLeads);
+  const salesPct     = pct(totalSales, targetSales);
+  const spendPct     = pct(totalSpend, totalBudget);
+  const avgCpl       = totalLeads > 0 ? totalSpend / totalLeads : null;
+
+  // Build club card data
+  const clubCardData = (clubs ?? []).map((club) => {
+    const k = clubKpis[club.id];
+    const lPct = pct(k?.leads_actual, k?.leads_target);
+    const sPct = pct(k?.sales_actual, k?.sales_target);
+    const spPct = pct(k?.spend_actual, k?.spend_budget);
+    return {
+      id:           club.id,
+      name:         club.name,
+      slug:         CLUB_SLUGS[club.name] ?? club.name.toLowerCase().replace(/\s+/g, "-"),
+      leads_actual: k?.leads_actual ?? null,
+      leads_target: k?.leads_target ?? null,
+      leads_pct:    lPct,
+      sales_actual: k?.sales_actual ?? null,
+      sales_target: k?.sales_target ?? null,
+      sales_pct:    sPct,
+      nnm_actual:   k?.nnm_actual ?? null,
+      nnm_target:   k?.nnm_target ?? null,
+      spend_actual: k?.spend_actual ?? null,
+      spend_budget: k?.spend_budget ?? null,
+      spend_pct:    spPct,
+      cpl:          k?.cpl ?? null,
+    };
+  });
+
+  const hasData = allKpis.length > 0;
+
+  return (
+    <div>
+      {/* Header */}
+      <PageHeader
+        title="Group Overview"
+        subtitle={`${clubs?.length ?? 0} Active Clubs`}
+        action={
+          <div className="flex items-center gap-3 flex-wrap">
+            {allPeriods && allPeriods.length > 0 && latestPeriod && (
+              <PeriodSelector
+                periods={allPeriods}
+                currentLabel={latestPeriod.period_label}
+              />
+            )}
+            <Link
+              href="/kpis/upload"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-semibold rounded-lg transition-colors"
+            >
+              <UploadCloud size={16} />
+              Upload KPIs
+            </Link>
+          </div>
+        }
+      />
+
+      {!hasData ? (
+        /* Empty state */
+        <div className="flex flex-col items-center justify-center py-24 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-[#1A1F35] border border-[#252B45] flex items-center justify-center mb-4">
+            <UploadCloud size={28} className="text-[#64748B]" />
+          </div>
+          <h2 className="text-lg font-bold text-[#F1F5F9] mb-2">No KPI data yet</h2>
+          <p className="text-[#64748B] text-sm mb-6 max-w-sm">
+            Upload your Group Summary Sheet to start tracking performance across all 6 clubs.
+          </p>
+          <Link
+            href="/kpis/upload"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-semibold rounded-lg transition-colors"
+          >
+            <UploadCloud size={16} />
+            Upload First Period
+          </Link>
+        </div>
+      ) : (
+        <>
+          {/* Group KPI Summary Cards */}
+          <SectionLabel>Group KPIs · {latestPeriod?.period_label}</SectionLabel>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+            <KpiCard
+              label="Total Leads"
+              value={totalLeads.toLocaleString()}
+              sub={`Target: ${targetLeads.toLocaleString()}`}
+              badge={leadsPct != null ? formatPercent(leadsPct) : undefined}
+              badgeVariant={
+                leadsPct == null ? "neutral"
+                  : leadsPct >= 90 ? "green"
+                  : leadsPct >= 70 ? "amber" : "red"
+              }
+              color="purple"
+            />
+            <KpiCard
+              label="Total Sales"
+              value={totalSales.toLocaleString()}
+              sub={`Target: ${targetSales.toLocaleString()}`}
+              badge={salesPct != null ? formatPercent(salesPct) : undefined}
+              badgeVariant={
+                salesPct == null ? "neutral"
+                  : salesPct >= 90 ? "green"
+                  : salesPct >= 70 ? "amber" : "red"
+              }
+              color={salesPct != null && salesPct >= 90 ? "green" : salesPct != null && salesPct >= 70 ? "amber" : "red"}
+            />
+            <KpiCard
+              label="Net New Members"
+              value={totalNnm >= 0 ? `+${totalNnm}` : String(totalNnm)}
+              sub="Group total"
+              color={totalNnm >= 0 ? "green" : "red"}
+            />
+            <KpiCard
+              label="Total Spend"
+              value={formatCurrency(totalSpend)}
+              sub={`Budget: ${formatCurrency(totalBudget)}`}
+              badge={spendPct != null ? formatPercent(spendPct) : undefined}
+              badgeVariant={
+                spendPct == null ? "neutral"
+                  : spendPct <= 100 ? "green"
+                  : spendPct <= 115 ? "amber" : "red"
+              }
+              color="blue"
+            />
+            <KpiCard
+              label="Avg CPL"
+              value={avgCpl != null ? formatCurrency(avgCpl) : "—"}
+              sub="Cost per lead"
+              color="teal"
+            />
+          </div>
+
+          {/* Club Cards */}
+          <SectionLabel>Club Performance</SectionLabel>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
+            {clubCardData.map((club) => (
+              <ClubCard key={club.id} club={club} />
+            ))}
+          </div>
+
+          {/* Trend Charts */}
+          {trendData.length > 1 && (
+            <>
+              <SectionLabel>Monthly Trends</SectionLabel>
+              <GroupTrendCharts data={trendData} />
+            </>
+          )}
+
+          {/* Marketing Spend Table */}
+          {hasData && (
+            <>
+              <SectionLabel>Marketing Spend · {latestPeriod?.period_label}</SectionLabel>
+              <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden mb-8">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide">
+                        <th className="text-left px-4 py-3 font-semibold">Club</th>
+                        <th className="text-right px-4 py-3 font-semibold">Spend</th>
+                        <th className="text-right px-4 py-3 font-semibold">Budget</th>
+                        <th className="text-right px-4 py-3 font-semibold">% Used</th>
+                        <th className="text-right px-4 py-3 font-semibold">Surplus / Over</th>
+                        <th className="px-4 py-3 font-semibold w-32">Bar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {clubCardData.map((club, i) => {
+                        const surplusOver = (club.spend_budget ?? 0) - (club.spend_actual ?? 0);
+                        const isOver = surplusOver < 0;
+                        const barWidth = club.spend_pct != null ? Math.min(club.spend_pct, 150) : 0;
+                        return (
+                          <tr key={club.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/50 transition-colors">
+                            <td className="px-4 py-3 font-semibold text-[#F1F5F9]">
+                              <Link href={`/clubs/${club.slug}`} className="hover:text-[#A78BFA] transition-colors">
+                                {club.name}
+                              </Link>
+                            </td>
+                            <td className="px-4 py-3 text-right text-[#F1F5F9]">
+                              {formatCurrency(club.spend_actual)}
+                            </td>
+                            <td className="px-4 py-3 text-right text-[#94A3B8]">
+                              {formatCurrency(club.spend_budget)}
+                            </td>
+                            <td className={`px-4 py-3 text-right font-semibold ${
+                              club.spend_pct != null && club.spend_pct > 100 ? "text-[#EF4444]" : "text-[#10B981]"
+                            }`}>
+                              {formatPercent(club.spend_pct)}
+                            </td>
+                            <td className={`px-4 py-3 text-right font-semibold ${isOver ? "text-[#EF4444]" : "text-[#10B981]"}`}>
+                              {isOver ? "-" : "+"}{formatCurrency(Math.abs(surplusOver))}
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="h-1.5 bg-[#252B45] rounded-full overflow-hidden">
+                                <div
+                                  className={`h-full rounded-full ${
+                                    club.spend_pct != null && club.spend_pct > 105 ? "bg-[#EF4444]" : "bg-[#7C3AED]"
+                                  }`}
+                                  style={{ width: `${barWidth}%` }}
+                                />
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      {/* Total row */}
+                      <tr className="border-t-2 border-[#252B45] bg-[#1A1F35] font-bold">
+                        <td className="px-4 py-3 text-[#A78BFA]">Group Total</td>
+                        <td className="px-4 py-3 text-right text-[#F1F5F9]">{formatCurrency(totalSpend)}</td>
+                        <td className="px-4 py-3 text-right text-[#94A3B8]">{formatCurrency(totalBudget)}</td>
+                        <td className={`px-4 py-3 text-right ${spendPct != null && spendPct > 100 ? "text-[#EF4444]" : "text-[#10B981]"}`}>
+                          {formatPercent(spendPct)}
+                        </td>
+                        <td className={`px-4 py-3 text-right ${totalBudget - totalSpend < 0 ? "text-[#EF4444]" : "text-[#10B981]"}`}>
+                          {totalBudget - totalSpend < 0 ? "-" : "+"}{formatCurrency(Math.abs(totalBudget - totalSpend))}
+                        </td>
+                        <td className="px-4 py-3" />
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
