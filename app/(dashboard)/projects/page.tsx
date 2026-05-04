@@ -383,7 +383,7 @@ export default function ProjectsPage() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed: Project[] = JSON.parse(stored);
-        setProjects(parsed.map(p => ({ ...p, tasks: p.tasks.map(t => ({ links: [], ...t })) })));
+        setProjects(parsed.map(p => ({ ...p, tasks: p.tasks.map(t => ({ ...t, links: t.links ?? [] })) })));
       }
     } catch {}
   }, []);
