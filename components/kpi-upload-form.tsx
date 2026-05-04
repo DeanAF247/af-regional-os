@@ -9,16 +9,18 @@ interface Club   { id: string; name: string; }
 interface Period { id: string; period_label: string; period_date: string; }
 
 interface Row {
-  club_id:      string;
-  leads_actual: string;
-  leads_target: string;
-  sales_actual: string;
-  sales_target: string;
-  nnm_actual:   string;
-  nnm_target:   string;
-  cpl:          string;
-  spend_actual: string;
-  spend_budget: string;
+  club_id:       string;
+  leads_actual:  string;
+  leads_target:  string;
+  sales_actual:  string;
+  sales_target:  string;
+  nnm_actual:    string;
+  nnm_target:    string;
+  cpl:           string;
+  spend_actual:  string;
+  spend_budget:  string;
+  transfers_in:  string;
+  transfers_out: string;
 }
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -35,21 +37,24 @@ function blank(clubs: Club[]): Row[] {
     club_id: c.id, leads_actual: "", leads_target: "",
     sales_actual: "", sales_target: "", nnm_actual: "", nnm_target: "",
     cpl: "", spend_actual: "", spend_budget: "",
+    transfers_in: "", transfers_out: "",
   }));
 }
 
 const INPUT = "w-full px-2 py-1.5 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm text-right focus:outline-none focus:border-[#7C3AED] transition-colors placeholder:text-[#2D3555]";
 
-const FIELDS: { key: keyof Row; label: string; hint?: string }[] = [
-  { key: "leads_actual",  label: "Leads"       },
-  { key: "leads_target",  label: "Leads Tgt"   },
-  { key: "sales_actual",  label: "Sales"       },
-  { key: "sales_target",  label: "Sales Tgt"   },
-  { key: "nnm_actual",    label: "NNM"         },
-  { key: "nnm_target",    label: "NNM Tgt"     },
-  { key: "cpl",           label: "CPL ($)"     },
-  { key: "spend_actual",  label: "Spend ($)"   },
-  { key: "spend_budget",  label: "Budget ($)"  },
+const FIELDS: { key: keyof Row; label: string; group?: string }[] = [
+  { key: "leads_actual",  label: "Leads",       group: "KPIs"      },
+  { key: "leads_target",  label: "Leads Tgt",   group: "KPIs"      },
+  { key: "sales_actual",  label: "Sales",        group: "KPIs"      },
+  { key: "sales_target",  label: "Sales Tgt",   group: "KPIs"      },
+  { key: "nnm_actual",    label: "NNM",          group: "KPIs"      },
+  { key: "nnm_target",    label: "NNM Tgt",     group: "KPIs"      },
+  { key: "cpl",           label: "CPL ($)",      group: "KPIs"      },
+  { key: "spend_actual",  label: "Spend ($)",    group: "KPIs"      },
+  { key: "spend_budget",  label: "Budget ($)",   group: "KPIs"      },
+  { key: "transfers_in",  label: "T/In",         group: "Transfers" },
+  { key: "transfers_out", label: "T/Out",        group: "Transfers" },
 ];
 
 export default function KpiEntryForm({
@@ -80,27 +85,30 @@ export default function KpiEntryForm({
     setFetching(true);
     setError("");
     const supabase = createClient();
-    const { data, error: err } = await supabase
-      .from("club_kpis")
-      .select("*")
-      .eq("period_id", periodId);
 
-    if (err) { setError(err.message); setFetching(false); return; }
+    const [{ data: kpiData, error: kpiErr }, { data: transferData, error: tErr }] = await Promise.all([
+      supabase.from("club_kpis").select("*").eq("period_id", periodId),
+      supabase.from("transfers").select("*").eq("period_id", periodId),
+    ]);
+
+    if (kpiErr || tErr) { setError((kpiErr ?? tErr)!.message); setFetching(false); return; }
 
     setRows(blank(clubs).map((r) => {
-      const existing = data?.find((k) => k.club_id === r.club_id);
-      if (!existing) return r;
+      const kpi = kpiData?.find((k) => k.club_id === r.club_id);
+      const tr  = transferData?.find((t) => t.club_id === r.club_id);
       return {
-        club_id:      r.club_id,
-        leads_actual: existing.leads_actual  != null ? String(existing.leads_actual)  : "",
-        leads_target: existing.leads_target  != null ? String(existing.leads_target)  : "",
-        sales_actual: existing.sales_actual  != null ? String(existing.sales_actual)  : "",
-        sales_target: existing.sales_target  != null ? String(existing.sales_target)  : "",
-        nnm_actual:   existing.nnm_actual    != null ? String(existing.nnm_actual)    : "",
-        nnm_target:   existing.nnm_target    != null ? String(existing.nnm_target)    : "",
-        cpl:          existing.cpl           != null ? String(existing.cpl)           : "",
-        spend_actual: existing.spend_actual  != null ? String(existing.spend_actual)  : "",
-        spend_budget: existing.spend_budget  != null ? String(existing.spend_budget)  : "",
+        club_id:       r.club_id,
+        leads_actual:  kpi?.leads_actual  != null ? String(kpi.leads_actual)  : "",
+        leads_target:  kpi?.leads_target  != null ? String(kpi.leads_target)  : "",
+        sales_actual:  kpi?.sales_actual  != null ? String(kpi.sales_actual)  : "",
+        sales_target:  kpi?.sales_target  != null ? String(kpi.sales_target)  : "",
+        nnm_actual:    kpi?.nnm_actual    != null ? String(kpi.nnm_actual)    : "",
+        nnm_target:    kpi?.nnm_target    != null ? String(kpi.nnm_target)    : "",
+        cpl:           kpi?.cpl           != null ? String(kpi.cpl)           : "",
+        spend_actual:  kpi?.spend_actual  != null ? String(kpi.spend_actual)  : "",
+        spend_budget:  kpi?.spend_budget  != null ? String(kpi.spend_budget)  : "",
+        transfers_in:  tr?.transfers_in   != null ? String(tr.transfers_in)   : "",
+        transfers_out: tr?.transfers_out  != null ? String(tr.transfers_out)  : "",
       };
     }));
     setFetching(false);
@@ -161,6 +169,18 @@ export default function KpiEntryForm({
         .from("club_kpis")
         .upsert(kpiRows, { onConflict: "club_id,period_id" });
       if (kpiErr) throw kpiErr;
+
+      // Save transfers (all clubs, default 0 if blank)
+      const transferRows = rows.map((r) => ({
+        club_id:       r.club_id,
+        period_id:     periodId,
+        transfers_in:  numOrNull(r.transfers_in)  ?? 0,
+        transfers_out: numOrNull(r.transfers_out) ?? 0,
+      }));
+      const { error: tErr } = await supabase
+        .from("transfers")
+        .upsert(transferRows, { onConflict: "club_id,period_id" });
+      if (tErr) throw tErr;
 
       setSuccess(true);
       setTimeout(() => router.push("/"), 1200);
@@ -275,8 +295,15 @@ export default function KpiEntryForm({
             <thead>
               <tr className="bg-[#0B0E1A]/60 text-[#64748B] text-[10px] uppercase tracking-wide border-b border-[#252B45]">
                 <th className="text-left px-4 py-2.5 font-semibold sticky left-0 bg-[#0B0E1A]/80">Club</th>
-                {FIELDS.map((f) => (
-                  <th key={f.key} className="text-right px-2 py-2.5 font-semibold whitespace-nowrap">{f.label}</th>
+                {FIELDS.map((f, i) => (
+                  <th
+                    key={f.key}
+                    className={`text-right px-2 py-2.5 font-semibold whitespace-nowrap ${
+                      f.group === "Transfers" ? "text-[#60A5FA]" : ""
+                    } ${i > 0 && FIELDS[i - 1].group !== f.group ? "border-l border-[#252B45]" : ""}`}
+                  >
+                    {f.label}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -288,8 +315,11 @@ export default function KpiEntryForm({
                     <td className="px-4 py-2 font-semibold text-[#F1F5F9] whitespace-nowrap sticky left-0 bg-[#131729]">
                       {club.name}
                     </td>
-                    {FIELDS.map((f) => (
-                      <td key={f.key} className="px-1.5 py-1.5">
+                    {FIELDS.map((f, i) => (
+                      <td
+                        key={f.key}
+                        className={`px-1.5 py-1.5 ${i > 0 && FIELDS[i - 1].group !== f.group ? "border-l border-[#252B45]" : ""}`}
+                      >
                         <input
                           type="number"
                           step="any"
