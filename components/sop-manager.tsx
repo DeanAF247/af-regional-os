@@ -60,9 +60,9 @@ const EMPTY_FORM: FormState = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  published: "bg-[#064E3B] text-[#10B981]",
-  draft:     "bg-[#252B45] text-[#64748B]",
-  archived:  "bg-[#1A1F35] text-[#475569]",
+  published: "bg-[#D1FAE5] text-[#059669]",
+  draft:     "bg-[#E2E8F0] text-[#94A3B8]",
+  archived:  "bg-[#F8FAFC] text-[#475569]",
 };
 
 export default function SopManager({ sops }: { sops: Sop[] }) {
@@ -176,25 +176,25 @@ export default function SopManager({ sops }: { sops: Sop[] }) {
     <>
       {/* Stats row */}
       <div className="flex gap-4 mb-6">
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl px-4 py-3 flex items-center gap-3">
-          <CheckCircle size={16} className="text-[#10B981]" />
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 flex items-center gap-3">
+          <CheckCircle size={16} className="text-[#059669]" />
           <div>
-            <div className="text-lg font-bold text-[#F1F5F9]">{publishedCount}</div>
-            <div className="text-xs text-[#64748B]">Published</div>
+            <div className="text-lg font-bold text-[#0F172A]">{publishedCount}</div>
+            <div className="text-xs text-[#94A3B8]">Published</div>
           </div>
         </div>
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl px-4 py-3 flex items-center gap-3">
-          <Clock size={16} className="text-[#64748B]" />
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 flex items-center gap-3">
+          <Clock size={16} className="text-[#94A3B8]" />
           <div>
-            <div className="text-lg font-bold text-[#F1F5F9]">{draftCount}</div>
-            <div className="text-xs text-[#64748B]">Drafts</div>
+            <div className="text-lg font-bold text-[#0F172A]">{draftCount}</div>
+            <div className="text-xs text-[#94A3B8]">Drafts</div>
           </div>
         </div>
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl px-4 py-3 flex items-center gap-3">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl px-4 py-3 flex items-center gap-3">
           <FileText size={16} className="text-[#7C3AED]" />
           <div>
-            <div className="text-lg font-bold text-[#F1F5F9]">{sops.length}</div>
-            <div className="text-xs text-[#64748B]">Total SOPs</div>
+            <div className="text-lg font-bold text-[#0F172A]">{sops.length}</div>
+            <div className="text-xs text-[#94A3B8]">Total SOPs</div>
           </div>
         </div>
         <div className="ml-auto">
@@ -211,19 +211,19 @@ export default function SopManager({ sops }: { sops: Sop[] }) {
       {/* Search & filter */}
       <div className="flex gap-3 mb-6 flex-wrap">
         <div className="flex-1 min-w-56 relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
           <input
             type="text"
             placeholder="Search SOPs…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#64748B] focus:outline-none focus:border-[#7C3AED] transition-colors"
+            className="w-full pl-9 pr-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#94A3B8] focus:outline-none focus:border-[#7C3AED] transition-colors"
           />
         </div>
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="px-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#94A3B8] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+          className="px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#64748B] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
         >
           <option value="All">All Categories</option>
           {SOP_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -231,7 +231,7 @@ export default function SopManager({ sops }: { sops: Sop[] }) {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="px-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#94A3B8] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+          className="px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#64748B] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
         >
           <option value="All">All Statuses</option>
           <option value="published">Published</option>
@@ -252,11 +252,11 @@ export default function SopManager({ sops }: { sops: Sop[] }) {
               className="flex items-center gap-2 w-full mb-3 text-left group"
             >
               {isCollapsed ? (
-                <ChevronRight size={14} className="text-[#64748B]" />
+                <ChevronRight size={14} className="text-[#94A3B8]" />
               ) : (
-                <ChevronDown size={14} className="text-[#64748B]" />
+                <ChevronDown size={14} className="text-[#94A3B8]" />
               )}
-              <span className="text-[11px] uppercase tracking-widest font-bold text-[#64748B] group-hover:text-[#94A3B8] transition-colors">
+              <span className="text-[11px] uppercase tracking-widest font-bold text-[#94A3B8] group-hover:text-[#64748B] transition-colors">
                 {category}
               </span>
               <span className="text-[11px] text-[#475569] ml-1">({items.length})</span>
@@ -265,27 +265,27 @@ export default function SopManager({ sops }: { sops: Sop[] }) {
             {!isCollapsed && (
               <>
                 {items.length > 0 ? (
-                  <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
+                  <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
                     {items.map((sop, i) => (
                       <div
                         key={sop.id}
-                        className={`flex items-center gap-4 px-4 py-3.5 hover:bg-[#1A1F35]/60 transition-colors cursor-pointer ${
-                          i > 0 ? "border-t border-[#252B45]/60" : ""
+                        className={`flex items-center gap-4 px-4 py-3.5 hover:bg-[#F8FAFC]/60 transition-colors cursor-pointer ${
+                          i > 0 ? "border-t border-[#E2E8F0]/60" : ""
                         }`}
                         onClick={() => setViewingSop(sop)}
                       >
-                        <FileText size={16} className="text-[#64748B] flex-shrink-0" />
+                        <FileText size={16} className="text-[#94A3B8] flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-sm font-semibold text-[#F1F5F9] truncate">{sop.title}</span>
+                            <span className="text-sm font-semibold text-[#0F172A] truncate">{sop.title}</span>
                             {sop.version && (
-                              <span className="text-[10px] text-[#475569] border border-[#252B45] rounded px-1.5 py-0.5 flex-shrink-0">
+                              <span className="text-[10px] text-[#475569] border border-[#E2E8F0] rounded px-1.5 py-0.5 flex-shrink-0">
                                 v{sop.version}
                               </span>
                             )}
                           </div>
                           <div className="flex items-center gap-3 mt-0.5">
-                            {sop.owner && <span className="text-[12px] text-[#64748B]">{sop.owner}</span>}
+                            {sop.owner && <span className="text-[12px] text-[#94A3B8]">{sop.owner}</span>}
                             {sop.last_reviewed && (
                               <span className="text-[12px] text-[#475569]">
                                 Reviewed {new Date(sop.last_reviewed).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
@@ -304,14 +304,14 @@ export default function SopManager({ sops }: { sops: Sop[] }) {
                         <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
                           <button
                             onClick={() => openEdit(sop)}
-                            className="p-1.5 text-[#64748B] hover:text-[#A78BFA] hover:bg-[#252B45] rounded transition-colors"
+                            className="p-1.5 text-[#94A3B8] hover:text-[#6D28D9] hover:bg-[#E2E8F0] rounded transition-colors"
                           >
                             <Edit2 size={14} />
                           </button>
                           <button
                             onClick={() => handleDelete(sop.id)}
                             disabled={deleting === sop.id}
-                            className="p-1.5 text-[#64748B] hover:text-[#EF4444] hover:bg-[#7F1D1D]/20 rounded transition-colors disabled:opacity-40"
+                            className="p-1.5 text-[#94A3B8] hover:text-[#EF4444] hover:bg-[#FEE2E2]/20 rounded transition-colors disabled:opacity-40"
                           >
                             <Trash2 size={14} />
                           </button>
@@ -320,14 +320,14 @@ export default function SopManager({ sops }: { sops: Sop[] }) {
                     ))}
                   </div>
                 ) : (
-                  <div className="bg-[#131729] border border-[#252B45] rounded-xl p-6 flex items-center justify-between">
+                  <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <FileText size={20} className="text-[#252B45]" />
+                      <FileText size={20} className="text-[#E2E8F0]" />
                       <p className="text-sm text-[#475569]">No SOPs in this category yet.</p>
                     </div>
                     <button
                       onClick={() => openCreate(category)}
-                      className="text-xs text-[#7C3AED] hover:text-[#A78BFA] transition-colors flex items-center gap-1"
+                      className="text-xs text-[#7C3AED] hover:text-[#6D28D9] transition-colors flex items-center gap-1"
                     >
                       <Plus size={12} />
                       Add SOP
@@ -344,21 +344,21 @@ export default function SopManager({ sops }: { sops: Sop[] }) {
       {viewingSop && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setViewingSop(null)}>
           <div
-            className="bg-[#0B0E1A] border border-[#252B45] rounded-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto"
+            className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between p-6 border-b border-[#252B45]">
+            <div className="flex items-start justify-between p-6 border-b border-[#E2E8F0]">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <h2 className="text-lg font-bold text-[#F1F5F9]">{viewingSop.title}</h2>
+                  <h2 className="text-lg font-bold text-[#0F172A]">{viewingSop.title}</h2>
                   {viewingSop.version && (
-                    <span className="text-[11px] text-[#475569] border border-[#252B45] rounded px-1.5 py-0.5">v{viewingSop.version}</span>
+                    <span className="text-[11px] text-[#475569] border border-[#E2E8F0] rounded px-1.5 py-0.5">v{viewingSop.version}</span>
                   )}
                   <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ${STATUS_STYLES[viewingSop.status] ?? ""}`}>
                     {viewingSop.status}
                   </span>
                 </div>
-                <div className="flex items-center gap-4 text-xs text-[#64748B]">
+                <div className="flex items-center gap-4 text-xs text-[#94A3B8]">
                   <span>{viewingSop.category}</span>
                   {viewingSop.owner && <span>Owner: {viewingSop.owner}</span>}
                   {viewingSop.last_reviewed && (
@@ -369,18 +369,18 @@ export default function SopManager({ sops }: { sops: Sop[] }) {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => { setViewingSop(null); openEdit(viewingSop); }}
-                  className="p-2 text-[#64748B] hover:text-[#A78BFA] hover:bg-[#252B45] rounded-lg transition-colors"
+                  className="p-2 text-[#94A3B8] hover:text-[#6D28D9] hover:bg-[#E2E8F0] rounded-lg transition-colors"
                 >
                   <Edit2 size={16} />
                 </button>
-                <button onClick={() => setViewingSop(null)} className="p-2 text-[#64748B] hover:text-[#F1F5F9] hover:bg-[#252B45] rounded-lg transition-colors">
+                <button onClick={() => setViewingSop(null)} className="p-2 text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#E2E8F0] rounded-lg transition-colors">
                   <X size={18} />
                 </button>
               </div>
             </div>
             <div className="p-6">
               {viewingSop.content ? (
-                <div className="text-sm text-[#94A3B8] whitespace-pre-wrap leading-relaxed">{viewingSop.content}</div>
+                <div className="text-sm text-[#64748B] whitespace-pre-wrap leading-relaxed">{viewingSop.content}</div>
               ) : (
                 <p className="text-sm text-[#475569] italic">No content added yet.</p>
               )}
@@ -393,45 +393,45 @@ export default function SopManager({ sops }: { sops: Sop[] }) {
       {modalOpen && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={closeModal}>
           <div
-            className="bg-[#0B0E1A] border border-[#252B45] rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto"
+            className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-6 border-b border-[#252B45]">
-              <h2 className="text-lg font-bold text-[#F1F5F9]">{editing ? "Edit SOP" : "New SOP"}</h2>
-              <button onClick={closeModal} className="p-2 text-[#64748B] hover:text-[#F1F5F9] hover:bg-[#252B45] rounded-lg transition-colors">
+            <div className="flex items-center justify-between p-6 border-b border-[#E2E8F0]">
+              <h2 className="text-lg font-bold text-[#0F172A]">{editing ? "Edit SOP" : "New SOP"}</h2>
+              <button onClick={closeModal} className="p-2 text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#E2E8F0] rounded-lg transition-colors">
                 <X size={18} />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Title *</label>
+                <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Title *</label>
                 <input
                   type="text"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   placeholder="e.g. New Member Onboarding Process"
-                  className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                  className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Category</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Category</label>
                   <select
                     value={form.category}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                   >
                     {SOP_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Status</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Status</label>
                   <select
                     value={form.status}
                     onChange={(e) => setForm({ ...form, status: e.target.value })}
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                   >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
@@ -442,61 +442,61 @@ export default function SopManager({ sops }: { sops: Sop[] }) {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Owner / Responsible</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Owner / Responsible</label>
                   <input
                     type="text"
                     value={form.owner}
                     onChange={(e) => setForm({ ...form, owner: e.target.value })}
                     placeholder="e.g. Regional Manager"
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Version</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Version</label>
                   <input
                     type="text"
                     value={form.version}
                     onChange={(e) => setForm({ ...form, version: e.target.value })}
                     placeholder="1.0"
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Last Reviewed Date</label>
+                <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Last Reviewed Date</label>
                 <input
                   type="date"
                   value={form.last_reviewed}
                   onChange={(e) => setForm({ ...form, last_reviewed: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                  className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Content / Procedure</label>
+                <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Content / Procedure</label>
                 <textarea
                   value={form.content}
                   onChange={(e) => setForm({ ...form, content: e.target.value })}
                   rows={10}
                   placeholder="Write the SOP content here. Use plain text — describe the steps, responsibilities, and any important notes."
-                  className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-y font-mono"
+                  className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-y font-mono"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-6 border-t border-[#252B45]">
+            <div className="flex items-center justify-between p-6 border-t border-[#E2E8F0]">
               {editing && (
                 <button
                   onClick={() => { handleDelete(editing.id); closeModal(); }}
-                  className="text-sm text-[#64748B] hover:text-[#EF4444] transition-colors flex items-center gap-1.5"
+                  className="text-sm text-[#94A3B8] hover:text-[#EF4444] transition-colors flex items-center gap-1.5"
                 >
                   <Trash2 size={14} />
                   Delete
                 </button>
               )}
               <div className={`flex gap-3 ${!editing ? "ml-auto" : ""}`}>
-                <button onClick={closeModal} className="px-4 py-2 text-sm text-[#94A3B8] hover:text-[#F1F5F9] transition-colors">
+                <button onClick={closeModal} className="px-4 py-2 text-sm text-[#64748B] hover:text-[#0F172A] transition-colors">
                   Cancel
                 </button>
                 <button

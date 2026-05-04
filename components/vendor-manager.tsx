@@ -228,19 +228,19 @@ export default function VendorManager({
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div className="flex items-center gap-3 flex-wrap flex-1">
           <div className="relative min-w-52 flex-1 max-w-72">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
             <input
               type="text"
               placeholder="Search vendors…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#64748B] focus:outline-none focus:border-[#7C3AED] transition-colors"
+              className="w-full pl-9 pr-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#94A3B8] focus:outline-none focus:border-[#7C3AED] transition-colors"
             />
           </div>
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="px-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#94A3B8] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+            className="px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#64748B] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
           >
             <option value="All">All Categories</option>
             {VENDOR_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -248,7 +248,7 @@ export default function VendorManager({
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#94A3B8] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+            className="px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#64748B] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
           >
             <option value="All">All Statuses</option>
             <option value="active">Active</option>
@@ -258,7 +258,7 @@ export default function VendorManager({
         <div className="flex gap-2">
           <button
             onClick={exportCsv}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#1A1F35] border border-[#252B45] hover:border-[#7C3AED] text-[#94A3B8] hover:text-[#A78BFA] text-sm font-semibold rounded-lg transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#7C3AED] text-[#64748B] hover:text-[#6D28D9] text-sm font-semibold rounded-lg transition-all"
           >
             <Download size={16} />
             Export CSV
@@ -274,10 +274,10 @@ export default function VendorManager({
       </div>
 
       {/* Stats */}
-      <div className="flex gap-3 mb-6 text-sm text-[#64748B]">
-        <span className="text-[#F1F5F9] font-semibold">{activeCount}</span> active vendors
-        <span className="text-[#252B45]">·</span>
-        <span className="text-[#F1F5F9] font-semibold">{filtered.length}</span> showing
+      <div className="flex gap-3 mb-6 text-sm text-[#94A3B8]">
+        <span className="text-[#0F172A] font-semibold">{activeCount}</span> active vendors
+        <span className="text-[#E2E8F0]">·</span>
+        <span className="text-[#0F172A] font-semibold">{filtered.length}</span> showing
       </div>
 
       {/* Category groups */}
@@ -292,11 +292,11 @@ export default function VendorManager({
               className="flex items-center gap-2 w-full mb-3 text-left group"
             >
               {isCollapsed ? (
-                <ChevronRight size={14} className="text-[#64748B]" />
+                <ChevronRight size={14} className="text-[#94A3B8]" />
               ) : (
-                <ChevronDown size={14} className="text-[#64748B]" />
+                <ChevronDown size={14} className="text-[#94A3B8]" />
               )}
-              <span className="text-[11px] uppercase tracking-widest font-bold text-[#64748B] group-hover:text-[#94A3B8] transition-colors">
+              <span className="text-[11px] uppercase tracking-widest font-bold text-[#94A3B8] group-hover:text-[#64748B] transition-colors">
                 {category}
               </span>
               <span className="text-[11px] text-[#475569] ml-1">({items.length})</span>
@@ -305,11 +305,11 @@ export default function VendorManager({
             {!isCollapsed && (
               <>
                 {items.length > 0 ? (
-                  <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
+                  <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide border-b border-[#252B45]">
+                          <tr className="bg-[#F8FAFC] text-[#64748B] text-[11px] uppercase tracking-wide border-b border-[#E2E8F0]">
                             <th className="text-left px-4 py-3 font-semibold">Vendor</th>
                             <th className="text-left px-4 py-3 font-semibold">Contact</th>
                             <th className="text-left px-4 py-3 font-semibold">Email</th>
@@ -321,27 +321,27 @@ export default function VendorManager({
                         </thead>
                         <tbody>
                           {items.map((vendor) => (
-                            <tr key={vendor.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/50 transition-colors">
+                            <tr key={vendor.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/50 transition-colors">
                               <td className="px-4 py-3">
-                                <div className="font-semibold text-[#F1F5F9]">{vendor.name}</div>
+                                <div className="font-semibold text-[#0F172A]">{vendor.name}</div>
                                 {vendor.notes && (
                                   <div className="text-[11px] text-[#475569] mt-0.5 max-w-[180px] truncate">{vendor.notes}</div>
                                 )}
                               </td>
-                              <td className="px-4 py-3 text-[#94A3B8]">{vendor.contact_name ?? "—"}</td>
-                              <td className="px-4 py-3 text-[#94A3B8]">
+                              <td className="px-4 py-3 text-[#64748B]">{vendor.contact_name ?? "—"}</td>
+                              <td className="px-4 py-3 text-[#64748B]">
                                 {vendor.email ? (
-                                  <a href={`mailto:${vendor.email}`} className="hover:text-[#A78BFA] transition-colors">
+                                  <a href={`mailto:${vendor.email}`} className="hover:text-[#6D28D9] transition-colors">
                                     {vendor.email}
                                   </a>
                                 ) : "—"}
                               </td>
-                              <td className="px-4 py-3 text-[#94A3B8]">{vendor.phone ?? "—"}</td>
+                              <td className="px-4 py-3 text-[#64748B]">{vendor.phone ?? "—"}</td>
                               <td className="px-4 py-3">
                                 <div className="flex flex-wrap gap-1">
                                   {(vendor.vendor_clubs ?? []).length > 0
                                     ? vendor.vendor_clubs.map((vc) => (
-                                        <span key={vc.club_id} className="inline-block px-2 py-0.5 bg-[#252B45] text-[#94A3B8] text-[10px] rounded-full">
+                                        <span key={vc.club_id} className="inline-block px-2 py-0.5 bg-[#E2E8F0] text-[#64748B] text-[10px] rounded-full">
                                           {vc.club?.name ?? "?"}
                                         </span>
                                       ))
@@ -351,7 +351,7 @@ export default function VendorManager({
                               </td>
                               <td className="px-4 py-3">
                                 <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ${
-                                  vendor.status === "active" ? "bg-[#064E3B] text-[#10B981]" : "bg-[#252B45] text-[#64748B]"
+                                  vendor.status === "active" ? "bg-[#D1FAE5] text-[#059669]" : "bg-[#E2E8F0] text-[#94A3B8]"
                                 }`}>
                                   {vendor.status}
                                 </span>
@@ -363,21 +363,21 @@ export default function VendorManager({
                                       href={vendor.website}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="p-1.5 text-[#64748B] hover:text-[#3B82F6] hover:bg-[#252B45] rounded transition-colors"
+                                      className="p-1.5 text-[#94A3B8] hover:text-[#3B82F6] hover:bg-[#E2E8F0] rounded transition-colors"
                                     >
                                       <ExternalLink size={14} />
                                     </a>
                                   )}
                                   <button
                                     onClick={() => openEdit(vendor)}
-                                    className="p-1.5 text-[#64748B] hover:text-[#A78BFA] hover:bg-[#252B45] rounded transition-colors"
+                                    className="p-1.5 text-[#94A3B8] hover:text-[#6D28D9] hover:bg-[#E2E8F0] rounded transition-colors"
                                   >
                                     <Edit2 size={14} />
                                   </button>
                                   <button
                                     onClick={() => handleDelete(vendor.id)}
                                     disabled={deleting === vendor.id}
-                                    className="p-1.5 text-[#64748B] hover:text-[#EF4444] hover:bg-[#7F1D1D]/20 rounded transition-colors disabled:opacity-40"
+                                    className="p-1.5 text-[#94A3B8] hover:text-[#EF4444] hover:bg-[#FEE2E2]/20 rounded transition-colors disabled:opacity-40"
                                   >
                                     <Trash2 size={14} />
                                   </button>
@@ -390,14 +390,14 @@ export default function VendorManager({
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-[#131729] border border-[#252B45] rounded-xl p-5 flex items-center justify-between">
+                  <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Package size={18} className="text-[#252B45]" />
+                      <Package size={18} className="text-[#E2E8F0]" />
                       <p className="text-sm text-[#475569]">No vendors in this category.</p>
                     </div>
                     <button
                       onClick={() => openCreate(category)}
-                      className="text-xs text-[#7C3AED] hover:text-[#A78BFA] transition-colors flex items-center gap-1"
+                      className="text-xs text-[#7C3AED] hover:text-[#6D28D9] transition-colors flex items-center gap-1"
                     >
                       <Plus size={12} />
                       Add
@@ -414,45 +414,45 @@ export default function VendorManager({
       {modalOpen && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={closeModal}>
           <div
-            className="bg-[#0B0E1A] border border-[#252B45] rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto"
+            className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-6 border-b border-[#252B45]">
-              <h2 className="text-lg font-bold text-[#F1F5F9]">{editing ? "Edit Vendor" : "Add Vendor"}</h2>
-              <button onClick={closeModal} className="p-2 text-[#64748B] hover:text-[#F1F5F9] hover:bg-[#252B45] rounded-lg transition-colors">
+            <div className="flex items-center justify-between p-6 border-b border-[#E2E8F0]">
+              <h2 className="text-lg font-bold text-[#0F172A]">{editing ? "Edit Vendor" : "Add Vendor"}</h2>
+              <button onClick={closeModal} className="p-2 text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#E2E8F0] rounded-lg transition-colors">
                 <X size={18} />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Vendor Name *</label>
+                <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Vendor Name *</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g. Clean Co."
-                  className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                  className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Category</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Category</label>
                   <select
                     value={form.category}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                   >
                     {VENDOR_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Status</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Status</label>
                   <select
                     value={form.status}
                     onChange={(e) => setForm({ ...form, status: e.target.value })}
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                   >
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
@@ -462,63 +462,63 @@ export default function VendorManager({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Contact Name</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Contact Name</label>
                   <input
                     type="text"
                     value={form.contact_name}
                     onChange={(e) => setForm({ ...form, contact_name: e.target.value })}
                     placeholder="e.g. Jane Smith"
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Phone</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Phone</label>
                   <input
                     type="text"
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     placeholder="0400 000 000"
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Email</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Email</label>
                   <input
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     placeholder="contact@vendor.com"
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Website</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Website</label>
                   <input
                     type="url"
                     value={form.website}
                     onChange={(e) => setForm({ ...form, website: e.target.value })}
                     placeholder="https://vendor.com"
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Notes</label>
+                <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Notes</label>
                 <textarea
                   value={form.notes}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
                   rows={3}
                   placeholder="Contract details, renewal dates, special terms…"
-                  className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-none"
+                  className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#64748B] mb-2 uppercase tracking-wide">
+                <label className="block text-xs font-semibold text-[#94A3B8] mb-2 uppercase tracking-wide">
                   Clubs (leave blank = all clubs)
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -531,8 +531,8 @@ export default function VendorManager({
                         onClick={() => toggleClub(club.id)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                           selected
-                            ? "bg-[#3B1F7A] text-[#A78BFA] border border-[#7C3AED]"
-                            : "bg-[#131729] border border-[#252B45] text-[#64748B] hover:text-[#94A3B8]"
+                            ? "bg-[#EDE9FE] text-[#6D28D9] border border-[#7C3AED]"
+                            : "bg-[#FFFFFF] border border-[#E2E8F0] text-[#94A3B8] hover:text-[#64748B]"
                         }`}
                       >
                         {club.name}
@@ -543,18 +543,18 @@ export default function VendorManager({
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-6 border-t border-[#252B45]">
+            <div className="flex items-center justify-between p-6 border-t border-[#E2E8F0]">
               {editing && (
                 <button
                   onClick={() => { handleDelete(editing.id); closeModal(); }}
-                  className="text-sm text-[#64748B] hover:text-[#EF4444] transition-colors flex items-center gap-1.5"
+                  className="text-sm text-[#94A3B8] hover:text-[#EF4444] transition-colors flex items-center gap-1.5"
                 >
                   <Trash2 size={14} />
                   Delete
                 </button>
               )}
               <div className={`flex gap-3 ${!editing ? "ml-auto" : ""}`}>
-                <button onClick={closeModal} className="px-4 py-2 text-sm text-[#94A3B8] hover:text-[#F1F5F9] transition-colors">
+                <button onClick={closeModal} className="px-4 py-2 text-sm text-[#64748B] hover:text-[#0F172A] transition-colors">
                   Cancel
                 </button>
                 <button

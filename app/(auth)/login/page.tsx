@@ -29,25 +29,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0E1A] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#FFFFFF] flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-[#7C3AED] flex items-center justify-center mb-4">
             <span className="text-white font-extrabold text-2xl">AF</span>
           </div>
-          <h1 className="text-2xl font-bold text-[#F1F5F9]">Regional OS</h1>
-          <p className="text-[#64748B] text-sm mt-1">Anytime Fitness · Fitness Group Holdings</p>
+          <h1 className="text-2xl font-bold text-[#0F172A]">Regional OS</h1>
+          <p className="text-[#94A3B8] text-sm mt-1">Anytime Fitness · Fitness Group Holdings</p>
         </div>
 
         {/* Card */}
-        <div className="bg-[#131729] border border-[#252B45] rounded-2xl p-8">
-          <h2 className="text-lg font-bold text-[#F1F5F9] mb-1">Sign in</h2>
-          <p className="text-sm text-[#64748B] mb-6">Regional Office Access</p>
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl p-8">
+          <h2 className="text-lg font-bold text-[#0F172A] mb-1">Sign in</h2>
+          <p className="text-sm text-[#94A3B8] mb-6">Regional Office Access</p>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">
                 Email
               </label>
               <input
@@ -57,12 +57,12 @@ export default function LoginPage() {
                 required
                 autoComplete="email"
                 placeholder="you@example.com"
-                className="w-full px-3.5 py-2.5 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#64748B] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                className="w-full px-3.5 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#94A3B8] focus:outline-none focus:border-[#7C3AED] transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">
                 Password
               </label>
               <input
@@ -72,12 +72,12 @@ export default function LoginPage() {
                 required
                 autoComplete="current-password"
                 placeholder="••••••••"
-                className="w-full px-3.5 py-2.5 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#64748B] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                className="w-full px-3.5 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#94A3B8] focus:outline-none focus:border-[#7C3AED] transition-colors"
               />
             </div>
 
             {error && (
-              <div className="bg-[#7F1D1D]/40 border border-[#EF4444]/30 rounded-lg px-3.5 py-2.5 text-[#EF4444] text-sm">
+              <div className="bg-[#FEE2E2]/40 border border-[#EF4444]/30 rounded-lg px-3.5 py-2.5 text-[#EF4444] text-sm">
                 {error}
               </div>
             )}
@@ -92,7 +92,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-[#64748B] text-xs mt-6">
+        <p className="text-center text-[#94A3B8] text-xs mt-6">
           Confidential · Regional Office use only
         </p>
       </div>

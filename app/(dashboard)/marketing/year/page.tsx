@@ -21,11 +21,11 @@ const CAMPAIGN_TYPES: CampaignType[] = ["National","Seasonal","Product Launch","
 const CHANNELS: Channel[]            = ["Digital","Social Media","Email","In-Club","PR","Multi-Channel","OOH"];
 
 const TYPE_COLOR: Record<CampaignType, { bg: string; text: string; bar: string }> = {
-  "National":       { bg: "bg-[#3B1F7A]/40 border-[#7C3AED]/50",   text: "text-[#A78BFA]", bar: "bg-[#7C3AED]"  },
-  "Seasonal":       { bg: "bg-[#1E3A5F]/40 border-[#3B82F6]/40",   text: "text-[#60A5FA]", bar: "bg-[#3B82F6]"  },
-  "Product Launch": { bg: "bg-[#3B2A0A]/40 border-[#F59E0B]/40",   text: "text-[#FBBF24]", bar: "bg-[#F59E0B]"  },
-  "Promotional":    { bg: "bg-[#0A3B2A]/40 border-[#10B981]/40",   text: "text-[#34D399]", bar: "bg-[#10B981]"  },
-  "Local":          { bg: "bg-[#1A1F35]/60 border-[#252B45]",      text: "text-[#94A3B8]", bar: "bg-[#64748B]"  },
+  "National":       { bg: "bg-[#EDE9FE]/40 border-[#7C3AED]/50",   text: "text-[#6D28D9]", bar: "bg-[#7C3AED]"  },
+  "Seasonal":       { bg: "bg-[#DBEAFE]/40 border-[#3B82F6]/40",   text: "text-[#2563EB]", bar: "bg-[#3B82F6]"  },
+  "Product Launch": { bg: "bg-[#FFFBEB]/40 border-[#D97706]/40",   text: "text-[#D97706]", bar: "bg-[#D97706]"  },
+  "Promotional":    { bg: "bg-[#F0FDF4]/40 border-[#059669]/40",   text: "text-[#059669]", bar: "bg-[#059669]"  },
+  "Local":          { bg: "bg-[#F8FAFC]/60 border-[#E2E8F0]",      text: "text-[#64748B]", bar: "bg-[#94A3B8]"  },
 };
 
 interface Campaign {
@@ -53,10 +53,10 @@ function SelectField<T extends string>({
   return (
     <div className="relative">
       <select value={value} onChange={(e) => onChange(e.target.value as T)}
-        className={cn("appearance-none bg-[#1A1F35] border border-[#252B45] text-[#F1F5F9] text-sm rounded-lg px-3 py-2 pr-8 focus:outline-none focus:border-[#7C3AED] cursor-pointer", className)}>
+        className={cn("appearance-none bg-[#F8FAFC] border border-[#E2E8F0] text-[#0F172A] text-sm rounded-lg px-3 py-2 pr-8 focus:outline-none focus:border-[#7C3AED] cursor-pointer", className)}>
         {options.map((o) => <option key={o} value={o}>{o}</option>)}
       </select>
-      <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#64748B] pointer-events-none" />
+      <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none" />
     </div>
   );
 }
@@ -77,36 +77,36 @@ function CampaignModal({ mode, year, onSave, onClose }: {
 
   return (
     <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-      <div className="bg-[#131729] border border-[#252B45] rounded-2xl w-full max-w-lg shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#252B45]">
-          <h2 className="text-[#F1F5F9] font-bold text-[15px]">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl w-full max-w-lg shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]">
+          <h2 className="text-[#0F172A] font-bold text-[15px]">
             {mode.type === "add" ? "Add National Campaign" : "Edit Campaign"}
           </h2>
-          <button onClick={onClose} className="text-[#64748B] hover:text-[#F1F5F9] transition-colors"><X size={18} /></button>
+          <button onClick={onClose} className="text-[#94A3B8] hover:text-[#0F172A] transition-colors"><X size={18} /></button>
         </div>
 
         <div className="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
           <div>
-            <label className="block text-[#94A3B8] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Campaign Name *</label>
+            <label className="block text-[#64748B] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Campaign Name *</label>
             <input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="e.g. New Year New You"
-              className="w-full bg-[#1A1F35] border border-[#252B45] text-[#F1F5F9] text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#7C3AED] placeholder:text-[#334155]" />
+              className="w-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#0F172A] text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#7C3AED] placeholder:text-[#94A3B8]" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[#94A3B8] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Type</label>
+              <label className="block text-[#64748B] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Type</label>
               <SelectField value={form.type} onChange={(v) => setForm((f) => ({ ...f, type: v }))} options={CAMPAIGN_TYPES} className="w-full" />
             </div>
             <div>
-              <label className="block text-[#94A3B8] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Primary Channel</label>
+              <label className="block text-[#64748B] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Primary Channel</label>
               <SelectField value={form.channel} onChange={(v) => setForm((f) => ({ ...f, channel: v }))} options={CHANNELS} className="w-full" />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[#94A3B8] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Start Month</label>
+              <label className="block text-[#64748B] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Start Month</label>
               <SelectField
                 value={MONTHS[form.startMonth]}
                 onChange={(v) => {
@@ -118,7 +118,7 @@ function CampaignModal({ mode, year, onSave, onClose }: {
               />
             </div>
             <div>
-              <label className="block text-[#94A3B8] text-[11px] font-semibold uppercase tracking-wide mb-1.5">End Month</label>
+              <label className="block text-[#64748B] text-[11px] font-semibold uppercase tracking-wide mb-1.5">End Month</label>
               <SelectField
                 value={MONTHS[form.endMonth]}
                 onChange={(v) => {
@@ -132,17 +132,17 @@ function CampaignModal({ mode, year, onSave, onClose }: {
           </div>
 
           <div>
-            <label className="block text-[#94A3B8] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Target Audience</label>
+            <label className="block text-[#64748B] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Target Audience</label>
             <input value={form.targetAudience} onChange={(e) => setForm((f) => ({ ...f, targetAudience: e.target.value }))}
               placeholder="e.g. Non-members, lapsed members"
-              className="w-full bg-[#1A1F35] border border-[#252B45] text-[#F1F5F9] text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#7C3AED] placeholder:text-[#334155]" />
+              className="w-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#0F172A] text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#7C3AED] placeholder:text-[#94A3B8]" />
           </div>
 
           <div>
-            <label className="block text-[#94A3B8] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Notes</label>
+            <label className="block text-[#64748B] text-[11px] font-semibold uppercase tracking-wide mb-1.5">Notes</label>
             <textarea value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
               rows={2} placeholder="Campaign details, creative links, HQ instructions..."
-              className="w-full bg-[#1A1F35] border border-[#252B45] text-[#F1F5F9] text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#7C3AED] placeholder:text-[#334155] resize-none" />
+              className="w-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#0F172A] text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#7C3AED] placeholder:text-[#94A3B8] resize-none" />
           </div>
 
           <label className="flex items-center gap-3 cursor-pointer group">
@@ -150,7 +150,7 @@ function CampaignModal({ mode, year, onSave, onClose }: {
               onClick={() => setForm((f) => ({ ...f, hqProvided: !f.hqProvided }))}
               className={cn(
                 "w-10 h-5 rounded-full border-2 transition-all flex-shrink-0 relative cursor-pointer",
-                form.hqProvided ? "bg-[#7C3AED] border-[#7C3AED]" : "bg-[#1A1F35] border-[#252B45]",
+                form.hqProvided ? "bg-[#7C3AED] border-[#7C3AED]" : "bg-[#F8FAFC] border-[#E2E8F0]",
               )}
             >
               <span className={cn(
@@ -158,12 +158,12 @@ function CampaignModal({ mode, year, onSave, onClose }: {
                 form.hqProvided ? "left-[22px]" : "left-0.5",
               )} />
             </div>
-            <span className="text-[13px] text-[#94A3B8]">HQ provides creative assets for this campaign</span>
+            <span className="text-[13px] text-[#64748B]">HQ provides creative assets for this campaign</span>
           </label>
         </div>
 
-        <div className="px-6 py-4 border-t border-[#252B45] flex justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-[#94A3B8] hover:text-[#F1F5F9] transition-colors">Cancel</button>
+        <div className="px-6 py-4 border-t border-[#E2E8F0] flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-[#64748B] hover:text-[#0F172A] transition-colors">Cancel</button>
           <button
             onClick={() => { if (form.name.trim()) { onSave(form); onClose(); } }}
             disabled={!form.name.trim()}
@@ -242,14 +242,14 @@ export default function MarketingYearPage() {
 
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
-        <div className="flex items-center gap-1 bg-[#1A1F35] border border-[#252B45] rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg p-1">
           {YEARS.map((y) => (
             <button
               key={y}
               onClick={() => setYear(y)}
               className={cn(
                 "px-4 py-1.5 rounded-md text-sm font-semibold transition-all",
-                year === y ? "bg-[#7C3AED] text-white" : "text-[#64748B] hover:text-[#F1F5F9]",
+                year === y ? "bg-[#7C3AED] text-white" : "text-[#94A3B8] hover:text-[#0F172A]",
               )}
             >
               {y}
@@ -262,7 +262,7 @@ export default function MarketingYearPage() {
           options={["All", ...CAMPAIGN_TYPES] as any}
           className="text-[13px]"
         />
-        <span className="text-[#64748B] text-[13px] ml-auto">
+        <span className="text-[#94A3B8] text-[13px] ml-auto">
           {yearCampaigns.length} campaign{yearCampaigns.length !== 1 ? "s" : ""} · {year}
         </span>
       </div>
@@ -284,16 +284,16 @@ export default function MarketingYearPage() {
 
       {/* ── Gantt / Timeline View ─────────────────────────────────────────────── */}
       <div className="mb-8">
-        <div className="text-[#94A3B8] text-[11px] font-semibold uppercase tracking-widest mb-3">Timeline · {year}</div>
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
+        <div className="text-[#64748B] text-[11px] font-semibold uppercase tracking-widest mb-3">Timeline · {year}</div>
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
           {/* Month headers */}
-          <div className="grid grid-cols-12 border-b border-[#252B45]">
+          <div className="grid grid-cols-12 border-b border-[#E2E8F0]">
             {MONTH_ABBR.map((m, i) => (
               <div key={i} className={cn(
-                "px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wide border-r border-[#252B45]/50 last:border-r-0",
+                "px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wide border-r border-[#E2E8F0]/50 last:border-r-0",
                 new Date().getMonth() === i && new Date().getFullYear() === year
-                  ? "text-[#A78BFA] bg-[#3B1F7A]/20"
-                  : "text-[#64748B]",
+                  ? "text-[#6D28D9] bg-[#EDE9FE]/20"
+                  : "text-[#94A3B8]",
               )}>
                 {m}
               </div>
@@ -302,16 +302,16 @@ export default function MarketingYearPage() {
 
           {/* Campaign rows */}
           {yearCampaigns.length === 0 ? (
-            <div className="flex items-center justify-center py-16 text-[#334155] text-sm">
+            <div className="flex items-center justify-center py-16 text-[#94A3B8] text-sm">
               No campaigns for {year}. Add one above.
             </div>
           ) : (
-            <div className="divide-y divide-[#252B45]/50">
+            <div className="divide-y divide-[#E2E8F0]/50">
               {yearCampaigns.map((c) => {
                 const cfg = TYPE_COLOR[c.type];
                 const spanCols = c.endMonth - c.startMonth + 1;
                 return (
-                  <div key={c.id} className="grid grid-cols-12 min-h-[52px] group hover:bg-[#1A1F35]/30 transition-colors">
+                  <div key={c.id} className="grid grid-cols-12 min-h-[52px] group hover:bg-[#F8FAFC]/30 transition-colors">
                     {/* Empty cells before start */}
                     {c.startMonth > 0 && (
                       <div className={`col-span-${c.startMonth}`} style={{ gridColumn: `span ${c.startMonth}` }} />
@@ -327,7 +327,7 @@ export default function MarketingYearPage() {
                       )}>
                         <span className={cn("text-[12px] font-semibold truncate min-w-0 flex-1", cfg.text)}>{c.name}</span>
                         {c.hqProvided && spanCols >= 2 && (
-                          <span className="flex-shrink-0 text-[10px] text-[#64748B] bg-[#252B45] rounded px-1.5 py-0.5">HQ</span>
+                          <span className="flex-shrink-0 text-[10px] text-[#94A3B8] bg-[#E2E8F0] rounded px-1.5 py-0.5">HQ</span>
                         )}
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" onClick={(e) => e.stopPropagation()}>
                           <button onClick={() => setModal({ type: "edit", campaign: c })} className={cn("p-1 hover:opacity-100 transition-opacity", cfg.text)}>
@@ -353,28 +353,28 @@ export default function MarketingYearPage() {
 
       {/* ── Month-by-month breakdown ──────────────────────────────────────────── */}
       <div className="mb-8">
-        <div className="text-[#94A3B8] text-[11px] font-semibold uppercase tracking-widest mb-3">Month-by-Month · {year}</div>
+        <div className="text-[#64748B] text-[11px] font-semibold uppercase tracking-widest mb-3">Month-by-Month · {year}</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {MONTHS.map((month, i) => {
             const monthCampaigns = monthMap[i];
             const isCurrent = new Date().getMonth() === i && new Date().getFullYear() === year;
             return (
               <div key={i} className={cn(
-                "bg-[#131729] border rounded-xl p-4",
-                isCurrent ? "border-[#7C3AED]/50" : "border-[#252B45]",
+                "bg-[#FFFFFF] border rounded-xl p-4",
+                isCurrent ? "border-[#7C3AED]/50" : "border-[#E2E8F0]",
               )}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-[#F1F5F9] text-[13px] font-bold">{month}</span>
+                    <span className="text-[#0F172A] text-[13px] font-bold">{month}</span>
                     {isCurrent && (
-                      <span className="text-[10px] font-semibold text-[#A78BFA] bg-[#3B1F7A]/30 px-1.5 py-0.5 rounded">Now</span>
+                      <span className="text-[10px] font-semibold text-[#6D28D9] bg-[#EDE9FE]/30 px-1.5 py-0.5 rounded">Now</span>
                     )}
                   </div>
-                  <span className="text-[11px] text-[#64748B]">{monthCampaigns.length} active</span>
+                  <span className="text-[11px] text-[#94A3B8]">{monthCampaigns.length} active</span>
                 </div>
 
                 {monthCampaigns.length === 0 ? (
-                  <div className="text-[#334155] text-[12px] py-2">No campaigns this month</div>
+                  <div className="text-[#94A3B8] text-[12px] py-2">No campaigns this month</div>
                 ) : (
                   <div className="space-y-2">
                     {monthCampaigns.map((c) => {
@@ -383,7 +383,7 @@ export default function MarketingYearPage() {
                         <div key={c.id} className={cn("flex items-center gap-2 px-2.5 py-2 rounded-lg border text-[12px]", cfg.bg)}>
                           <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0", cfg.bar)} />
                           <span className={cn("font-semibold truncate flex-1", cfg.text)}>{c.name}</span>
-                          {c.hqProvided && <span className="text-[10px] text-[#64748B] flex-shrink-0">HQ</span>}
+                          {c.hqProvided && <span className="text-[10px] text-[#94A3B8] flex-shrink-0">HQ</span>}
                         </div>
                       );
                     })}
@@ -397,12 +397,12 @@ export default function MarketingYearPage() {
 
       {/* ── Campaign detail table ─────────────────────────────────────────────── */}
       <div>
-        <div className="text-[#94A3B8] text-[11px] font-semibold uppercase tracking-widest mb-3">All Campaigns · {year}</div>
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
+        <div className="text-[#64748B] text-[11px] font-semibold uppercase tracking-widest mb-3">All Campaigns · {year}</div>
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide">
+                <tr className="bg-[#F8FAFC] text-[#64748B] text-[11px] uppercase tracking-wide">
                   <th className="text-left px-4 py-3 font-semibold">Campaign</th>
                   <th className="text-left px-4 py-3 font-semibold">Type</th>
                   <th className="text-left px-4 py-3 font-semibold">Channel</th>
@@ -415,16 +415,16 @@ export default function MarketingYearPage() {
               <tbody>
                 {yearCampaigns.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-12 text-center text-[#64748B]">
+                    <td colSpan={7} className="px-4 py-12 text-center text-[#94A3B8]">
                       No campaigns for {year}. Add one to get started.
                     </td>
                   </tr>
                 ) : yearCampaigns.map((c) => {
                   const cfg = TYPE_COLOR[c.type];
                   return (
-                    <tr key={c.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/50 transition-colors group">
+                    <tr key={c.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/50 transition-colors group">
                       <td className="px-4 py-3">
-                        <div className="font-semibold text-[#F1F5F9]">{c.name}</div>
+                        <div className="font-semibold text-[#0F172A]">{c.name}</div>
                         {c.notes && <div className="text-[11px] text-[#475569] mt-0.5 max-w-xs truncate">{c.notes}</div>}
                       </td>
                       <td className="px-4 py-3">
@@ -433,33 +433,33 @@ export default function MarketingYearPage() {
                           {c.type}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-[#94A3B8] text-[13px]">
+                      <td className="px-4 py-3 text-[#64748B] text-[13px]">
                         <span className="flex items-center gap-1.5">
-                          <Tag size={11} className="text-[#64748B]" />
+                          <Tag size={11} className="text-[#94A3B8]" />
                           {c.channel}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-[#94A3B8] text-[13px]">
+                      <td className="px-4 py-3 text-[#64748B] text-[13px]">
                         <span className="flex items-center gap-1.5">
-                          <Calendar size={11} className="text-[#64748B]" />
+                          <Calendar size={11} className="text-[#94A3B8]" />
                           {MONTH_ABBR[c.startMonth]}
                           {c.endMonth !== c.startMonth && ` → ${MONTH_ABBR[c.endMonth]}`}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-[#94A3B8] text-[13px]">{c.targetAudience || "—"}</td>
+                      <td className="px-4 py-3 text-[#64748B] text-[13px]">{c.targetAudience || "—"}</td>
                       <td className="px-4 py-3">
                         {c.hqProvided ? (
-                          <span className="text-[12px] font-semibold text-[#34D399] bg-[#0A3B2A]/50 border border-[#10B981]/30 px-2 py-0.5 rounded">Yes</span>
+                          <span className="text-[12px] font-semibold text-[#059669] bg-[#F0FDF4]/50 border border-[#059669]/30 px-2 py-0.5 rounded">Yes</span>
                         ) : (
                           <span className="text-[12px] text-[#475569]">No</span>
                         )}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button onClick={() => setModal({ type: "edit", campaign: c })} className="p-1.5 text-[#64748B] hover:text-[#A78BFA] hover:bg-[#1A1F35] rounded-lg transition-colors">
+                          <button onClick={() => setModal({ type: "edit", campaign: c })} className="p-1.5 text-[#94A3B8] hover:text-[#6D28D9] hover:bg-[#F8FAFC] rounded-lg transition-colors">
                             <Pencil size={13} />
                           </button>
-                          <button onClick={() => deleteCampaign(c.id)} className="p-1.5 text-[#64748B] hover:text-[#EF4444] hover:bg-[#1A1F35] rounded-lg transition-colors">
+                          <button onClick={() => deleteCampaign(c.id)} className="p-1.5 text-[#94A3B8] hover:text-[#EF4444] hover:bg-[#F8FAFC] rounded-lg transition-colors">
                             <Trash2 size={13} />
                           </button>
                         </div>

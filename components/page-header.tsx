@@ -11,8 +11,8 @@ export default function PageHeader({ title, subtitle, action, className }: PageH
   return (
     <div className={cn("flex items-start justify-between mb-6 flex-wrap gap-3", className)}>
       <div>
-        <h1 className="text-2xl font-bold text-[#F1F5F9] tracking-tight">{title}</h1>
-        {subtitle && <p className="text-sm text-[#94A3B8] mt-1">{subtitle}</p>}
+        <h1 className="text-2xl font-bold text-[#0F172A] tracking-tight">{title}</h1>
+        {subtitle && <p className="text-sm text-[#64748B] mt-1">{subtitle}</p>}
       </div>
       {action && <div className="flex-shrink-0">{action}</div>}
     </div>

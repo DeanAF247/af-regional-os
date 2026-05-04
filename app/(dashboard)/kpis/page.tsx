@@ -1,9 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import PageHeader from "@/components/page-header";
 import SectionLabel from "@/components/section-label";
+import PeriodsTable from "@/components/periods-table";
 import Link from "next/link";
-import { formatCurrency, formatPercent, pct, currentPeriod } from "@/lib/utils";
-import { PencilLine, Edit2, BarChart3 } from "lucide-react";
+import { pct, currentPeriod } from "@/lib/utils";
+import { PencilLine, BarChart3 } from "lucide-react";
 
 export default async function KpisPage() {
   const supabase = await createClient();
@@ -73,11 +74,11 @@ export default async function KpisPage() {
 
       {periodSummaries.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#1A1F35] border border-[#252B45] flex items-center justify-center mb-4">
-            <BarChart3 size={28} className="text-[#64748B]" />
+          <div className="w-16 h-16 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center mb-4">
+            <BarChart3 size={28} className="text-[#94A3B8]" />
           </div>
-          <h2 className="text-lg font-bold text-[#F1F5F9] mb-2">No KPI data yet</h2>
-          <p className="text-[#64748B] text-sm mb-6 max-w-sm">
+          <h2 className="text-lg font-bold text-[#0F172A] mb-2">No KPI data yet</h2>
+          <p className="text-[#94A3B8] text-sm mb-6 max-w-sm">
             Enter your first monthly period to start tracking group performance.
           </p>
           <Link
@@ -89,71 +90,7 @@ export default async function KpisPage() {
           </Link>
         </div>
       ) : (
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide border-b border-[#252B45]">
-                  <th className="text-left px-4 py-3 font-semibold">Period</th>
-                  <th className="text-center px-4 py-3 font-semibold">Clubs</th>
-                  <th className="text-right px-4 py-3 font-semibold">Leads</th>
-                  <th className="text-right px-4 py-3 font-semibold">Leads %</th>
-                  <th className="text-right px-4 py-3 font-semibold">Sales</th>
-                  <th className="text-right px-4 py-3 font-semibold">Sales %</th>
-                  <th className="text-right px-4 py-3 font-semibold">Spend</th>
-                  <th className="text-right px-4 py-3 font-semibold">Spend %</th>
-                  <th className="px-4 py-3 font-semibold" />
-                </tr>
-              </thead>
-              <tbody>
-                {periodSummaries.map((period) => (
-                  <tr key={period.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/50 transition-colors">
-                    <td className="px-4 py-3 font-semibold text-[#F1F5F9]">
-                      {period.period_label}
-                    </td>
-                    <td className="px-4 py-3 text-center text-[#94A3B8]">{period.club_count}</td>
-                    <td className="px-4 py-3 text-right text-[#F1F5F9]">{period.total_leads.toLocaleString()}</td>
-                    <td className={`px-4 py-3 text-right font-semibold ${
-                      period.leads_pct == null ? "text-[#64748B]"
-                        : period.leads_pct >= 90 ? "text-[#10B981]"
-                        : period.leads_pct >= 70 ? "text-[#F59E0B]"
-                        : "text-[#EF4444]"
-                    }`}>
-                      {formatPercent(period.leads_pct)}
-                    </td>
-                    <td className="px-4 py-3 text-right text-[#F1F5F9]">{period.total_sales.toLocaleString()}</td>
-                    <td className={`px-4 py-3 text-right font-semibold ${
-                      period.sales_pct == null ? "text-[#64748B]"
-                        : period.sales_pct >= 90 ? "text-[#10B981]"
-                        : period.sales_pct >= 70 ? "text-[#F59E0B]"
-                        : "text-[#EF4444]"
-                    }`}>
-                      {formatPercent(period.sales_pct)}
-                    </td>
-                    <td className="px-4 py-3 text-right text-[#F1F5F9]">{formatCurrency(period.total_spend)}</td>
-                    <td className={`px-4 py-3 text-right font-semibold ${
-                      period.spend_pct == null ? "text-[#64748B]"
-                        : period.spend_pct <= 100 ? "text-[#10B981]"
-                        : period.spend_pct <= 115 ? "text-[#F59E0B]"
-                        : "text-[#EF4444]"
-                    }`}>
-                      {formatPercent(period.spend_pct)}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <Link
-                        href={`/kpis/upload?period=${period.id}`}
-                        className="inline-flex items-center gap-1.5 text-xs text-[#64748B] hover:text-[#A78BFA] transition-colors"
-                      >
-                        <Edit2 size={12} />
-                        Edit
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <PeriodsTable periods={periodSummaries} />
       )}
     </div>
   );

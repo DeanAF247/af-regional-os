@@ -118,18 +118,18 @@ export default function ScoresEditor({ clubs, periods, scores }: Props) {
 
   function renderTable(type: ScoreType, fyPeriods: Period[]) {
     const label = type === "chs" ? "CHS" : "OSAT";
-    const accentColor = type === "chs" ? "text-[#A78BFA]" : "text-[#60A5FA]";
+    const accentColor = type === "chs" ? "text-[#6D28D9]" : "text-[#2563EB]";
 
     return (
       <div className="mb-4">
-        <div className={`px-4 py-2 text-[11px] uppercase tracking-widest font-bold ${accentColor} bg-[#1A1F35]/50 border-b border-[#252B45]`}>
+        <div className={`px-4 py-2 text-[11px] uppercase tracking-widest font-bold ${accentColor} bg-[#F8FAFC]/50 border-b border-[#E2E8F0]`}>
           {label} — {type === "chs" ? "Club Health Score" : "Overall Satisfaction"}
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#1A1F35]/40 text-[#94A3B8] text-[11px] uppercase tracking-wide">
-                <th className="text-left px-4 py-2.5 font-semibold sticky left-0 bg-[#131729] min-w-[140px]">Club</th>
+              <tr className="bg-[#F8FAFC]/40 text-[#64748B] text-[11px] uppercase tracking-wide">
+                <th className="text-left px-4 py-2.5 font-semibold sticky left-0 bg-[#FFFFFF] min-w-[140px]">Club</th>
                 {fyPeriods.map((p) => {
                   const parts = p.period_label.split(" ");
                   return (
@@ -138,7 +138,7 @@ export default function ScoresEditor({ clubs, periods, scores }: Props) {
                     </th>
                   );
                 })}
-                <th className="text-right px-4 py-2.5 font-semibold whitespace-nowrap min-w-[80px] border-l border-[#252B45]">
+                <th className="text-right px-4 py-2.5 font-semibold whitespace-nowrap min-w-[80px] border-l border-[#E2E8F0]">
                   FY Δ
                 </th>
               </tr>
@@ -147,8 +147,8 @@ export default function ScoresEditor({ clubs, periods, scores }: Props) {
               {clubs.map((club) => {
                 const ytd = fyYTD(club.id, fyPeriods, type);
                 return (
-                  <tr key={club.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/20 transition-colors">
-                    <td className="px-4 py-2 font-semibold text-[#F1F5F9] sticky left-0 bg-[#131729]">{club.name}</td>
+                  <tr key={club.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/20 transition-colors">
+                    <td className="px-4 py-2 font-semibold text-[#0F172A] sticky left-0 bg-[#FFFFFF]">{club.name}</td>
                     {fyPeriods.map((period) => {
                       const k        = cellKey(club.id, period.id, type);
                       const isEditing = editing === k;
@@ -165,21 +165,21 @@ export default function ScoresEditor({ clubs, periods, scores }: Props) {
                               onChange={(e) => setValues((v) => ({ ...v, [k]: e.target.value }))}
                               onBlur={() => handleBlur(club.id, period.id, type)}
                               onKeyDown={(e) => handleKeyDown(e, club.id, period.id, type)}
-                              className="w-16 px-2 py-1 bg-[#0B0E1A] border border-[#7C3AED] rounded text-right text-[#F1F5F9] text-sm focus:outline-none"
+                              className="w-16 px-2 py-1 bg-[#FFFFFF] border border-[#7C3AED] rounded text-right text-[#0F172A] text-sm focus:outline-none"
                             />
                           ) : (
                             <button
                               onClick={() => setEditing(k)}
-                              className="w-16 px-2 py-1 text-right rounded hover:bg-[#1A1F35] transition-colors group"
+                              className="w-16 px-2 py-1 text-right rounded hover:bg-[#F8FAFC] transition-colors group"
                             >
                               {status === "saving" ? (
                                 <Loader2 size={12} className="animate-spin ml-auto text-[#7C3AED]" />
                               ) : status === "saved" ? (
-                                <span className="flex items-center justify-end gap-1 text-[#10B981] text-xs">
+                                <span className="flex items-center justify-end gap-1 text-[#059669] text-xs">
                                   <Check size={11} />{val || "—"}
                                 </span>
                               ) : (
-                                <span className={val ? "text-[#F1F5F9] font-semibold" : "text-[#475569] group-hover:text-[#64748B]"}>
+                                <span className={val ? "text-[#0F172A] font-semibold" : "text-[#475569] group-hover:text-[#94A3B8]"}>
                                   {val ? parseFloat(val).toFixed(1) : "—"}
                                 </span>
                               )}
@@ -189,11 +189,11 @@ export default function ScoresEditor({ clubs, periods, scores }: Props) {
                       );
                     })}
                     {/* FY delta */}
-                    <td className="px-4 py-2 text-right border-l border-[#252B45]">
+                    <td className="px-4 py-2 text-right border-l border-[#E2E8F0]">
                       {ytd == null ? (
                         <span className="text-[#475569] text-xs">—</span>
                       ) : (
-                        <span className={`font-bold text-sm ${ytd > 0 ? "text-[#10B981]" : ytd < 0 ? "text-[#EF4444]" : "text-[#64748B]"}`}>
+                        <span className={`font-bold text-sm ${ytd > 0 ? "text-[#059669]" : ytd < 0 ? "text-[#EF4444]" : "text-[#94A3B8]"}`}>
                           {ytd > 0 ? `+${ytd.toFixed(1)}` : ytd.toFixed(1)}
                         </span>
                       )}
@@ -203,18 +203,18 @@ export default function ScoresEditor({ clubs, periods, scores }: Props) {
               })}
 
               {/* Average row */}
-              <tr className="border-t-2 border-[#252B45] bg-[#1A1F35] font-bold">
-                <td className={`px-4 py-2.5 sticky left-0 bg-[#1A1F35] ${accentColor}`}>Average</td>
+              <tr className="border-t-2 border-[#E2E8F0] bg-[#F8FAFC] font-bold">
+                <td className={`px-4 py-2.5 sticky left-0 bg-[#F8FAFC] ${accentColor}`}>Average</td>
                 {fyPeriods.map((p) => {
                   const avg = colAvg(p.id, type);
                   return (
-                    <td key={p.id} className="px-3 py-2.5 text-right text-[#F1F5F9] pr-4">
+                    <td key={p.id} className="px-3 py-2.5 text-right text-[#0F172A] pr-4">
                       {avg != null ? avg.toFixed(2) : "—"}
                     </td>
                   );
                 })}
                 {/* FY avg delta */}
-                <td className="px-4 py-2.5 text-right border-l border-[#252B45]">
+                <td className="px-4 py-2.5 text-right border-l border-[#E2E8F0]">
                   {(() => {
                     const deltas = clubs
                       .map((c) => fyYTD(c.id, fyPeriods, type))
@@ -222,7 +222,7 @@ export default function ScoresEditor({ clubs, periods, scores }: Props) {
                     if (deltas.length === 0) return <span className="text-[#475569]">—</span>;
                     const avg = deltas.reduce((s, v) => s + v, 0) / deltas.length;
                     return (
-                      <span className={`font-bold ${avg > 0 ? "text-[#10B981]" : avg < 0 ? "text-[#EF4444]" : "text-[#64748B]"}`}>
+                      <span className={`font-bold ${avg > 0 ? "text-[#059669]" : avg < 0 ? "text-[#EF4444]" : "text-[#94A3B8]"}`}>
                         {avg > 0 ? `+${avg.toFixed(1)}` : avg.toFixed(1)}
                       </span>
                     );
@@ -244,20 +244,20 @@ export default function ScoresEditor({ clubs, periods, scores }: Props) {
         const isCollapsed = collapsed.has(fy);
 
         return (
-          <div key={fy} className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
+          <div key={fy} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
             {/* FY toggle header */}
             <button
               onClick={() => toggleFY(fy)}
-              className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#1A1F35]/50 transition-colors border-b border-[#252B45]"
+              className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#F8FAFC]/50 transition-colors border-b border-[#E2E8F0]"
             >
               <div className="flex items-center gap-2.5">
-                {isCollapsed ? <ChevronRight size={14} className="text-[#64748B]" /> : <ChevronDown size={14} className="text-[#64748B]" />}
+                {isCollapsed ? <ChevronRight size={14} className="text-[#94A3B8]" /> : <ChevronDown size={14} className="text-[#94A3B8]" />}
                 {!isCurrentFY && <Archive size={13} className="text-[#475569]" />}
-                <span className={`text-sm font-bold ${isCurrentFY ? "text-[#A78BFA]" : "text-[#64748B]"}`}>
+                <span className={`text-sm font-bold ${isCurrentFY ? "text-[#6D28D9]" : "text-[#94A3B8]"}`}>
                   {fyLabel(fy)}
                 </span>
                 {isCurrentFY && (
-                  <span className="text-[10px] bg-[#3B1F7A] text-[#A78BFA] px-2 py-0.5 rounded-full font-semibold">Current</span>
+                  <span className="text-[10px] bg-[#EDE9FE] text-[#6D28D9] px-2 py-0.5 rounded-full font-semibold">Current</span>
                 )}
                 {!isCurrentFY && isCollapsed && (
                   <span className="text-[11px] text-[#475569]">{fyPeriods.length} months archived</span>
@@ -270,7 +270,7 @@ export default function ScoresEditor({ clubs, periods, scores }: Props) {
               <>
                 {renderTable("chs",  fyPeriods)}
                 {renderTable("osat", fyPeriods)}
-                <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#252B45]">
+                <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#E2E8F0]">
                   Click any cell to edit · Enter or Tab to save · FY Δ = latest month vs July opening
                 </p>
               </>

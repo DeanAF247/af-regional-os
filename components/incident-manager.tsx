@@ -22,19 +22,19 @@ const INCIDENT_TYPES = [
 ];
 
 const STATUS_BADGE: Record<string, string> = {
-  open:        "bg-[#7F1D1D] text-[#EF4444]",
-  in_progress: "bg-[#78350F] text-[#F59E0B]",
-  resolved:    "bg-[#064E3B] text-[#10B981]",
-  closed:      "bg-[#252B45] text-[#64748B]",
+  open:        "bg-[#FEE2E2] text-[#EF4444]",
+  in_progress: "bg-[#FEF3C7] text-[#D97706]",
+  resolved:    "bg-[#D1FAE5] text-[#059669]",
+  closed:      "bg-[#E2E8F0] text-[#94A3B8]",
 };
 
 const TYPE_BADGE: Record<string, string> = {
-  "Injury":            "bg-[#7F1D1D]/50 text-[#EF4444]",
-  "Equipment Failure": "bg-[#78350F]/50 text-[#F59E0B]",
-  "Member Complaint":  "bg-[#1E3A5F]/50 text-[#3B82F6]",
-  "Security":          "bg-[#3B1F7A]/50 text-[#A78BFA]",
-  "Maintenance":       "bg-[#252B45] text-[#94A3B8]",
-  "Other":             "bg-[#252B45] text-[#64748B]",
+  "Injury":            "bg-[#FEE2E2]/50 text-[#EF4444]",
+  "Equipment Failure": "bg-[#FEF3C7]/50 text-[#D97706]",
+  "Member Complaint":  "bg-[#DBEAFE]/50 text-[#3B82F6]",
+  "Security":          "bg-[#EDE9FE]/50 text-[#6D28D9]",
+  "Maintenance":       "bg-[#E2E8F0] text-[#64748B]",
+  "Other":             "bg-[#E2E8F0] text-[#94A3B8]",
 };
 
 interface Club { id: string; name: string }
@@ -185,7 +185,7 @@ export default function IncidentManager({
     <>
       {/* Alert banner */}
       {openCount > 0 && (
-        <div className="bg-[#7F1D1D]/20 border border-[#EF4444]/30 rounded-xl p-4 mb-4 flex items-center gap-3">
+        <div className="bg-[#FEE2E2]/20 border border-[#EF4444]/30 rounded-xl p-4 mb-4 flex items-center gap-3">
           <AlertTriangle size={18} className="text-[#EF4444] flex-shrink-0" />
           <span className="text-sm text-[#EF4444] font-semibold">
             {openCount} open incident{openCount !== 1 ? "s" : ""} require attention.
@@ -209,8 +209,8 @@ export default function IncidentManager({
                 onClick={() => setFilterStatus(s)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-[#3B1F7A] text-[#A78BFA]"
-                    : "bg-[#131729] border border-[#252B45] text-[#64748B] hover:text-[#94A3B8]"
+                    ? "bg-[#EDE9FE] text-[#6D28D9]"
+                    : "bg-[#FFFFFF] border border-[#E2E8F0] text-[#94A3B8] hover:text-[#64748B]"
                 }`}
               >
                 {s}
@@ -223,7 +223,7 @@ export default function IncidentManager({
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="px-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#94A3B8] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+            className="px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#64748B] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
           >
             <option value="All">All Types</option>
             {INCIDENT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
@@ -240,11 +240,11 @@ export default function IncidentManager({
 
       {/* Table */}
       {filtered.length > 0 ? (
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide border-b border-[#252B45]">
+                <tr className="bg-[#F8FAFC] text-[#64748B] text-[11px] uppercase tracking-wide border-b border-[#E2E8F0]">
                   <th className="text-left px-4 py-3 font-semibold">Date</th>
                   <th className="text-left px-4 py-3 font-semibold">Club</th>
                   <th className="text-left px-4 py-3 font-semibold">Type</th>
@@ -258,15 +258,15 @@ export default function IncidentManager({
                 {filtered.map((incident) => (
                   <tr
                     key={incident.id}
-                    className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/50 transition-colors cursor-pointer"
+                    className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/50 transition-colors cursor-pointer"
                     onClick={() => setViewingIncident(incident)}
                   >
-                    <td className="px-4 py-3 text-[#94A3B8] whitespace-nowrap">
+                    <td className="px-4 py-3 text-[#64748B] whitespace-nowrap">
                       {new Date(incident.date).toLocaleDateString("en-AU", {
                         day: "numeric", month: "short", year: "numeric",
                       })}
                     </td>
-                    <td className="px-4 py-3 font-semibold text-[#F1F5F9]">
+                    <td className="px-4 py-3 font-semibold text-[#0F172A]">
                       {incident.club?.name ?? "—"}
                     </td>
                     <td className="px-4 py-3">
@@ -274,22 +274,22 @@ export default function IncidentManager({
                         {incident.type}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-[#94A3B8] max-w-xs">
+                    <td className="px-4 py-3 text-[#64748B] max-w-xs">
                       <span className="line-clamp-2">{incident.description}</span>
                     </td>
-                    <td className="px-4 py-3 text-[#94A3B8]">{incident.reported_by ?? "—"}</td>
+                    <td className="px-4 py-3 text-[#64748B]">{incident.reported_by ?? "—"}</td>
                     <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <div className="relative group inline-block">
                         <button className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold ${STATUS_BADGE[incident.status] ?? ""}`}>
                           {incident.status.replace("_", " ")}
                           <ChevronDown size={10} />
                         </button>
-                        <div className="absolute left-0 top-full mt-1 bg-[#1A1F35] border border-[#252B45] rounded-lg shadow-xl z-10 hidden group-hover:block min-w-32">
+                        <div className="absolute left-0 top-full mt-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg shadow-xl z-10 hidden group-hover:block min-w-32">
                           {["open", "in_progress", "resolved", "closed"].map((s) => (
                             <button
                               key={s}
                               onClick={() => quickStatusUpdate(incident.id, s)}
-                              className={`block w-full text-left px-3 py-2 text-xs hover:bg-[#252B45] transition-colors ${incident.status === s ? "text-[#A78BFA]" : "text-[#94A3B8]"}`}
+                              className={`block w-full text-left px-3 py-2 text-xs hover:bg-[#E2E8F0] transition-colors ${incident.status === s ? "text-[#6D28D9]" : "text-[#64748B]"}`}
                             >
                               {s.replace("_", " ")}
                             </button>
@@ -301,14 +301,14 @@ export default function IncidentManager({
                       <div className="flex items-center gap-1 justify-end">
                         <button
                           onClick={() => openEdit(incident)}
-                          className="p-1.5 text-[#64748B] hover:text-[#A78BFA] hover:bg-[#252B45] rounded transition-colors"
+                          className="p-1.5 text-[#94A3B8] hover:text-[#6D28D9] hover:bg-[#E2E8F0] rounded transition-colors"
                         >
                           <Edit2 size={14} />
                         </button>
                         <button
                           onClick={() => handleDelete(incident.id)}
                           disabled={deleting === incident.id}
-                          className="p-1.5 text-[#64748B] hover:text-[#EF4444] hover:bg-[#7F1D1D]/20 rounded transition-colors disabled:opacity-40"
+                          className="p-1.5 text-[#94A3B8] hover:text-[#EF4444] hover:bg-[#FEE2E2]/20 rounded transition-colors disabled:opacity-40"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -321,12 +321,12 @@ export default function IncidentManager({
           </div>
         </div>
       ) : (
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-16 flex flex-col items-center justify-center text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#1A1F35] border border-[#252B45] flex items-center justify-center mb-4">
-            <AlertTriangle size={28} className="text-[#64748B]" />
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-16 flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center mb-4">
+            <AlertTriangle size={28} className="text-[#94A3B8]" />
           </div>
-          <h2 className="text-lg font-bold text-[#F1F5F9] mb-2">No incidents found</h2>
-          <p className="text-[#64748B] text-sm mb-6 max-w-sm">
+          <h2 className="text-lg font-bold text-[#0F172A] mb-2">No incidents found</h2>
+          <p className="text-[#94A3B8] text-sm mb-6 max-w-sm">
             {incidents.length > 0 ? "Try adjusting your filters." : "Log incidents across all clubs and track them to resolution."}
           </p>
           {incidents.length === 0 && (
@@ -345,10 +345,10 @@ export default function IncidentManager({
       {viewingIncident && !modalOpen && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={closeModal}>
           <div
-            className="bg-[#0B0E1A] border border-[#252B45] rounded-2xl w-full max-w-lg"
+            className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl w-full max-w-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between p-6 border-b border-[#252B45]">
+            <div className="flex items-start justify-between p-6 border-b border-[#E2E8F0]">
               <div>
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ${TYPE_BADGE[viewingIncident.type] ?? TYPE_BADGE["Other"]}`}>
@@ -358,7 +358,7 @@ export default function IncidentManager({
                     {viewingIncident.status.replace("_", " ")}
                   </span>
                 </div>
-                <div className="text-xs text-[#64748B] mt-1 flex gap-3">
+                <div className="text-xs text-[#94A3B8] mt-1 flex gap-3">
                   <span>{viewingIncident.club?.name ?? "—"}</span>
                   <span>{new Date(viewingIncident.date).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}</span>
                   {viewingIncident.reported_by && <span>by {viewingIncident.reported_by}</span>}
@@ -367,24 +367,24 @@ export default function IncidentManager({
               <div className="flex gap-1">
                 <button
                   onClick={() => { setViewingIncident(null); openEdit(viewingIncident); }}
-                  className="p-2 text-[#64748B] hover:text-[#A78BFA] hover:bg-[#252B45] rounded-lg transition-colors"
+                  className="p-2 text-[#94A3B8] hover:text-[#6D28D9] hover:bg-[#E2E8F0] rounded-lg transition-colors"
                 >
                   <Edit2 size={16} />
                 </button>
-                <button onClick={closeModal} className="p-2 text-[#64748B] hover:text-[#F1F5F9] hover:bg-[#252B45] rounded-lg transition-colors">
+                <button onClick={closeModal} className="p-2 text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#E2E8F0] rounded-lg transition-colors">
                   <X size={18} />
                 </button>
               </div>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <div className="text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Description</div>
-                <p className="text-sm text-[#94A3B8] whitespace-pre-wrap">{viewingIncident.description}</p>
+                <div className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Description</div>
+                <p className="text-sm text-[#64748B] whitespace-pre-wrap">{viewingIncident.description}</p>
               </div>
               {viewingIncident.resolution_notes && (
                 <div>
-                  <div className="text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Resolution Notes</div>
-                  <p className="text-sm text-[#94A3B8] whitespace-pre-wrap">{viewingIncident.resolution_notes}</p>
+                  <div className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Resolution Notes</div>
+                  <p className="text-sm text-[#64748B] whitespace-pre-wrap">{viewingIncident.resolution_notes}</p>
                 </div>
               )}
             </div>
@@ -396,12 +396,12 @@ export default function IncidentManager({
       {modalOpen && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={closeModal}>
           <div
-            className="bg-[#0B0E1A] border border-[#252B45] rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto"
+            className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-6 border-b border-[#252B45]">
-              <h2 className="text-lg font-bold text-[#F1F5F9]">{editing ? "Edit Incident" : "Log Incident"}</h2>
-              <button onClick={closeModal} className="p-2 text-[#64748B] hover:text-[#F1F5F9] hover:bg-[#252B45] rounded-lg transition-colors">
+            <div className="flex items-center justify-between p-6 border-b border-[#E2E8F0]">
+              <h2 className="text-lg font-bold text-[#0F172A]">{editing ? "Edit Incident" : "Log Incident"}</h2>
+              <button onClick={closeModal} className="p-2 text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#E2E8F0] rounded-lg transition-colors">
                 <X size={18} />
               </button>
             </div>
@@ -409,20 +409,20 @@ export default function IncidentManager({
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Date *</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Date *</label>
                   <input
                     type="date"
                     value={form.date}
                     onChange={(e) => setForm({ ...form, date: e.target.value })}
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Club</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Club</label>
                   <select
                     value={form.club_id}
                     onChange={(e) => setForm({ ...form, club_id: e.target.value })}
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                   >
                     {clubs.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
@@ -431,21 +431,21 @@ export default function IncidentManager({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Type</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Type</label>
                   <select
                     value={form.type}
                     onChange={(e) => setForm({ ...form, type: e.target.value })}
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                   >
                     {INCIDENT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Status</label>
+                  <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Status</label>
                   <select
                     value={form.status}
                     onChange={(e) => setForm({ ...form, status: e.target.value })}
-                    className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                    className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                   >
                     <option value="open">Open</option>
                     <option value="in_progress">In Progress</option>
@@ -456,51 +456,51 @@ export default function IncidentManager({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Reported By</label>
+                <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Reported By</label>
                 <input
                   type="text"
                   value={form.reported_by}
                   onChange={(e) => setForm({ ...form, reported_by: e.target.value })}
                   placeholder="Staff member name"
-                  className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                  className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Description *</label>
+                <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Description *</label>
                 <textarea
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   rows={4}
                   placeholder="Describe what happened, who was involved, and any immediate actions taken…"
-                  className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-none"
+                  className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#64748B] mb-1.5 uppercase tracking-wide">Resolution Notes</label>
+                <label className="block text-xs font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wide">Resolution Notes</label>
                 <textarea
                   value={form.resolution_notes}
                   onChange={(e) => setForm({ ...form, resolution_notes: e.target.value })}
                   rows={3}
                   placeholder="How was this resolved? Any follow-up actions required?"
-                  className="w-full px-3 py-2.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-none"
+                  className="w-full px-3 py-2.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-none"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-6 border-t border-[#252B45]">
+            <div className="flex items-center justify-between p-6 border-t border-[#E2E8F0]">
               {editing && (
                 <button
                   onClick={() => handleDelete(editing.id)}
-                  className="text-sm text-[#64748B] hover:text-[#EF4444] transition-colors flex items-center gap-1.5"
+                  className="text-sm text-[#94A3B8] hover:text-[#EF4444] transition-colors flex items-center gap-1.5"
                 >
                   <Trash2 size={14} />
                   Delete
                 </button>
               )}
               <div className={`flex gap-3 ${!editing ? "ml-auto" : ""}`}>
-                <button onClick={closeModal} className="px-4 py-2 text-sm text-[#94A3B8] hover:text-[#F1F5F9] transition-colors">
+                <button onClick={closeModal} className="px-4 py-2 text-sm text-[#64748B] hover:text-[#0F172A] transition-colors">
                   Cancel
                 </button>
                 <button

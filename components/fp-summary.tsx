@@ -114,18 +114,18 @@ export default function FpSummary({ clubs, periods, fpRecords, ddCounts }: Props
         const isCollapsed = collapsed.has(fy);
 
         return (
-          <div key={fy} className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
+          <div key={fy} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
             {/* FY header */}
             <button
               onClick={() => toggleFY(fy)}
-              className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#1A1F35]/50 transition-colors border-b border-[#252B45]"
+              className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#F8FAFC]/50 transition-colors border-b border-[#E2E8F0]"
             >
               <div className="flex items-center gap-2.5">
-                {isCollapsed ? <ChevronRight size={14} className="text-[#64748B]" /> : <ChevronDown size={14} className="text-[#64748B]" />}
+                {isCollapsed ? <ChevronRight size={14} className="text-[#94A3B8]" /> : <ChevronDown size={14} className="text-[#94A3B8]" />}
                 {!isCurrentFY && <Archive size={13} className="text-[#475569]" />}
-                <span className={`text-sm font-bold ${isCurrentFY ? "text-[#A78BFA]" : "text-[#64748B]"}`}>{fyLabel(fy)}</span>
+                <span className={`text-sm font-bold ${isCurrentFY ? "text-[#6D28D9]" : "text-[#94A3B8]"}`}>{fyLabel(fy)}</span>
                 {isCurrentFY && (
-                  <span className="text-[10px] bg-[#3B1F7A] text-[#A78BFA] px-2 py-0.5 rounded-full font-semibold">Current</span>
+                  <span className="text-[10px] bg-[#EDE9FE] text-[#6D28D9] px-2 py-0.5 rounded-full font-semibold">Current</span>
                 )}
                 {!isCurrentFY && isCollapsed && (
                   <span className="text-[11px] text-[#475569]">{fyPeriods.length} months archived</span>
@@ -139,8 +139,8 @@ export default function FpSummary({ clubs, periods, fpRecords, ddCounts }: Props
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide">
-                        <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#1A1F35] min-w-[160px]">Club</th>
+                      <tr className="bg-[#F8FAFC] text-[#64748B] text-[11px] uppercase tracking-wide">
+                        <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#F8FAFC] min-w-[160px]">Club</th>
                         {fyPeriods.map((p) => {
                           const parts = p.period_label.split(" ");
                           return (
@@ -156,12 +156,12 @@ export default function FpSummary({ clubs, periods, fpRecords, ddCounts }: Props
                       {/* ── Fitness Passport per-club rows ── */}
                       <tr>
                         <td colSpan={fyPeriods.length + 1} className="px-4 pt-3 pb-1">
-                          <span className="text-[10px] uppercase tracking-widest font-bold text-[#60A5FA]">Fitness Passport Members</span>
+                          <span className="text-[10px] uppercase tracking-widest font-bold text-[#2563EB]">Fitness Passport Members</span>
                         </td>
                       </tr>
                       {clubs.map((club) => (
-                        <tr key={club.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/20 transition-colors">
-                          <td className="px-4 py-2 font-semibold text-[#F1F5F9] sticky left-0 bg-[#131729] pl-6">{club.name}</td>
+                        <tr key={club.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/20 transition-colors">
+                          <td className="px-4 py-2 font-semibold text-[#0F172A] sticky left-0 bg-[#FFFFFF] pl-6">{club.name}</td>
                           {fyPeriods.map((period) => {
                             const k        = cellKey(club.id, period.id);
                             const isEdit   = editing === k;
@@ -178,19 +178,19 @@ export default function FpSummary({ clubs, periods, fpRecords, ddCounts }: Props
                                       if (e.key === "Enter" || e.key === "Tab") { e.preventDefault(); (e.currentTarget as HTMLInputElement).blur(); }
                                       if (e.key === "Escape") setEditing(null);
                                     }}
-                                    className="w-20 px-2 py-1 bg-[#0B0E1A] border border-[#7C3AED] rounded text-right text-[#F1F5F9] text-sm focus:outline-none"
+                                    className="w-20 px-2 py-1 bg-[#FFFFFF] border border-[#7C3AED] rounded text-right text-[#0F172A] text-sm focus:outline-none"
                                   />
                                 ) : (
                                   <button
                                     onClick={() => setEditing(k)}
-                                    className="w-20 px-2 py-1 text-right rounded hover:bg-[#1A1F35] transition-colors group"
+                                    className="w-20 px-2 py-1 text-right rounded hover:bg-[#F8FAFC] transition-colors group"
                                   >
                                     {status === "saving" ? (
                                       <Loader2 size={12} className="animate-spin ml-auto text-[#7C3AED]" />
                                     ) : status === "saved" ? (
-                                      <span className="flex items-center justify-end gap-1 text-[#10B981] text-xs"><Check size={11} />{val || "—"}</span>
+                                      <span className="flex items-center justify-end gap-1 text-[#059669] text-xs"><Check size={11} />{val || "—"}</span>
                                     ) : (
-                                      <span className={val ? "text-[#60A5FA] font-semibold" : "text-[#475569] group-hover:text-[#64748B]"}>
+                                      <span className={val ? "text-[#2563EB] font-semibold" : "text-[#475569] group-hover:text-[#94A3B8]"}>
                                         {val ? parseInt(val).toLocaleString() : "—"}
                                       </span>
                                     )}
@@ -203,12 +203,12 @@ export default function FpSummary({ clubs, periods, fpRecords, ddCounts }: Props
                       ))}
 
                       {/* FP Group Total */}
-                      <tr className="border-t border-[#252B45] bg-[#1A1F35]/50">
-                        <td className="px-4 py-2.5 font-bold text-[#60A5FA] sticky left-0 bg-[#1A1F35]/50 pl-6">FP Total</td>
+                      <tr className="border-t border-[#E2E8F0] bg-[#F8FAFC]/50">
+                        <td className="px-4 py-2.5 font-bold text-[#2563EB] sticky left-0 bg-[#F8FAFC]/50 pl-6">FP Total</td>
                         {fyPeriods.map((p) => {
                           const total = fpColTotal(p.id);
                           return (
-                            <td key={p.id} className="px-3 py-2.5 text-right font-bold text-[#60A5FA] pr-4">
+                            <td key={p.id} className="px-3 py-2.5 text-right font-bold text-[#2563EB] pr-4">
                               {total != null ? total.toLocaleString() : "—"}
                             </td>
                           );
@@ -216,41 +216,41 @@ export default function FpSummary({ clubs, periods, fpRecords, ddCounts }: Props
                       </tr>
 
                       {/* DD + FP + Grand Total summary */}
-                      <tr className="border-t-2 border-[#252B45]">
+                      <tr className="border-t-2 border-[#E2E8F0]">
                         <td colSpan={fyPeriods.length + 1} className="px-4 pt-3 pb-1">
-                          <span className="text-[10px] uppercase tracking-widest font-bold text-[#94A3B8]">Group Summary</span>
+                          <span className="text-[10px] uppercase tracking-widest font-bold text-[#64748B]">Group Summary</span>
                         </td>
                       </tr>
-                      <tr className="border-t border-[#252B45]/40">
-                        <td className="px-4 py-2.5 text-[#94A3B8] font-semibold sticky left-0 bg-[#131729]">
+                      <tr className="border-t border-[#E2E8F0]/40">
+                        <td className="px-4 py-2.5 text-[#64748B] font-semibold sticky left-0 bg-[#FFFFFF]">
                           DD Members <span className="text-[10px] font-normal text-[#475569] ml-1">from club counts</span>
                         </td>
                         {fyPeriods.map((p) => {
                           const dd = ddColTotal(p.id);
-                          return <td key={p.id} className="px-3 py-2.5 text-right text-[#94A3B8] pr-4">{dd != null ? dd.toLocaleString() : "—"}</td>;
+                          return <td key={p.id} className="px-3 py-2.5 text-right text-[#64748B] pr-4">{dd != null ? dd.toLocaleString() : "—"}</td>;
                         })}
                       </tr>
-                      <tr className="border-t border-[#252B45]/40">
-                        <td className="px-4 py-2.5 text-[#60A5FA] font-semibold sticky left-0 bg-[#131729]">Fitness Passport</td>
+                      <tr className="border-t border-[#E2E8F0]/40">
+                        <td className="px-4 py-2.5 text-[#2563EB] font-semibold sticky left-0 bg-[#FFFFFF]">Fitness Passport</td>
                         {fyPeriods.map((p) => {
                           const fp = fpColTotal(p.id);
-                          return <td key={p.id} className="px-3 py-2.5 text-right text-[#60A5FA] font-semibold pr-4">{fp != null ? fp.toLocaleString() : "—"}</td>;
+                          return <td key={p.id} className="px-3 py-2.5 text-right text-[#2563EB] font-semibold pr-4">{fp != null ? fp.toLocaleString() : "—"}</td>;
                         })}
                       </tr>
-                      <tr className="border-t-2 border-[#252B45] bg-[#1A1F35] font-bold">
-                        <td className="px-4 py-3 text-[#A78BFA] sticky left-0 bg-[#1A1F35]">Total Members</td>
+                      <tr className="border-t-2 border-[#E2E8F0] bg-[#F8FAFC] font-bold">
+                        <td className="px-4 py-3 text-[#6D28D9] sticky left-0 bg-[#F8FAFC]">Total Members</td>
                         {fyPeriods.map((p) => {
                           const dd    = ddColTotal(p.id);
                           const fp    = fpColTotal(p.id);
                           const total = dd != null || fp != null ? (dd ?? 0) + (fp ?? 0) : null;
-                          return <td key={p.id} className="px-3 py-3 text-right text-[#F1F5F9] pr-4">{total != null ? total.toLocaleString() : "—"}</td>;
+                          return <td key={p.id} className="px-3 py-3 text-right text-[#0F172A] pr-4">{total != null ? total.toLocaleString() : "—"}</td>;
                         })}
                       </tr>
 
                     </tbody>
                   </table>
                 </div>
-                <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#252B45]">
+                <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#E2E8F0]">
                   Click any Fitness Passport cell to edit · DD Members auto-summed from club counts · Total = DD + FP
                 </p>
               </>

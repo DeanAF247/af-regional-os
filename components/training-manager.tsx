@@ -34,10 +34,10 @@ function expiryStatus(expiry: string | null): "expired" | "expiring" | "valid" |
 }
 
 const STATUS_STYLES = {
-  expired:  { badge: "bg-[#7F1D1D] text-[#EF4444]", text: "text-[#EF4444]", label: "Expired" },
-  expiring: { badge: "bg-[#78350F] text-[#F59E0B]", text: "text-[#F59E0B]", label: "Expiring Soon" },
-  valid:    { badge: "bg-[#064E3B]/40 text-[#10B981]", text: "text-[#10B981]", label: "Valid" },
-  none:     { badge: "bg-[#1E2640] text-[#64748B]", text: "text-[#64748B]", label: "No Expiry" },
+  expired:  { badge: "bg-[#FEE2E2] text-[#EF4444]", text: "text-[#EF4444]", label: "Expired" },
+  expiring: { badge: "bg-[#FEF3C7] text-[#D97706]", text: "text-[#D97706]", label: "Expiring Soon" },
+  valid:    { badge: "bg-[#D1FAE5]/40 text-[#059669]", text: "text-[#059669]", label: "Valid" },
+  none:     { badge: "bg-[#1E2640] text-[#94A3B8]", text: "text-[#94A3B8]", label: "No Expiry" },
 };
 
 function fmtDate(d: string | null) {
@@ -111,15 +111,15 @@ export default function TrainingManager({ records: initial, staff }: Props) {
     <>
       {/* Alerts */}
       {expired.length > 0 && (
-        <div className="bg-[#7F1D1D]/30 border border-[#EF4444]/30 rounded-xl p-4 mb-3 flex items-center gap-3">
+        <div className="bg-[#FEE2E2]/30 border border-[#EF4444]/30 rounded-xl p-4 mb-3 flex items-center gap-3">
           <AlertTriangle size={16} className="text-[#EF4444] flex-shrink-0" />
           <span className="text-sm text-[#EF4444] font-semibold">{expired.length} certification{expired.length !== 1 ? "s" : ""} have expired — action required.</span>
         </div>
       )}
       {expiring.length > 0 && (
-        <div className="bg-[#78350F]/30 border border-[#F59E0B]/30 rounded-xl p-4 mb-4 flex items-center gap-3">
-          <AlertTriangle size={16} className="text-[#F59E0B] flex-shrink-0" />
-          <span className="text-sm text-[#F59E0B] font-semibold">{expiring.length} certification{expiring.length !== 1 ? "s" : ""} expiring within 30 days.</span>
+        <div className="bg-[#FEF3C7]/30 border border-[#D97706]/30 rounded-xl p-4 mb-4 flex items-center gap-3">
+          <AlertTriangle size={16} className="text-[#D97706] flex-shrink-0" />
+          <span className="text-sm text-[#D97706] font-semibold">{expiring.length} certification{expiring.length !== 1 ? "s" : ""} expiring within 30 days.</span>
         </div>
       )}
 
@@ -135,7 +135,7 @@ export default function TrainingManager({ records: initial, staff }: Props) {
             };
             return (
               <button key={s} onClick={() => setFilter(s)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${filter === s ? "bg-[#3B1F7A] text-[#A78BFA]" : "bg-[#131729] border border-[#252B45] text-[#64748B] hover:text-[#94A3B8]"}`}>
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${filter === s ? "bg-[#EDE9FE] text-[#6D28D9]" : "bg-[#FFFFFF] border border-[#E2E8F0] text-[#94A3B8] hover:text-[#64748B]"}`}>
                 {s === "expiring" ? "Expiring Soon" : s.charAt(0).toUpperCase() + s.slice(1)}
                 <span className="ml-1.5 text-[10px] opacity-60">{counts[s]}</span>
               </button>
@@ -150,14 +150,14 @@ export default function TrainingManager({ records: initial, staff }: Props) {
 
       {/* Table */}
       {filtered.length === 0 ? (
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-16 flex flex-col items-center justify-center text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#1A1F35] border border-[#252B45] flex items-center justify-center mb-4">
-            <GraduationCap size={28} className="text-[#64748B]" />
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-16 flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center mb-4">
+            <GraduationCap size={28} className="text-[#94A3B8]" />
           </div>
-          <h2 className="text-lg font-bold text-[#F1F5F9] mb-2">{filter === "all" ? "No training records yet" : `No ${filter === "expiring" ? "expiring" : filter} records`}</h2>
+          <h2 className="text-lg font-bold text-[#0F172A] mb-2">{filter === "all" ? "No training records yet" : `No ${filter === "expiring" ? "expiring" : filter} records`}</h2>
           {filter === "all" && (
             <>
-              <p className="text-[#64748B] text-sm mb-6 max-w-sm">Track certifications and training completions. Get alerts when records are expiring.</p>
+              <p className="text-[#94A3B8] text-sm mb-6 max-w-sm">Track certifications and training completions. Get alerts when records are expiring.</p>
               <button onClick={openCreate} className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-semibold rounded-lg transition-colors">
                 <Plus size={16} /> Add Training Record
               </button>
@@ -165,11 +165,11 @@ export default function TrainingManager({ records: initial, staff }: Props) {
           )}
         </div>
       ) : (
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide border-b border-[#252B45]">
+                <tr className="bg-[#F8FAFC] text-[#64748B] text-[11px] uppercase tracking-wide border-b border-[#E2E8F0]">
                   <th className="text-left px-4 py-3 font-semibold">Staff Member</th>
                   <th className="text-left px-4 py-3 font-semibold">Club</th>
                   <th className="text-left px-4 py-3 font-semibold">Training / Certification</th>
@@ -184,27 +184,27 @@ export default function TrainingManager({ records: initial, staff }: Props) {
                   const st = expiryStatus(r.expiry_date);
                   const s = STATUS_STYLES[st];
                   return (
-                    <tr key={r.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/50 transition-colors">
-                      <td className="px-4 py-3 font-semibold text-[#F1F5F9]">{r.staff?.name ?? "—"}</td>
-                      <td className="px-4 py-3 text-[#94A3B8]">{r.staff?.club?.name ?? "—"}</td>
+                    <tr key={r.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/50 transition-colors">
+                      <td className="px-4 py-3 font-semibold text-[#0F172A]">{r.staff?.name ?? "—"}</td>
+                      <td className="px-4 py-3 text-[#64748B]">{r.staff?.club?.name ?? "—"}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-[#F1F5F9]">{r.training_name}</span>
+                          <span className="text-[#0F172A]">{r.training_name}</span>
                           {r.certification_url && (
-                            <a href={r.certification_url} target="_blank" rel="noopener noreferrer" className="text-[#7C3AED] hover:text-[#A78BFA]"><ExternalLink size={12} /></a>
+                            <a href={r.certification_url} target="_blank" rel="noopener noreferrer" className="text-[#7C3AED] hover:text-[#6D28D9]"><ExternalLink size={12} /></a>
                           )}
                         </div>
-                        {r.notes && <p className="text-[#64748B] text-xs mt-0.5 line-clamp-1">{r.notes}</p>}
+                        {r.notes && <p className="text-[#94A3B8] text-xs mt-0.5 line-clamp-1">{r.notes}</p>}
                       </td>
-                      <td className="px-4 py-3 text-[#94A3B8]">{fmtDate(r.completed_date)}</td>
+                      <td className="px-4 py-3 text-[#64748B]">{fmtDate(r.completed_date)}</td>
                       <td className={`px-4 py-3 font-semibold ${s.text}`}>{r.expiry_date ? fmtDate(r.expiry_date) : "No expiry"}</td>
                       <td className="px-4 py-3">
                         <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ${s.badge}`}>{s.label}</span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <button onClick={() => openEdit(r)} className="p-1.5 rounded text-[#64748B] hover:text-[#A78BFA] hover:bg-[#1A1F35] transition-colors"><Pencil size={13} /></button>
-                          <button onClick={() => del(r.id)} disabled={deleting === r.id} className="p-1.5 rounded text-[#64748B] hover:text-[#EF4444] hover:bg-[#7F1D1D]/20 transition-colors disabled:opacity-40">
+                          <button onClick={() => openEdit(r)} className="p-1.5 rounded text-[#94A3B8] hover:text-[#6D28D9] hover:bg-[#F8FAFC] transition-colors"><Pencil size={13} /></button>
+                          <button onClick={() => del(r.id)} disabled={deleting === r.id} className="p-1.5 rounded text-[#94A3B8] hover:text-[#EF4444] hover:bg-[#FEE2E2]/20 transition-colors disabled:opacity-40">
                             {deleting === r.id ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
                           </button>
                         </div>
@@ -222,53 +222,53 @@ export default function TrainingManager({ records: initial, staff }: Props) {
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70" onClick={close} />
-          <div className="relative bg-[#131729] border border-[#252B45] rounded-2xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#252B45]">
-              <h2 className="text-lg font-bold text-[#F1F5F9]">{modal === "create" ? "Add Training Record" : "Edit Training Record"}</h2>
-              <button onClick={close} className="p-1.5 rounded-lg text-[#64748B] hover:text-[#F1F5F9] hover:bg-[#1A1F35] transition-colors"><X size={18} /></button>
+          <div className="relative bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]">
+              <h2 className="text-lg font-bold text-[#0F172A]">{modal === "create" ? "Add Training Record" : "Edit Training Record"}</h2>
+              <button onClick={close} className="p-1.5 rounded-lg text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-colors"><X size={18} /></button>
             </div>
             <div className="px-6 py-5 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Staff Member <span className="text-[#EF4444]">*</span></label>
+                <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Staff Member <span className="text-[#EF4444]">*</span></label>
                 <div className="relative">
                   <select value={form.staff_id} onChange={(e) => f("staff_id", e.target.value)}
-                    className="w-full px-3 py-2 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors appearance-none pr-8">
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors appearance-none pr-8">
                     <option value="">Select staff member...</option>
                     {staff.map((m) => <option key={m.id} value={m.id}>{m.name}{m.club ? ` — ${m.club.name}` : ""}</option>)}
                   </select>
-                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#64748B] pointer-events-none" />
+                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none" />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Training / Certification Name <span className="text-[#EF4444]">*</span></label>
+                <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Training / Certification Name <span className="text-[#EF4444]">*</span></label>
                 <input value={form.training_name} onChange={(e) => f("training_name", e.target.value)} placeholder="e.g. First Aid Certificate, RSA, WHS Induction"
-                  className="w-full px-3 py-2 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors" />
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Completed Date</label>
+                  <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Completed Date</label>
                   <input type="date" value={form.completed_date} onChange={(e) => f("completed_date", e.target.value)}
-                    className="w-full px-3 py-2 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors" />
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Expiry Date</label>
+                  <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Expiry Date</label>
                   <input type="date" value={form.expiry_date} onChange={(e) => f("expiry_date", e.target.value)}
-                    className="w-full px-3 py-2 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors" />
+                    className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors" />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Certificate URL</label>
+                <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Certificate URL</label>
                 <input type="url" value={form.certification_url} onChange={(e) => f("certification_url", e.target.value)} placeholder="https://..."
-                  className="w-full px-3 py-2 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors" />
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Notes</label>
+                <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Notes</label>
                 <textarea value={form.notes} onChange={(e) => f("notes", e.target.value)} rows={2} placeholder="Any additional notes..."
-                  className="w-full px-3 py-2 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-none" />
+                  className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-none" />
               </div>
             </div>
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#252B45]">
-              <button onClick={close} className="px-4 py-2 rounded-lg text-sm font-medium text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#1A1F35] transition-colors">Cancel</button>
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#E2E8F0]">
+              <button onClick={close} className="px-4 py-2 rounded-lg text-sm font-medium text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-colors">Cancel</button>
               <button onClick={save} disabled={saving || !form.staff_id || !form.training_name.trim()}
                 className="inline-flex items-center gap-2 px-5 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors">
                 {saving && <Loader2 size={14} className="animate-spin" />}

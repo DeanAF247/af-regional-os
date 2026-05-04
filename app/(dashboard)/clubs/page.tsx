@@ -70,7 +70,7 @@ export default async function ClubsPage() {
         title="Clubs"
         subtitle={`${active.length} active club${active.length !== 1 ? "s" : ""}${latestPeriod ? ` · ${latestPeriod.period_label}` : ""}`}
         action={
-          <button className="inline-flex items-center gap-2 px-4 py-2 bg-[#1A1F35] border border-[#252B45] hover:border-[#7C3AED] text-[#94A3B8] hover:text-[#A78BFA] text-sm font-semibold rounded-lg transition-all">
+          <button className="inline-flex items-center gap-2 px-4 py-2 bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#7C3AED] text-[#64748B] hover:text-[#6D28D9] text-sm font-semibold rounded-lg transition-all">
             <Plus size={16} />
             Add Club
           </button>

@@ -160,23 +160,23 @@ export default function YieldEditor({ clubs, periods, yieldRecords, clubYieldRec
             if (e.key === "Enter" || e.key === "Tab") { e.preventDefault(); (e.currentTarget as HTMLInputElement).blur(); }
             if (e.key === "Escape") setEditing(null);
           }}
-          className={`${widthClass} px-2 py-1 bg-[#0B0E1A] border border-[#7C3AED] rounded text-right text-[#F1F5F9] text-sm focus:outline-none`}
+          className={`${widthClass} px-2 py-1 bg-[#FFFFFF] border border-[#7C3AED] rounded text-right text-[#0F172A] text-sm focus:outline-none`}
         />
       );
     }
     return (
       <button
         onClick={() => setEditing(k)}
-        className={`${widthClass} px-2 py-1 text-right rounded hover:bg-[#1A1F35] transition-colors group`}
+        className={`${widthClass} px-2 py-1 text-right rounded hover:bg-[#F8FAFC] transition-colors group`}
       >
         {status === "saving" ? (
           <Loader2 size={12} className="animate-spin ml-auto text-[#7C3AED]" />
         ) : status === "saved" ? (
-          <span className="flex items-center justify-end gap-1 text-[#10B981] text-xs">
+          <span className="flex items-center justify-end gap-1 text-[#059669] text-xs">
             <Check size={11} />{fmtCurrency(val)}
           </span>
         ) : (
-          <span className={val ? `${accentClass} font-semibold` : "text-[#475569] group-hover:text-[#64748B]"}>
+          <span className={val ? `${accentClass} font-semibold` : "text-[#475569] group-hover:text-[#94A3B8]"}>
             {fmtCurrency(val)}
           </span>
         )}
@@ -188,19 +188,19 @@ export default function YieldEditor({ clubs, periods, yieldRecords, clubYieldRec
   function renderClubTable(field: FieldType, fyPeriods: Period[]) {
     const isDD     = field === "dd_yield";
     const label    = isDD ? "DD Yield — by Club" : "Avg FP Member Per Month — by Club";
-    const accent   = isDD ? "text-[#A78BFA]" : "text-[#60A5FA]";
-    const accentBg = isDD ? "bg-[#3B1F7A]/20" : "bg-[#1E3A5F]/20";
+    const accent   = isDD ? "text-[#6D28D9]" : "text-[#2563EB]";
+    const accentBg = isDD ? "bg-[#EDE9FE]/20" : "bg-[#DBEAFE]/20";
 
     return (
-      <div className="border-t border-[#252B45]">
-        <div className={`px-4 py-2 text-[11px] uppercase tracking-widest font-bold ${accent} bg-[#1A1F35]/50 border-b border-[#252B45]`}>
+      <div className="border-t border-[#E2E8F0]">
+        <div className={`px-4 py-2 text-[11px] uppercase tracking-widest font-bold ${accent} bg-[#F8FAFC]/50 border-b border-[#E2E8F0]`}>
           {label}
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#1A1F35]/40 text-[#94A3B8] text-[11px] uppercase tracking-wide">
-                <th className="text-left px-4 py-2.5 font-semibold sticky left-0 bg-[#131729] min-w-[160px]">Club</th>
+              <tr className="bg-[#F8FAFC]/40 text-[#64748B] text-[11px] uppercase tracking-wide">
+                <th className="text-left px-4 py-2.5 font-semibold sticky left-0 bg-[#FFFFFF] min-w-[160px]">Club</th>
                 {fyPeriods.map((p) => (
                   <th key={p.id} className="text-right px-3 py-2.5 font-semibold whitespace-nowrap min-w-[110px]">
                     {shortPeriod(p.period_label)}
@@ -210,8 +210,8 @@ export default function YieldEditor({ clubs, periods, yieldRecords, clubYieldRec
             </thead>
             <tbody>
               {clubs.map((club) => (
-                <tr key={club.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/20 transition-colors">
-                  <td className="px-4 py-2 font-semibold text-[#F1F5F9] sticky left-0 bg-[#131729] pl-6">{club.name}</td>
+                <tr key={club.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/20 transition-colors">
+                  <td className="px-4 py-2 font-semibold text-[#0F172A] sticky left-0 bg-[#FFFFFF] pl-6">{club.name}</td>
                   {fyPeriods.map((period) => {
                     const k = clubKey(club.id, period.id, field);
                     return (
@@ -224,8 +224,8 @@ export default function YieldEditor({ clubs, periods, yieldRecords, clubYieldRec
               ))}
 
               {/* Group average row */}
-              <tr className="border-t-2 border-[#252B45] bg-[#1A1F35] font-bold">
-                <td className={`px-4 py-2.5 ${accent} sticky left-0 bg-[#1A1F35] pl-6`}>Group Avg</td>
+              <tr className="border-t-2 border-[#E2E8F0] bg-[#F8FAFC] font-bold">
+                <td className={`px-4 py-2.5 ${accent} sticky left-0 bg-[#F8FAFC] pl-6`}>Group Avg</td>
                 {fyPeriods.map((p) => {
                   const avg = colAvg(p.id, field);
                   return (
@@ -253,19 +253,19 @@ export default function YieldEditor({ clubs, periods, yieldRecords, clubYieldRec
         const fpGroupAvg = fyAvg(fyPeriods, (p) => groupKey(p.id, "fp_yield"));
 
         return (
-          <div key={fy} className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
+          <div key={fy} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
 
             {/* FY header */}
             <button
               onClick={() => toggleFY(fy)}
-              className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#1A1F35]/50 transition-colors border-b border-[#252B45]"
+              className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#F8FAFC]/50 transition-colors border-b border-[#E2E8F0]"
             >
               <div className="flex items-center gap-2.5">
-                {isCollapsed ? <ChevronRight size={14} className="text-[#64748B]" /> : <ChevronDown size={14} className="text-[#64748B]" />}
+                {isCollapsed ? <ChevronRight size={14} className="text-[#94A3B8]" /> : <ChevronDown size={14} className="text-[#94A3B8]" />}
                 {!isCurrentFY && <Archive size={13} className="text-[#475569]" />}
-                <span className={`text-sm font-bold ${isCurrentFY ? "text-[#A78BFA]" : "text-[#64748B]"}`}>{fyLabel(fy)}</span>
+                <span className={`text-sm font-bold ${isCurrentFY ? "text-[#6D28D9]" : "text-[#94A3B8]"}`}>{fyLabel(fy)}</span>
                 {isCurrentFY && (
-                  <span className="text-[10px] bg-[#3B1F7A] text-[#A78BFA] px-2 py-0.5 rounded-full font-semibold">Current</span>
+                  <span className="text-[10px] bg-[#EDE9FE] text-[#6D28D9] px-2 py-0.5 rounded-full font-semibold">Current</span>
                 )}
                 {!isCurrentFY && isCollapsed && (
                   <span className="text-[11px] text-[#475569]">{fyPeriods.length} months archived</span>
@@ -277,19 +277,19 @@ export default function YieldEditor({ clubs, periods, yieldRecords, clubYieldRec
             {!isCollapsed && (
               <>
                 {/* ── Group Summary ── */}
-                <div className="px-4 py-2 text-[11px] uppercase tracking-widest font-bold text-[#94A3B8] bg-[#1A1F35]/50 border-b border-[#252B45]">
+                <div className="px-4 py-2 text-[11px] uppercase tracking-widest font-bold text-[#64748B] bg-[#F8FAFC]/50 border-b border-[#E2E8F0]">
                   Group Summary
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-[#1A1F35]/40 text-[#94A3B8] text-[11px] uppercase tracking-wide">
-                        <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#131729] min-w-[160px]">Month</th>
+                      <tr className="bg-[#F8FAFC]/40 text-[#64748B] text-[11px] uppercase tracking-wide">
+                        <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#FFFFFF] min-w-[160px]">Month</th>
                         <th className="text-right px-4 py-3 font-semibold whitespace-nowrap min-w-[160px]">
-                          <span className="text-[#A78BFA]">DD Yield Average</span>
+                          <span className="text-[#6D28D9]">DD Yield Average</span>
                         </th>
                         <th className="text-right px-4 py-3 font-semibold whitespace-nowrap min-w-[200px]">
-                          <span className="text-[#60A5FA]">Avg FP Member Per Month</span>
+                          <span className="text-[#2563EB]">Avg FP Member Per Month</span>
                         </th>
                       </tr>
                     </thead>
@@ -298,26 +298,26 @@ export default function YieldEditor({ clubs, periods, yieldRecords, clubYieldRec
                         const ddK = groupKey(period.id, "dd_yield");
                         const fpK = groupKey(period.id, "fp_yield");
                         return (
-                          <tr key={period.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/20 transition-colors">
-                            <td className="px-4 py-2 font-semibold text-[#F1F5F9] sticky left-0 bg-[#131729]">
+                          <tr key={period.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/20 transition-colors">
+                            <td className="px-4 py-2 font-semibold text-[#0F172A] sticky left-0 bg-[#FFFFFF]">
                               {period.period_label}
                             </td>
                             <td className="px-2 py-1.5 text-right">
-                              {renderCell(ddK, () => saveGroup(period.id, "dd_yield", values[ddK] ?? ""), "text-[#A78BFA]")}
+                              {renderCell(ddK, () => saveGroup(period.id, "dd_yield", values[ddK] ?? ""), "text-[#6D28D9]")}
                             </td>
                             <td className="px-2 py-1.5 text-right">
-                              {renderCell(fpK, () => saveGroup(period.id, "fp_yield", values[fpK] ?? ""), "text-[#60A5FA]")}
+                              {renderCell(fpK, () => saveGroup(period.id, "fp_yield", values[fpK] ?? ""), "text-[#2563EB]")}
                             </td>
                           </tr>
                         );
                       })}
                       {/* FY Average */}
-                      <tr className="border-t-2 border-[#252B45] bg-[#1A1F35] font-bold">
-                        <td className="px-4 py-2.5 text-[#94A3B8] sticky left-0 bg-[#1A1F35]">FY Average</td>
-                        <td className="px-4 py-2.5 text-right text-[#A78BFA]">
+                      <tr className="border-t-2 border-[#E2E8F0] bg-[#F8FAFC] font-bold">
+                        <td className="px-4 py-2.5 text-[#64748B] sticky left-0 bg-[#F8FAFC]">FY Average</td>
+                        <td className="px-4 py-2.5 text-right text-[#6D28D9]">
                           {ddGroupAvg != null ? `$${ddGroupAvg.toFixed(2)}` : "—"}
                         </td>
-                        <td className="px-4 py-2.5 text-right text-[#60A5FA]">
+                        <td className="px-4 py-2.5 text-right text-[#2563EB]">
                           {fpGroupAvg != null ? `$${fpGroupAvg.toFixed(2)}` : "—"}
                         </td>
                       </tr>
@@ -329,7 +329,7 @@ export default function YieldEditor({ clubs, periods, yieldRecords, clubYieldRec
                 {renderClubTable("dd_yield", fyPeriods)}
                 {renderClubTable("fp_yield", fyPeriods)}
 
-                <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#252B45]">
+                <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#E2E8F0]">
                   Click any cell to edit · Enter or Tab to save · Group Avg auto-calculated from entered clubs
                 </p>
               </>

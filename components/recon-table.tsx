@@ -47,10 +47,10 @@ export default function ReconTable({ rows }: { rows: ReconRow[] }) {
   if (periods.length === 0) return null;
 
   return (
-    <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden mb-8">
+    <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden mb-8">
 
       {/* Month tabs */}
-      <div className="flex items-center gap-1 px-4 pt-4 pb-0 flex-wrap border-b border-[#252B45]">
+      <div className="flex items-center gap-1 px-4 pt-4 pb-0 flex-wrap border-b border-[#E2E8F0]">
         {periods.map((p) => {
           const isActive = p.id === activePeriodId;
           // Shorten label: "January 2025" → "Jan 25"
@@ -62,8 +62,8 @@ export default function ReconTable({ rows }: { rows: ReconRow[] }) {
               onClick={() => setActivePeriodId(p.id)}
               className={`px-3 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors whitespace-nowrap -mb-px ${
                 isActive
-                  ? "border-[#7C3AED] text-[#A78BFA] bg-[#1A1F35]/60"
-                  : "border-transparent text-[#64748B] hover:text-[#94A3B8] hover:bg-[#1A1F35]/30"
+                  ? "border-[#7C3AED] text-[#6D28D9] bg-[#F8FAFC]/60"
+                  : "border-transparent text-[#94A3B8] hover:text-[#64748B] hover:bg-[#F8FAFC]/30"
               }`}
             >
               {short}
@@ -76,10 +76,10 @@ export default function ReconTable({ rows }: { rows: ReconRow[] }) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide">
-              <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#1A1F35] min-w-[140px]">Club</th>
+            <tr className="bg-[#F8FAFC] text-[#64748B] text-[11px] uppercase tracking-wide">
+              <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#F8FAFC] min-w-[140px]">Club</th>
               <th className="text-right px-3 py-3 font-semibold">Opening</th>
-              <th className="text-right px-3 py-3 font-semibold text-[#10B981]">Sales</th>
+              <th className="text-right px-3 py-3 font-semibold text-[#059669]">Sales</th>
               <th className="text-right px-3 py-3 font-semibold text-[#EF4444]">Cancels</th>
               <th className="text-right px-3 py-3 font-semibold">NNM</th>
               <th className="text-right px-3 py-3 font-semibold">Trans In</th>
@@ -91,14 +91,14 @@ export default function ReconTable({ rows }: { rows: ReconRow[] }) {
           </thead>
           <tbody>
             {visible.map((r, i) => (
-              <tr key={i} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/50 transition-colors">
-                <td className="px-4 py-2.5 font-semibold text-[#F1F5F9] sticky left-0 bg-[#131729]">
+              <tr key={i} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/50 transition-colors">
+                <td className="px-4 py-2.5 font-semibold text-[#0F172A] sticky left-0 bg-[#FFFFFF]">
                   {r.club.name}
                 </td>
-                <td className="px-3 py-2.5 text-right text-[#94A3B8]">
+                <td className="px-3 py-2.5 text-right text-[#64748B]">
                   {r.prev != null ? r.prev.toLocaleString() : "—"}
                 </td>
-                <td className="px-3 py-2.5 text-right font-semibold text-[#10B981]">
+                <td className="px-3 py-2.5 text-right font-semibold text-[#059669]">
                   {r.sales != null ? r.sales.toLocaleString() : "—"}
                 </td>
                 <td className="px-3 py-2.5 text-right font-semibold text-[#EF4444]">
@@ -106,28 +106,28 @@ export default function ReconTable({ rows }: { rows: ReconRow[] }) {
                 </td>
                 <td className={`px-3 py-2.5 text-right font-semibold ${
                   r.nnm == null ? "text-[#475569]"
-                  : r.nnm > 0 ? "text-[#10B981]"
+                  : r.nnm > 0 ? "text-[#059669]"
                   : r.nnm < 0 ? "text-[#EF4444]"
-                  : "text-[#64748B]"
+                  : "text-[#94A3B8]"
                 }`}>
                   {r.nnm != null ? (r.nnm > 0 ? `+${r.nnm}` : r.nnm) : "—"}
                 </td>
-                <td className="px-3 py-2.5 text-right text-[#10B981]">
+                <td className="px-3 py-2.5 text-right text-[#059669]">
                   {r.tIn != null && r.tIn > 0 ? `+${r.tIn}` : "—"}
                 </td>
                 <td className="px-3 py-2.5 text-right text-[#EF4444]">
                   {r.tOut != null && r.tOut > 0 ? `-${r.tOut}` : "—"}
                 </td>
-                <td className="px-3 py-2.5 text-right text-[#94A3B8]">
+                <td className="px-3 py-2.5 text-right text-[#64748B]">
                   {r.expected != null ? r.expected.toLocaleString() : "—"}
                 </td>
-                <td className="px-3 py-2.5 text-right text-[#F1F5F9] font-semibold">
+                <td className="px-3 py-2.5 text-right text-[#0F172A] font-semibold">
                   {r.actual != null ? r.actual.toLocaleString() : "—"}
                 </td>
                 <td className={`px-4 py-2.5 text-right font-bold ${
                   r.variance == null   ? "text-[#475569]"
-                  : r.variance === 0   ? "text-[#64748B]"
-                  : r.variance > 0     ? "text-[#10B981]"
+                  : r.variance === 0   ? "text-[#94A3B8]"
+                  : r.variance > 0     ? "text-[#059669]"
                   : "text-[#EF4444]"
                 }`}>
                   {r.variance != null
@@ -141,25 +141,25 @@ export default function ReconTable({ rows }: { rows: ReconRow[] }) {
 
             {/* Group Total row */}
             {visible.length > 1 && (
-              <tr className="border-t-2 border-[#252B45] bg-[#1A1F35] font-bold text-sm">
-                <td className="px-4 py-3 text-[#A78BFA] sticky left-0 bg-[#1A1F35]">Group Total</td>
-                <td className="px-3 py-3 text-right text-[#F1F5F9]">{totals.prev.toLocaleString()}</td>
-                <td className="px-3 py-3 text-right font-bold text-[#10B981]">{totals.sales.toLocaleString()}</td>
+              <tr className="border-t-2 border-[#E2E8F0] bg-[#F8FAFC] font-bold text-sm">
+                <td className="px-4 py-3 text-[#6D28D9] sticky left-0 bg-[#F8FAFC]">Group Total</td>
+                <td className="px-3 py-3 text-right text-[#0F172A]">{totals.prev.toLocaleString()}</td>
+                <td className="px-3 py-3 text-right font-bold text-[#059669]">{totals.sales.toLocaleString()}</td>
                 <td className="px-3 py-3 text-right font-bold text-[#EF4444]">{totals.cancellations.toLocaleString()}</td>
-                <td className={`px-3 py-3 text-right font-bold ${totals.nnm > 0 ? "text-[#10B981]" : totals.nnm < 0 ? "text-[#EF4444]" : "text-[#64748B]"}`}>
+                <td className={`px-3 py-3 text-right font-bold ${totals.nnm > 0 ? "text-[#059669]" : totals.nnm < 0 ? "text-[#EF4444]" : "text-[#94A3B8]"}`}>
                   {totals.nnm > 0 ? `+${totals.nnm}` : totals.nnm}
                 </td>
-                <td className="px-3 py-3 text-right text-[#10B981]">
+                <td className="px-3 py-3 text-right text-[#059669]">
                   {totals.tIn > 0 ? `+${totals.tIn}` : "—"}
                 </td>
                 <td className="px-3 py-3 text-right text-[#EF4444]">
                   {totals.tOut > 0 ? `-${totals.tOut}` : "—"}
                 </td>
-                <td className="px-3 py-3 text-right text-[#94A3B8]">{totals.expected.toLocaleString()}</td>
-                <td className="px-3 py-3 text-right text-[#F1F5F9]">{totals.actual.toLocaleString()}</td>
+                <td className="px-3 py-3 text-right text-[#64748B]">{totals.expected.toLocaleString()}</td>
+                <td className="px-3 py-3 text-right text-[#0F172A]">{totals.actual.toLocaleString()}</td>
                 <td className={`px-4 py-3 text-right font-bold ${
-                  totals.variance === 0 ? "text-[#64748B]"
-                  : totals.variance > 0 ? "text-[#10B981]"
+                  totals.variance === 0 ? "text-[#94A3B8]"
+                  : totals.variance > 0 ? "text-[#059669]"
                   : "text-[#EF4444]"
                 }`}>
                   {totals.variance === 0 ? "✓ 0" : totals.variance > 0 ? `+${totals.variance}` : totals.variance}
@@ -170,7 +170,7 @@ export default function ReconTable({ rows }: { rows: ReconRow[] }) {
         </table>
       </div>
 
-      <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#252B45]">
+      <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#E2E8F0]">
         Expected = Opening + NNM + Transfers In − Transfers Out &nbsp;·&nbsp;
         Variance = Actual − Expected (non-zero may indicate cancellations, freezes, or data gaps)
       </p>

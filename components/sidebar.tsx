@@ -27,6 +27,7 @@ const CLUBS = [
   { name: "Kotara",         slug: "kotara" },
   { name: "Edgeworth",      slug: "edgeworth" },
   { name: "Lake Haven",     slug: "lake-haven" },
+  { name: "Toukley",        slug: "toukley" },
 ];
 
 const NAV_ITEMS = [
@@ -36,8 +37,6 @@ const NAV_ITEMS = [
     icon: BarChart3,
     children: [
       { label: "Group Overview", href: "/" },
-      { label: "Year Overview",  href: "/kpis/year" },
-      { label: "Membership",     href: "/memberships" },
       { label: "Enter KPIs",     href: "/kpis/upload" },
     ],
   },
@@ -106,8 +105,8 @@ function NavItem({
           "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium cursor-pointer transition-all duration-150 group",
           depth === 0 ? "mx-2" : "mx-2 ml-6",
           isActive && !hasChildren
-            ? "bg-[#3B1F7A] text-[#A78BFA]"
-            : "text-[#94A3B8] hover:bg-[#1A1F35] hover:text-[#F1F5F9]"
+            ? "bg-[#EDE9FE] text-[#6D28D9]"
+            : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#0F172A]"
         )}
         onClick={() => {
           if (hasChildren) setOpen(!open);
@@ -118,7 +117,7 @@ function NavItem({
             size={16}
             className={cn(
               "flex-shrink-0",
-              isActive && !hasChildren ? "text-[#A78BFA]" : "text-[#64748B] group-hover:text-[#94A3B8]"
+              isActive && !hasChildren ? "text-[#6D28D9]" : "text-[#94A3B8] group-hover:text-[#64748B]"
             )}
           />
         )}
@@ -130,7 +129,7 @@ function NavItem({
           </Link>
         )}
         {hasChildren && (
-          <span className="text-[#64748B]">
+          <span className="text-[#94A3B8]">
             {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
           </span>
         )}
@@ -147,11 +146,11 @@ function NavItem({
                 className={cn(
                   "flex items-center gap-2 px-3 py-1.5 mx-2 ml-8 rounded-lg text-[13px] transition-all duration-150",
                   childActive
-                    ? "text-[#A78BFA] bg-[#3B1F7A]/60"
-                    : "text-[#64748B] hover:text-[#94A3B8] hover:bg-[#1A1F35]"
+                    ? "text-[#6D28D9] bg-[#EDE9FE]/60"
+                    : "text-[#94A3B8] hover:text-[#64748B] hover:bg-[#F8FAFC]"
                 )}
               >
-                <span className={cn("w-1 h-1 rounded-full flex-shrink-0", childActive ? "bg-[#A78BFA]" : "bg-[#252B45]")} />
+                <span className={cn("w-1 h-1 rounded-full flex-shrink-0", childActive ? "bg-[#6D28D9]" : "bg-[#E2E8F0]")} />
                 {child.label}
               </Link>
             );
@@ -176,14 +175,14 @@ export default function Sidebar() {
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-[#252B45] flex-shrink-0">
+      <div className="px-5 py-5 border-b border-[#E2E8F0] flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-[#7C3AED] flex items-center justify-center flex-shrink-0">
             <span className="text-white font-bold text-sm">AF</span>
           </div>
           <div>
-            <div className="text-[#F1F5F9] font-bold text-[15px] leading-tight">Regional OS</div>
-            <div className="text-[#64748B] text-[11px]">Anytime Fitness</div>
+            <div className="text-[#0F172A] font-bold text-[15px] leading-tight">Regional OS</div>
+            <div className="text-[#94A3B8] text-[11px]">Anytime Fitness</div>
           </div>
         </div>
       </div>
@@ -196,10 +195,10 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="flex-shrink-0 border-t border-[#252B45] p-3">
+      <div className="flex-shrink-0 border-t border-[#E2E8F0] p-3">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#64748B] hover:text-[#EF4444] hover:bg-[#7F1D1D]/20 transition-all duration-150"
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#94A3B8] hover:text-[#EF4444] hover:bg-[#FEE2E2]/20 transition-all duration-150"
         >
           <LogOut size={16} />
           Sign out
@@ -211,13 +210,13 @@ export default function Sidebar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col w-60 bg-[#0B0E1A] border-r border-[#252B45] fixed inset-y-0 left-0 z-30">
+      <aside className="hidden lg:flex flex-col w-60 bg-[#FFFFFF] border-r border-[#E2E8F0] fixed inset-y-0 left-0 z-30">
         <SidebarContent />
       </aside>
 
       {/* Mobile toggle */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#94A3B8]"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#64748B]"
         onClick={() => setMobileOpen(!mobileOpen)}
       >
         {mobileOpen ? <X size={20} /> : <Menu size={20} />}
@@ -230,7 +229,7 @@ export default function Sidebar() {
             className="lg:hidden fixed inset-0 bg-black/60 z-40"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="lg:hidden fixed inset-y-0 left-0 w-64 bg-[#0B0E1A] border-r border-[#252B45] z-50 flex flex-col">
+          <aside className="lg:hidden fixed inset-y-0 left-0 w-64 bg-[#FFFFFF] border-r border-[#E2E8F0] z-50 flex flex-col">
             <SidebarContent />
           </aside>
         </>

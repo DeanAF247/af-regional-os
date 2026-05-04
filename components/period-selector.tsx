@@ -35,7 +35,7 @@ export default function PeriodSelector({ periods, currentLabel, basePath = "/" }
       <button
         onClick={() => canPrev && navigate(sorted[idx - 1].period_label)}
         disabled={!canPrev}
-        className="p-1.5 rounded-lg text-[#64748B] hover:text-[#F1F5F9] hover:bg-[#1A1F35] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+        className="p-1.5 rounded-lg text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F8FAFC] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
       >
         <ChevronLeft size={16} />
       </button>
@@ -43,7 +43,7 @@ export default function PeriodSelector({ periods, currentLabel, basePath = "/" }
       <select
         value={currentLabel}
         onChange={(e) => navigate(e.target.value)}
-        className="px-3 py-1.5 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm font-semibold focus:outline-none focus:border-[#7C3AED] transition-colors cursor-pointer"
+        className="px-3 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm font-semibold focus:outline-none focus:border-[#7C3AED] transition-colors cursor-pointer"
       >
         {sorted.map((p) => (
           <option key={p.id} value={p.period_label}>
@@ -55,7 +55,7 @@ export default function PeriodSelector({ periods, currentLabel, basePath = "/" }
       <button
         onClick={() => canNext && navigate(sorted[idx + 1].period_label)}
         disabled={!canNext}
-        className="p-1.5 rounded-lg text-[#64748B] hover:text-[#F1F5F9] hover:bg-[#1A1F35] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+        className="p-1.5 rounded-lg text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F8FAFC] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
       >
         <ChevronRight size={16} />
       </button>

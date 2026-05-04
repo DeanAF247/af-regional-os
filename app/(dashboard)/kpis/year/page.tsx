@@ -12,6 +12,7 @@ const CLUB_ORDER = [
   "Kotara",
   "Edgeworth",
   "Lake Haven",
+  "Toukley",
 ];
 
 type Metric = "leads" | "sales" | "nnm" | "spend";
@@ -26,9 +27,9 @@ const METRICS: { key: Metric; label: string; format: (v: number | null) => strin
 function cell(val: number | null, target: number | null, format: (v: number | null) => string) {
   const p = pct(val, target);
   const color =
-    p == null       ? "text-[#94A3B8]"
-    : p >= 90       ? "text-[#10B981]"
-    : p >= 70       ? "text-[#F59E0B]"
+    p == null       ? "text-[#64748B]"
+    : p >= 90       ? "text-[#059669]"
+    : p >= 70       ? "text-[#D97706]"
     :                 "text-[#EF4444]";
   return { display: format(val), color };
 }
@@ -130,11 +131,11 @@ export default async function YearOverviewPage({
 
       {!hasData ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#1A1F35] border border-[#252B45] flex items-center justify-center mb-4">
-            <Calendar size={28} className="text-[#64748B]" />
+          <div className="w-16 h-16 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center mb-4">
+            <Calendar size={28} className="text-[#94A3B8]" />
           </div>
-          <h2 className="text-lg font-bold text-[#F1F5F9] mb-2">No data yet</h2>
-          <p className="text-[#64748B] text-sm mb-6 max-w-sm">
+          <h2 className="text-lg font-bold text-[#0F172A] mb-2">No data yet</h2>
+          <p className="text-[#94A3B8] text-sm mb-6 max-w-sm">
             Upload KPI data for each month to see the yearly breakdown here.
           </p>
           <Link
@@ -155,7 +156,7 @@ export default async function YearOverviewPage({
                 className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
                   activeMetric === m.key
                     ? "bg-[#7C3AED] text-white"
-                    : "bg-[#131729] border border-[#252B45] text-[#94A3B8] hover:text-[#F1F5F9] hover:border-[#7C3AED]"
+                    : "bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:border-[#7C3AED]"
                 }`}
               >
                 {m.label}
@@ -165,18 +166,18 @@ export default async function YearOverviewPage({
 
           {/* Group totals row at top */}
           <SectionLabel>Group Total — {METRICS.find((m) => m.key === activeMetric)!.label} by Month</SectionLabel>
-          <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden mb-8">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden mb-8">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide">
-                    <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#1A1F35] min-w-[140px]">Club</th>
+                  <tr className="bg-[#F8FAFC] text-[#64748B] text-[11px] uppercase tracking-wide">
+                    <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#F8FAFC] min-w-[140px]">Club</th>
                     {periods?.map((p) => (
                       <th key={p.id} className="text-right px-3 py-3 font-semibold whitespace-nowrap min-w-[90px]">
                         {p.period_label.split(" ")[0].slice(0, 3)} {p.period_label.split(" ")[1]?.slice(2)}
                       </th>
                     ))}
-                    <th className="text-right px-4 py-3 font-semibold bg-[#1A1F35] min-w-[110px]">YTD</th>
+                    <th className="text-right px-4 py-3 font-semibold bg-[#F8FAFC] min-w-[110px]">YTD</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -196,8 +197,8 @@ export default async function YearOverviewPage({
                     const ytdDiff = ytd != null && ytdTarget != null ? ytd - ytdTarget : null;
 
                     return (
-                      <tr key={club.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/50 transition-colors">
-                        <td className="px-4 py-3 font-semibold text-[#F1F5F9] sticky left-0 bg-[#131729] hover:bg-[#1A1F35]/50">
+                      <tr key={club.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/50 transition-colors">
+                        <td className="px-4 py-3 font-semibold text-[#0F172A] sticky left-0 bg-[#FFFFFF] hover:bg-[#F8FAFC]/50">
                           {club.name}
                         </td>
                         {rowVals.map((r, i) => {
@@ -210,9 +211,9 @@ export default async function YearOverviewPage({
                         })}
                         <td className="px-4 py-3 text-right font-bold">
                           <div className="flex flex-col items-end gap-0.5">
-                            <span className="text-[#A78BFA]">{ytd != null ? fmt(ytd) : "—"}</span>
+                            <span className="text-[#6D28D9]">{ytd != null ? fmt(ytd) : "—"}</span>
                             {ytdDiff != null && (
-                              <span className={`text-[11px] font-semibold ${ytdDiff >= 0 ? "text-[#10B981]" : "text-[#EF4444]"}`}>
+                              <span className={`text-[11px] font-semibold ${ytdDiff >= 0 ? "text-[#059669]" : "text-[#EF4444]"}`}>
                                 {ytdDiff >= 0 ? "+" : ""}{fmt(ytdDiff)} vs target
                               </span>
                             )}
@@ -223,17 +224,17 @@ export default async function YearOverviewPage({
                   })}
 
                   {/* Group total row */}
-                  <tr className="border-t-2 border-[#252B45] bg-[#1A1F35] font-bold">
-                    <td className="px-4 py-3 text-[#A78BFA] sticky left-0 bg-[#1A1F35]">Group Total</td>
+                  <tr className="border-t-2 border-[#E2E8F0] bg-[#F8FAFC] font-bold">
+                    <td className="px-4 py-3 text-[#6D28D9] sticky left-0 bg-[#F8FAFC]">Group Total</td>
                     {(periods ?? []).map((p) => {
                       const total = periodTotals[p.id];
                       return (
-                        <td key={p.id} className="px-3 py-3 text-right text-[#F1F5F9]">
+                        <td key={p.id} className="px-3 py-3 text-right text-[#0F172A]">
                           {total != null ? fmt(total) : "—"}
                         </td>
                       );
                     })}
-                    <td className="px-4 py-3 text-right text-[#A78BFA]">
+                    <td className="px-4 py-3 text-right text-[#6D28D9]">
                       {(() => {
                         const actVals = Object.values(periodTotals);
                         const tgtVals = Object.values(periodTargetTotals);
@@ -245,7 +246,7 @@ export default async function YearOverviewPage({
                           <div className="flex flex-col items-end gap-0.5">
                             <span>{fmt(ytdTotal)}</span>
                             {diff != null && (
-                              <span className={`text-[11px] font-semibold ${diff >= 0 ? "text-[#10B981]" : "text-[#EF4444]"}`}>
+                              <span className={`text-[11px] font-semibold ${diff >= 0 ? "text-[#059669]" : "text-[#EF4444]"}`}>
                                 {diff >= 0 ? "+" : ""}{fmt(diff)} vs target
                               </span>
                             )}
@@ -275,11 +276,11 @@ export default async function YearOverviewPage({
               const hasClubData = rows.some((r) => r.actual != null);
 
               return (
-                <div key={club.id} className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
-                  <div className="px-4 py-3 bg-[#1A1F35] border-b border-[#252B45] flex items-center justify-between">
-                    <span className="font-bold text-[#F1F5F9]">{club.name}</span>
+                <div key={club.id} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
+                  <div className="px-4 py-3 bg-[#F8FAFC] border-b border-[#E2E8F0] flex items-center justify-between">
+                    <span className="font-bold text-[#0F172A]">{club.name}</span>
                     {hasClubData && (
-                      <span className="text-[11px] text-[#64748B] uppercase tracking-wide">
+                      <span className="text-[11px] text-[#94A3B8] uppercase tracking-wide">
                         {METRICS.find((m) => m.key === activeMetric)!.label}
                       </span>
                     )}
@@ -290,7 +291,7 @@ export default async function YearOverviewPage({
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="text-[#64748B] text-[11px] uppercase tracking-wide border-b border-[#252B45]">
+                          <tr className="text-[#94A3B8] text-[11px] uppercase tracking-wide border-b border-[#E2E8F0]">
                             <th className="text-left px-4 py-2 font-semibold">Month</th>
                             <th className="text-right px-4 py-2 font-semibold">Actual</th>
                             <th className="text-right px-4 py-2 font-semibold">Target</th>
@@ -301,17 +302,17 @@ export default async function YearOverviewPage({
                           {rows.map((r, i) => {
                             const p = pct(r.actual, r.target);
                             const pColor =
-                              p == null     ? "text-[#64748B]"
-                              : p >= 90     ? "text-[#10B981]"
-                              : p >= 70     ? "text-[#F59E0B]"
+                              p == null     ? "text-[#94A3B8]"
+                              : p >= 90     ? "text-[#059669]"
+                              : p >= 70     ? "text-[#D97706]"
                               :               "text-[#EF4444]";
                             return (
-                              <tr key={i} className="border-t border-[#252B45]/40 hover:bg-[#1A1F35]/50 transition-colors">
-                                <td className="px-4 py-2 text-[#94A3B8]">{r.label}</td>
-                                <td className="px-4 py-2 text-right text-[#F1F5F9] font-semibold">
+                              <tr key={i} className="border-t border-[#E2E8F0]/40 hover:bg-[#F8FAFC]/50 transition-colors">
+                                <td className="px-4 py-2 text-[#64748B]">{r.label}</td>
+                                <td className="px-4 py-2 text-right text-[#0F172A] font-semibold">
                                   {r.actual != null ? fmt(r.actual) : "—"}
                                 </td>
-                                <td className="px-4 py-2 text-right text-[#64748B]">
+                                <td className="px-4 py-2 text-right text-[#94A3B8]">
                                   {r.target != null ? fmt(r.target) : "—"}
                                 </td>
                                 <td className={`px-4 py-2 text-right font-semibold ${pColor}`}>

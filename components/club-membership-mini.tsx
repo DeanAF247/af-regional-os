@@ -10,9 +10,9 @@ interface DataPoint { label: string; count: number | null }
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-[#0B0E1A] border border-[#252B45] rounded-lg px-3 py-2 text-xs shadow-xl">
-      <p className="text-[#64748B] mb-0.5">{label}</p>
-      <p className="font-bold text-[#A78BFA]">{payload[0].value?.toLocaleString()} members</p>
+    <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs shadow-xl">
+      <p className="text-[#94A3B8] mb-0.5">{label}</p>
+      <p className="font-bold text-[#6D28D9]">{payload[0].value?.toLocaleString()} members</p>
     </div>
   );
 };
@@ -36,7 +36,7 @@ export default function ClubMembershipMini({ data }: { data: DataPoint[] }) {
             <stop offset="100%" stopColor="#7C3AED" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid vertical={false} stroke="#1A1F35" />
+        <CartesianGrid vertical={false} stroke="#F8FAFC" />
         <XAxis dataKey="label" tick={{ fill: "#475569", fontSize: 10 }} tickLine={false} axisLine={false} />
         <YAxis tick={{ fill: "#475569", fontSize: 10 }} tickLine={false} axisLine={false} width={40} />
         <Tooltip content={<CustomTooltip />} />

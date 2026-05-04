@@ -24,19 +24,19 @@ const SLUG_TO_NAME: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  planned:   "bg-[#1E2640] text-[#94A3B8] border-[#252B45]",
-  active:    "bg-[#064E3B]/40 text-[#10B981] border-[#065F46]",
-  completed: "bg-[#1A1F35] text-[#475569] border-[#252B45]",
-  paused:    "bg-[#78350F]/30 text-[#F59E0B] border-[#92400E]",
+  planned:   "bg-[#1E2640] text-[#64748B] border-[#E2E8F0]",
+  active:    "bg-[#D1FAE5]/40 text-[#059669] border-[#065F46]",
+  completed: "bg-[#F8FAFC] text-[#475569] border-[#E2E8F0]",
+  paused:    "bg-[#FEF3C7]/30 text-[#D97706] border-[#92400E]",
 };
 const STATUS_DOT: Record<string, string> = {
-  planned: "bg-[#64748B]", active: "bg-[#10B981]",
-  completed: "bg-[#475569]", paused: "bg-[#F59E0B]",
+  planned: "bg-[#94A3B8]", active: "bg-[#059669]",
+  completed: "bg-[#475569]", paused: "bg-[#D97706]",
 };
 const STAFF_STATUS: Record<string, string> = {
-  active:   "bg-[#064E3B] text-[#10B981]",
-  inactive: "bg-[#252B45] text-[#64748B]",
-  on_leave: "bg-[#78350F] text-[#F59E0B]",
+  active:   "bg-[#D1FAE5] text-[#059669]",
+  inactive: "bg-[#E2E8F0] text-[#94A3B8]",
+  on_leave: "bg-[#FEF3C7] text-[#D97706]",
 };
 
 export default async function ClubDetailPage({
@@ -200,35 +200,35 @@ export default async function ClubDetailPage({
       />
 
       {/* Club Info */}
-      <div className="bg-[#131729] border border-[#252B45] rounded-xl p-5 mb-6">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5 mb-6">
         <div className="flex flex-wrap gap-5 text-sm">
           {club.location && (
-            <div className="flex items-center gap-2 text-[#94A3B8]">
-              <MapPin size={14} className="text-[#64748B]" />
+            <div className="flex items-center gap-2 text-[#64748B]">
+              <MapPin size={14} className="text-[#94A3B8]" />
               {club.location}
             </div>
           )}
           {club.manager_name && (
-            <div className="flex items-center gap-2 text-[#94A3B8]">
-              <User size={14} className="text-[#64748B]" />
+            <div className="flex items-center gap-2 text-[#64748B]">
+              <User size={14} className="text-[#94A3B8]" />
               {club.manager_name}
             </div>
           )}
           {club.phone && (
-            <div className="flex items-center gap-2 text-[#94A3B8]">
-              <Phone size={14} className="text-[#64748B]" />
+            <div className="flex items-center gap-2 text-[#64748B]">
+              <Phone size={14} className="text-[#94A3B8]" />
               {club.phone}
             </div>
           )}
           {club.email && (
-            <div className="flex items-center gap-2 text-[#94A3B8]">
-              <Mail size={14} className="text-[#64748B]" />
+            <div className="flex items-center gap-2 text-[#64748B]">
+              <Mail size={14} className="text-[#94A3B8]" />
               {club.email}
             </div>
           )}
           {club.opened_date && (
-            <div className="flex items-center gap-2 text-[#94A3B8]">
-              <Building2 size={14} className="text-[#64748B]" />
+            <div className="flex items-center gap-2 text-[#64748B]">
+              <Building2 size={14} className="text-[#94A3B8]" />
               Opened {new Date(club.opened_date).toLocaleDateString("en-AU", { month: "long", year: "numeric" })}
             </div>
           )}
@@ -239,12 +239,12 @@ export default async function ClubDetailPage({
 
       {/* Cert alerts */}
       {expiredCerts > 0 && (
-        <div className="bg-[#7F1D1D]/30 border border-[#EF4444]/30 rounded-xl px-4 py-3 mb-4 flex items-center gap-2 text-sm text-[#EF4444] font-semibold">
+        <div className="bg-[#FEE2E2]/30 border border-[#EF4444]/30 rounded-xl px-4 py-3 mb-4 flex items-center gap-2 text-sm text-[#EF4444] font-semibold">
           ⚠️ {expiredCerts} certification{expiredCerts !== 1 ? "s" : ""} expired for staff at this club
         </div>
       )}
       {expiringSoon > 0 && (
-        <div className="bg-[#78350F]/30 border border-[#F59E0B]/30 rounded-xl px-4 py-3 mb-4 flex items-center gap-2 text-sm text-[#F59E0B] font-semibold">
+        <div className="bg-[#FEF3C7]/30 border border-[#D97706]/30 rounded-xl px-4 py-3 mb-4 flex items-center gap-2 text-sm text-[#D97706] font-semibold">
           ⏰ {expiringSoon} certification{expiringSoon !== 1 ? "s" : ""} expiring within 30 days
         </div>
       )}
@@ -252,18 +252,18 @@ export default async function ClubDetailPage({
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
 
         {/* Members */}
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-4">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-semibold uppercase tracking-wide text-[#64748B]">Members</span>
-            <div className="w-7 h-7 rounded-lg bg-[#3B1F7A]/40 flex items-center justify-center">
-              <Users size={13} className="text-[#A78BFA]" />
+            <span className="text-xs font-semibold uppercase tracking-wide text-[#94A3B8]">Members</span>
+            <div className="w-7 h-7 rounded-lg bg-[#EDE9FE]/40 flex items-center justify-center">
+              <Users size={13} className="text-[#6D28D9]" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-[#F1F5F9]">
+          <div className="text-2xl font-bold text-[#0F172A]">
             {currentMembership != null ? currentMembership.toLocaleString() : "—"}
           </div>
           {membershipDelta != null && (
-            <div className={`flex items-center gap-1 text-xs mt-1 font-semibold ${membershipDelta >= 0 ? "text-[#10B981]" : "text-[#EF4444]"}`}>
+            <div className={`flex items-center gap-1 text-xs mt-1 font-semibold ${membershipDelta >= 0 ? "text-[#059669]" : "text-[#EF4444]"}`}>
               {membershipDelta >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
               {membershipDelta >= 0 ? "+" : ""}{membershipDelta} vs last month
             </div>
@@ -274,31 +274,31 @@ export default async function ClubDetailPage({
         </div>
 
         {/* FY YTD */}
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-4">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-semibold uppercase tracking-wide text-[#64748B]">FY YTD</span>
-            <div className="w-7 h-7 rounded-lg bg-[#1A1F35] flex items-center justify-center">
-              <TrendingUp size={13} className="text-[#64748B]" />
+            <span className="text-xs font-semibold uppercase tracking-wide text-[#94A3B8]">FY YTD</span>
+            <div className="w-7 h-7 rounded-lg bg-[#F8FAFC] flex items-center justify-center">
+              <TrendingUp size={13} className="text-[#94A3B8]" />
             </div>
           </div>
-          <div className={`text-2xl font-bold ${fyYTD == null ? "text-[#475569]" : fyYTD >= 0 ? "text-[#10B981]" : "text-[#EF4444]"}`}>
+          <div className={`text-2xl font-bold ${fyYTD == null ? "text-[#475569]" : fyYTD >= 0 ? "text-[#059669]" : "text-[#EF4444]"}`}>
             {fyYTD == null ? "—" : fyYTD >= 0 ? `+${fyYTD.toLocaleString()}` : fyYTD.toLocaleString()}
           </div>
-          <p className="text-xs text-[#64748B] mt-1">
+          <p className="text-xs text-[#94A3B8] mt-1">
             {fyOpener ? `Since ${fyOpener.period_label}` : "FY opening not found"}
           </p>
         </div>
 
         {/* Active Staff */}
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-4">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-semibold uppercase tracking-wide text-[#64748B]">Active Staff</span>
-            <div className="w-7 h-7 rounded-lg bg-[#064E3B]/40 flex items-center justify-center">
-              <User size={13} className="text-[#10B981]" />
+            <span className="text-xs font-semibold uppercase tracking-wide text-[#94A3B8]">Active Staff</span>
+            <div className="w-7 h-7 rounded-lg bg-[#D1FAE5]/40 flex items-center justify-center">
+              <User size={13} className="text-[#059669]" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-[#F1F5F9]">{activeStaff.length}</div>
-          <p className="text-xs text-[#64748B] mt-1">
+          <div className="text-2xl font-bold text-[#0F172A]">{activeStaff.length}</div>
+          <p className="text-xs text-[#94A3B8] mt-1">
             {(staff ?? []).length > activeStaff.length
               ? `${(staff ?? []).length - activeStaff.length} inactive / on leave`
               : "All staff active"}
@@ -306,17 +306,17 @@ export default async function ClubDetailPage({
         </div>
 
         {/* Campaigns */}
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-4">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-semibold uppercase tracking-wide text-[#64748B]">Campaigns</span>
-            <div className="w-7 h-7 rounded-lg bg-[#1E3A5F]/40 flex items-center justify-center">
-              <Megaphone size={13} className="text-[#60A5FA]" />
+            <span className="text-xs font-semibold uppercase tracking-wide text-[#94A3B8]">Campaigns</span>
+            <div className="w-7 h-7 rounded-lg bg-[#DBEAFE]/40 flex items-center justify-center">
+              <Megaphone size={13} className="text-[#2563EB]" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-[#F1F5F9]">
+          <div className="text-2xl font-bold text-[#0F172A]">
             {campaigns.filter((c: any) => c.status === "active").length}
           </div>
-          <p className="text-xs text-[#64748B] mt-1">
+          <p className="text-xs text-[#94A3B8] mt-1">
             {campaigns.length > 0
               ? `${campaigns.length} total · ${campaigns.filter((c: any) => c.status === "planned").length} planned`
               : "No campaigns assigned"}
@@ -324,18 +324,18 @@ export default async function ClubDetailPage({
         </div>
 
         {/* Transfers */}
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-4">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-semibold uppercase tracking-wide text-[#64748B]">Transfers</span>
-            <div className="w-7 h-7 rounded-lg bg-[#78350F]/30 flex items-center justify-center">
-              <ArrowDownLeft size={13} className="text-[#F59E0B]" />
+            <span className="text-xs font-semibold uppercase tracking-wide text-[#94A3B8]">Transfers</span>
+            <div className="w-7 h-7 rounded-lg bg-[#FEF3C7]/30 flex items-center justify-center">
+              <ArrowDownLeft size={13} className="text-[#D97706]" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-[#F1F5F9]">
+          <div className="text-2xl font-bold text-[#0F172A]">
             {transferNet >= 0 ? `+${transferNet}` : transferNet}
           </div>
-          <div className="flex items-center gap-2 mt-1 text-xs text-[#64748B]">
-            <span className="flex items-center gap-0.5 text-[#10B981]">
+          <div className="flex items-center gap-2 mt-1 text-xs text-[#94A3B8]">
+            <span className="flex items-center gap-0.5 text-[#059669]">
               <ArrowDownLeft size={10} />{transfersIn} in
             </span>
             <span className="flex items-center gap-0.5 text-[#EF4444]">
@@ -393,21 +393,21 @@ export default async function ClubDetailPage({
 
           {/* Performance vs Target */}
           <SectionLabel>Performance vs Target</SectionLabel>
-          <div className="bg-[#131729] border border-[#252B45] rounded-xl p-5 mb-8">
+          <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5 mb-8">
             {[
               { label: "Leads", actual: latestKpi.leads_actual, target: latestKpi.leads_target, pctVal: leadsPct },
               { label: "Sales", actual: latestKpi.sales_actual, target: latestKpi.sales_target, pctVal: salesPct },
               { label: "Marketing Spend vs Budget", actual: latestKpi.spend_actual, target: latestKpi.spend_budget, pctVal: spendPct, isCurrency: true },
             ].map((row) => {
               const fillColor = row.label === "Marketing Spend vs Budget"
-                ? (row.pctVal ?? 0) > 100 ? "#EF4444" : "#10B981"
-                : (row.pctVal ?? 0) >= 90 ? "#10B981" : (row.pctVal ?? 0) >= 70 ? "#F59E0B" : "#EF4444";
+                ? (row.pctVal ?? 0) > 100 ? "#EF4444" : "#059669"
+                : (row.pctVal ?? 0) >= 90 ? "#059669" : (row.pctVal ?? 0) >= 70 ? "#D97706" : "#EF4444";
               const fillWidth = Math.min(row.pctVal ?? 0, 130);
               return (
                 <div key={row.label} className="mb-5 last:mb-0">
                   <div className="flex justify-between items-baseline mb-1.5">
-                    <span className="text-sm font-semibold text-[#F1F5F9]">{row.label}</span>
-                    <span className="text-sm text-[#94A3B8]">
+                    <span className="text-sm font-semibold text-[#0F172A]">{row.label}</span>
+                    <span className="text-sm text-[#64748B]">
                       {row.isCurrency ? formatCurrency(row.actual) : row.actual?.toLocaleString() ?? "—"}
                       {" / "}
                       {row.isCurrency ? formatCurrency(row.target) : row.target?.toLocaleString() ?? "—"}
@@ -416,7 +416,7 @@ export default async function ClubDetailPage({
                       </span>
                     </span>
                   </div>
-                  <div className="h-2 bg-[#252B45] rounded-full overflow-hidden">
+                  <div className="h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
                     <div className="h-full rounded-full transition-all" style={{ width: `${fillWidth}%`, backgroundColor: fillColor }} />
                   </div>
                 </div>
@@ -425,8 +425,8 @@ export default async function ClubDetailPage({
           </div>
         </>
       ) : (
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-6 mb-8 text-center">
-          <p className="text-sm text-[#64748B]">No KPI data for this period.</p>
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-6 mb-8 text-center">
+          <p className="text-sm text-[#94A3B8]">No KPI data for this period.</p>
         </div>
       )}
 
@@ -444,11 +444,11 @@ export default async function ClubDetailPage({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
         {/* Membership Trend */}
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-5">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-bold text-[#F1F5F9]">Membership Trend</h3>
+            <h3 className="text-sm font-bold text-[#0F172A]">Membership Trend</h3>
             {currentMembership != null && (
-              <span className="text-xs text-[#64748B]">
+              <span className="text-xs text-[#94A3B8]">
                 {currentMembership.toLocaleString()} members · {latestPeriod?.period_label}
               </span>
             )}
@@ -457,15 +457,15 @@ export default async function ClubDetailPage({
         </div>
 
         {/* Campaigns */}
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-5">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-bold text-[#F1F5F9]">Campaigns</h3>
-            <span className="text-xs text-[#64748B]">{campaigns.length} assigned</span>
+            <h3 className="text-sm font-bold text-[#0F172A]">Campaigns</h3>
+            <span className="text-xs text-[#94A3B8]">{campaigns.length} assigned</span>
           </div>
 
           {campaigns.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Megaphone size={22} className="text-[#252B45] mb-2" />
+              <Megaphone size={22} className="text-[#E2E8F0] mb-2" />
               <p className="text-xs text-[#475569]">No campaigns assigned to this club yet.</p>
             </div>
           ) : (
@@ -475,11 +475,11 @@ export default async function ClubDetailPage({
                 const totalTasks = activities.reduce((s: number, a: any) => s + (a.tasks?.length ?? 0), 0);
                 const doneTasks  = activities.reduce((s: number, a: any) => s + (a.tasks?.filter((t: any) => t.completed).length ?? 0), 0);
                 return (
-                  <div key={c.id} className="flex items-center gap-3 p-3 bg-[#1A1F35]/60 rounded-lg border border-[#252B45]/60">
-                    <span className={`flex-shrink-0 w-2 h-2 rounded-full ${STATUS_DOT[c.status] ?? "bg-[#64748B]"}`} />
+                  <div key={c.id} className="flex items-center gap-3 p-3 bg-[#F8FAFC]/60 rounded-lg border border-[#E2E8F0]/60">
+                    <span className={`flex-shrink-0 w-2 h-2 rounded-full ${STATUS_DOT[c.status] ?? "bg-[#94A3B8]"}`} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#F1F5F9] truncate">{c.name}</p>
-                      <div className="flex items-center gap-3 mt-0.5 text-xs text-[#64748B]">
+                      <p className="text-sm font-semibold text-[#0F172A] truncate">{c.name}</p>
+                      <div className="flex items-center gap-3 mt-0.5 text-xs text-[#94A3B8]">
                         {(c.start_date || c.end_date) && (
                           <span className="flex items-center gap-1">
                             <Calendar size={10} />
@@ -501,7 +501,7 @@ export default async function ClubDetailPage({
                       </span>
                       {totalTasks > 0 && (
                         <div className="flex items-center gap-1.5 mt-1 justify-end">
-                          <div className="w-12 h-1 bg-[#252B45] rounded-full overflow-hidden">
+                          <div className="w-12 h-1 bg-[#E2E8F0] rounded-full overflow-hidden">
                             <div className="h-full bg-[#7C3AED] rounded-full" style={{ width: `${(doneTasks / totalTasks) * 100}%` }} />
                           </div>
                           <span className="text-[10px] text-[#475569]">{doneTasks}/{totalTasks}</span>
@@ -519,15 +519,15 @@ export default async function ClubDetailPage({
       {/* ── Staff ────────────────────────────────────────────────────────────── */}
       <SectionLabel>Staff</SectionLabel>
       {(staff ?? []).length === 0 ? (
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-8 mb-8 flex flex-col items-center justify-center text-center">
-          <Users size={22} className="text-[#252B45] mb-2" />
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-8 mb-8 flex flex-col items-center justify-center text-center">
+          <Users size={22} className="text-[#E2E8F0] mb-2" />
           <p className="text-xs text-[#475569]">No staff added for this club yet.</p>
         </div>
       ) : (
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden mb-8">
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden mb-8">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#1A1F35] text-[#64748B] text-[11px] uppercase tracking-wide border-b border-[#252B45]">
+              <tr className="bg-[#F8FAFC] text-[#94A3B8] text-[11px] uppercase tracking-wide border-b border-[#E2E8F0]">
                 <th className="text-left px-4 py-3 font-semibold">Name</th>
                 <th className="text-left px-4 py-3 font-semibold">Position</th>
                 <th className="text-left px-4 py-3 font-semibold">Status</th>
@@ -535,9 +535,9 @@ export default async function ClubDetailPage({
             </thead>
             <tbody>
               {(staff as any[]).map((member) => (
-                <tr key={member.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/40 transition-colors">
-                  <td className="px-4 py-3 font-semibold text-[#F1F5F9]">{member.name}</td>
-                  <td className="px-4 py-3 text-[#94A3B8]">{member.position ?? "—"}</td>
+                <tr key={member.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/40 transition-colors">
+                  <td className="px-4 py-3 font-semibold text-[#0F172A]">{member.name}</td>
+                  <td className="px-4 py-3 text-[#64748B]">{member.position ?? "—"}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ${STAFF_STATUS[member.status] ?? ""}`}>
                       {member.status?.replace("_", " ")}

@@ -21,7 +21,7 @@ const ACTIVITY_LIBRARY: Record<string, ActivityDef> = {
   meta_ads: {
     label: "Meta Ads",
     emoji: "📱",
-    color: "bg-[#1E3A5F] text-[#60A5FA] border-[#1D4ED8]/60",
+    color: "bg-[#DBEAFE] text-[#2563EB] border-[#1D4ED8]/60",
     tasks: [
       "Define target audience & demographics",
       "Set campaign objective (Leads / Traffic / Conversions)",
@@ -38,7 +38,7 @@ const ACTIVITY_LIBRARY: Record<string, ActivityDef> = {
   google_ads: {
     label: "Google Ads",
     emoji: "🔍",
-    color: "bg-[#7F1D1D]/40 text-[#FCA5A5] border-[#991B1B]/60",
+    color: "bg-[#FEE2E2]/40 text-[#FCA5A5] border-[#991B1B]/60",
     tasks: [
       "Define keywords & match types",
       "Write ad copy & extensions",
@@ -54,7 +54,7 @@ const ACTIVITY_LIBRARY: Record<string, ActivityDef> = {
   email_campaign: {
     label: "Email Campaign",
     emoji: "✉️",
-    color: "bg-[#064E3B]/50 text-[#34D399] border-[#065F46]/60",
+    color: "bg-[#D1FAE5]/50 text-[#059669] border-[#065F46]/60",
     tasks: [
       "Define email list / audience segment",
       "Write subject line & preview text",
@@ -71,7 +71,7 @@ const ACTIVITY_LIBRARY: Record<string, ActivityDef> = {
   sms_campaign: {
     label: "SMS Campaign",
     emoji: "💬",
-    color: "bg-[#3B1F7A]/50 text-[#C4B5FD] border-[#6D28D9]/60",
+    color: "bg-[#EDE9FE]/50 text-[#C4B5FD] border-[#6D28D9]/60",
     tasks: [
       "Define SMS contact list (opt-in only)",
       "Write SMS copy (160 char limit)",
@@ -86,7 +86,7 @@ const ACTIVITY_LIBRARY: Record<string, ActivityDef> = {
   flyers: {
     label: "Flyers",
     emoji: "📄",
-    color: "bg-[#78350F]/40 text-[#FCD34D] border-[#92400E]/60",
+    color: "bg-[#FEF3C7]/40 text-[#FCD34D] border-[#92400E]/60",
     tasks: [
       "Brief designer with campaign details",
       "Review first design draft",
@@ -101,7 +101,7 @@ const ACTIVITY_LIBRARY: Record<string, ActivityDef> = {
   corflutes: {
     label: "Corflutes",
     emoji: "🪧",
-    color: "bg-[#78350F]/40 text-[#FCD34D] border-[#92400E]/60",
+    color: "bg-[#FEF3C7]/40 text-[#FCD34D] border-[#92400E]/60",
     tasks: [
       "Brief designer with dimensions & campaign brief",
       "Review first design draft",
@@ -117,7 +117,7 @@ const ACTIVITY_LIBRARY: Record<string, ActivityDef> = {
   signage: {
     label: "Signage",
     emoji: "🏷️",
-    color: "bg-[#1A1F35] text-[#94A3B8] border-[#334155]/60",
+    color: "bg-[#F8FAFC] text-[#64748B] border-[#94A3B8]/60",
     tasks: [
       "Define signage locations (internal / external)",
       "Brief designer with specs & dimensions",
@@ -147,7 +147,7 @@ const ACTIVITY_LIBRARY: Record<string, ActivityDef> = {
   referral_program: {
     label: "Referral Program",
     emoji: "👥",
-    color: "bg-[#064E3B]/50 text-[#34D399] border-[#065F46]/60",
+    color: "bg-[#D1FAE5]/50 text-[#059669] border-[#065F46]/60",
     tasks: [
       "Define referral incentive (e.g. free week, discount)",
       "Create referral cards or digital link",
@@ -162,7 +162,7 @@ const ACTIVITY_LIBRARY: Record<string, ActivityDef> = {
   in_club_promo: {
     label: "In-Club Promo",
     emoji: "🏋️",
-    color: "bg-[#3B1F7A]/50 text-[#C4B5FD] border-[#6D28D9]/60",
+    color: "bg-[#EDE9FE]/50 text-[#C4B5FD] border-[#6D28D9]/60",
     tasks: [
       "Design in-club display materials",
       "Brief front desk & floor staff",
@@ -243,14 +243,14 @@ function formatBudget(b: number | null) {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  planned:   "bg-[#1E2640] text-[#94A3B8] border-[#252B45]",
-  active:    "bg-[#064E3B]/40 text-[#10B981] border-[#065F46]",
-  completed: "bg-[#1A1F35] text-[#475569] border-[#252B45]",
-  paused:    "bg-[#78350F]/30 text-[#F59E0B] border-[#92400E]",
+  planned:   "bg-[#1E2640] text-[#64748B] border-[#E2E8F0]",
+  active:    "bg-[#D1FAE5]/40 text-[#059669] border-[#065F46]",
+  completed: "bg-[#F8FAFC] text-[#475569] border-[#E2E8F0]",
+  paused:    "bg-[#FEF3C7]/30 text-[#D97706] border-[#92400E]",
 };
 const STATUS_DOT: Record<string, string> = {
-  planned: "bg-[#64748B]", active: "bg-[#10B981]",
-  completed: "bg-[#475569]", paused: "bg-[#F59E0B]",
+  planned: "bg-[#94A3B8]", active: "bg-[#059669]",
+  completed: "bg-[#475569]", paused: "bg-[#D97706]",
 };
 const STATUSES = ["planned", "active", "completed", "paused"] as const;
 
@@ -443,8 +443,8 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
               onClick={() => setFilter(s)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${
                 filter === s
-                  ? "bg-[#3B1F7A] text-[#A78BFA]"
-                  : "bg-[#131729] border border-[#252B45] text-[#64748B] hover:text-[#94A3B8]"
+                  ? "bg-[#EDE9FE] text-[#6D28D9]"
+                  : "bg-[#FFFFFF] border border-[#E2E8F0] text-[#94A3B8] hover:text-[#64748B]"
               }`}
             >
               {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
@@ -467,14 +467,14 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
 
       {/* Campaign cards */}
       {filtered.length === 0 ? (
-        <div className="bg-[#131729] border border-[#252B45] rounded-xl p-16 flex flex-col items-center justify-center text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#1A1F35] border border-[#252B45] flex items-center justify-center mb-4">
-            <Megaphone size={28} className="text-[#64748B]" />
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-16 flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center mb-4">
+            <Megaphone size={28} className="text-[#94A3B8]" />
           </div>
-          <h2 className="text-lg font-bold text-[#F1F5F9] mb-2">
+          <h2 className="text-lg font-bold text-[#0F172A] mb-2">
             {filter === "all" ? "No campaigns yet" : `No ${filter} campaigns`}
           </h2>
-          <p className="text-[#64748B] text-sm mb-6 max-w-sm">
+          <p className="text-[#94A3B8] text-sm mb-6 max-w-sm">
             {filter === "all"
               ? "Create your first campaign to track activities, checklists, budgets and clubs."
               : `No campaigns with status "${filter}" found.`}
@@ -498,13 +498,13 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
               <div
                 key={c.id}
                 onClick={() => setViewingCampaign(c)}
-                className="bg-[#131729] border border-[#252B45] rounded-xl p-5 hover:border-[#7C3AED]/40 transition-colors cursor-pointer"
+                className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5 hover:border-[#7C3AED]/40 transition-colors cursor-pointer"
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-[#F1F5F9] text-base truncate">{c.name}</h3>
+                    <h3 className="font-bold text-[#0F172A] text-base truncate">{c.name}</h3>
                     {c.description && (
-                      <p className="text-[#64748B] text-sm mt-0.5 line-clamp-2">{c.description}</p>
+                      <p className="text-[#94A3B8] text-sm mt-0.5 line-clamp-2">{c.description}</p>
                     )}
                   </div>
                   <span className={`flex-shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${STATUS_STYLES[c.status]}`}>
@@ -514,7 +514,7 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                 </div>
 
                 {/* Meta row */}
-                <div className="flex flex-wrap gap-4 text-xs text-[#64748B] mb-3">
+                <div className="flex flex-wrap gap-4 text-xs text-[#94A3B8] mb-3">
                   {(c.start_date || c.end_date) && (
                     <div className="flex items-center gap-1.5">
                       <Calendar size={12} />
@@ -549,11 +549,11 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                 {/* Progress bar */}
                 {totalTasks > 0 && (
                   <div className="mb-3">
-                    <div className="flex items-center justify-between text-[11px] text-[#64748B] mb-1">
+                    <div className="flex items-center justify-between text-[11px] text-[#94A3B8] mb-1">
                       <span>Overall progress</span>
-                      <span className={doneTasks === totalTasks ? "text-[#10B981]" : ""}>{doneTasks}/{totalTasks} tasks</span>
+                      <span className={doneTasks === totalTasks ? "text-[#059669]" : ""}>{doneTasks}/{totalTasks} tasks</span>
                     </div>
-                    <div className="h-1.5 bg-[#1A1F35] rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-[#F8FAFC] rounded-full overflow-hidden">
                       <div
                         className="h-full bg-[#7C3AED] rounded-full transition-all"
                         style={{ width: `${(doneTasks / totalTasks) * 100}%` }}
@@ -566,7 +566,7 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                 {assignedClubs.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-4">
                     {assignedClubs.map((cl) => (
-                      <span key={cl.id} className="px-2 py-0.5 bg-[#1A1F35] border border-[#252B45] rounded-full text-[11px] text-[#94A3B8]">
+                      <span key={cl.id} className="px-2 py-0.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-full text-[11px] text-[#64748B]">
                         {cl.name}
                       </span>
                     ))}
@@ -574,10 +574,10 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                 )}
 
                 {/* Actions */}
-                <div className="flex items-center gap-2 pt-3 border-t border-[#252B45]" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center gap-2 pt-3 border-t border-[#E2E8F0]" onClick={(e) => e.stopPropagation()}>
                   <button
                     onClick={() => openEdit(c)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#1A1F35] transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-colors"
                   >
                     <Pencil size={12} />
                     Edit
@@ -585,7 +585,7 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                   <button
                     onClick={() => handleDelete(c.id)}
                     disabled={deleting === c.id}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[#64748B] hover:text-[#EF4444] hover:bg-[#7F1D1D]/20 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[#94A3B8] hover:text-[#EF4444] hover:bg-[#FEE2E2]/20 transition-colors disabled:opacity-50"
                   >
                     {deleting === c.id ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
                     Delete
@@ -602,27 +602,27 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={closeModal}>
           <div className="absolute inset-0 bg-black/70" />
           <div
-            className="relative bg-[#0B0E1A] border border-[#252B45] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl"
+            className="relative bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between px-6 py-5 border-b border-[#252B45]">
+            <div className="flex items-start justify-between px-6 py-5 border-b border-[#E2E8F0]">
               <div>
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <h2 className="text-lg font-bold text-[#F1F5F9]">{viewingCampaign.name}</h2>
+                  <h2 className="text-lg font-bold text-[#0F172A]">{viewingCampaign.name}</h2>
                   <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${STATUS_STYLES[viewingCampaign.status]}`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${STATUS_DOT[viewingCampaign.status]}`} />
                     {viewingCampaign.status}
                   </span>
                 </div>
                 {viewingCampaign.description && (
-                  <p className="text-sm text-[#64748B] mt-1">{viewingCampaign.description}</p>
+                  <p className="text-sm text-[#94A3B8] mt-1">{viewingCampaign.description}</p>
                 )}
               </div>
               <div className="flex gap-1 flex-shrink-0">
-                <button onClick={() => { setViewingCampaign(null); openEdit(viewingCampaign); }} className="p-2 text-[#64748B] hover:text-[#A78BFA] hover:bg-[#252B45] rounded-lg transition-colors">
+                <button onClick={() => { setViewingCampaign(null); openEdit(viewingCampaign); }} className="p-2 text-[#94A3B8] hover:text-[#6D28D9] hover:bg-[#E2E8F0] rounded-lg transition-colors">
                   <Pencil size={16} />
                 </button>
-                <button onClick={closeModal} className="p-2 text-[#64748B] hover:text-[#F1F5F9] hover:bg-[#252B45] rounded-lg transition-colors">
+                <button onClick={closeModal} className="p-2 text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#E2E8F0] rounded-lg transition-colors">
                   <X size={18} />
                 </button>
               </div>
@@ -639,29 +639,29 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                   const total = activity.tasks.length;
                   const pct   = Math.round((done / total) * 100);
                   return (
-                    <div key={activity.key} className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
-                      <div className="flex items-center justify-between px-4 py-3 border-b border-[#252B45]">
+                    <div key={activity.key} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E2E8F0]">
                         <div className="flex items-center gap-2">
                           <span className="text-base">{def.emoji}</span>
-                          <span className="font-semibold text-[#F1F5F9] text-sm">{def.label}</span>
+                          <span className="font-semibold text-[#0F172A] text-sm">{def.label}</span>
                           <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold border ${def.color}`}>
                             {done}/{total}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className="w-20 h-1.5 bg-[#1A1F35] rounded-full overflow-hidden">
+                          <div className="w-20 h-1.5 bg-[#F8FAFC] rounded-full overflow-hidden">
                             <div className="h-full bg-[#7C3AED] rounded-full" style={{ width: `${pct}%` }} />
                           </div>
-                          <span className="text-xs text-[#64748B]">{pct}%</span>
+                          <span className="text-xs text-[#94A3B8]">{pct}%</span>
                         </div>
                       </div>
-                      <div className="divide-y divide-[#252B45]/60">
+                      <div className="divide-y divide-[#E2E8F0]/60">
                         {activity.tasks.map((task) => (
                           <div key={task.id} className="flex items-center gap-3 px-4 py-2.5">
-                            <span className={`w-4 h-4 rounded flex-shrink-0 flex items-center justify-center ${task.completed ? "bg-[#7C3AED]" : "border border-[#334155]"}`}>
+                            <span className={`w-4 h-4 rounded flex-shrink-0 flex items-center justify-center ${task.completed ? "bg-[#7C3AED]" : "border border-[#94A3B8]"}`}>
                               {task.completed && <Check size={10} className="text-white" strokeWidth={3} />}
                             </span>
-                            <span className={`text-sm ${task.completed ? "line-through text-[#475569]" : "text-[#94A3B8]"}`}>
+                            <span className={`text-sm ${task.completed ? "line-through text-[#475569]" : "text-[#64748B]"}`}>
                               {task.label}
                             </span>
                           </div>
@@ -680,14 +680,14 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70" onClick={closeModal} />
-          <div className="relative bg-[#0B0E1A] border border-[#252B45] rounded-2xl w-full max-w-2xl shadow-2xl max-h-[92vh] overflow-y-auto">
+          <div className="relative bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl w-full max-w-2xl shadow-2xl max-h-[92vh] overflow-y-auto">
 
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#252B45] sticky top-0 bg-[#0B0E1A] z-10">
-              <h2 className="text-lg font-bold text-[#F1F5F9]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0] sticky top-0 bg-[#FFFFFF] z-10">
+              <h2 className="text-lg font-bold text-[#0F172A]">
                 {modal === "create" ? "New Campaign" : "Edit Campaign"}
               </h2>
-              <button onClick={closeModal} className="p-1.5 rounded-lg text-[#64748B] hover:text-[#F1F5F9] hover:bg-[#1A1F35] transition-colors">
+              <button onClick={closeModal} className="p-1.5 rounded-lg text-[#94A3B8] hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-colors">
                 <X size={18} />
               </button>
             </div>
@@ -699,7 +699,7 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                 <p className="text-[11px] uppercase tracking-widest font-bold text-[#475569] mb-3">Campaign Details</p>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">
+                    <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">
                       Campaign Name <span className="text-[#EF4444]">*</span>
                     </label>
                     <input
@@ -707,56 +707,56 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                       value={form.name}
                       onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                       placeholder="e.g. January Promo — All Clubs"
-                      className="w-full px-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                      className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Description</label>
+                    <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Description</label>
                     <textarea
                       value={form.description}
                       onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                       placeholder="Campaign goals, target audience, key messages…"
                       rows={2}
-                      className="w-full px-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-none"
+                      className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors resize-none"
                     />
                   </div>
 
                   <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Status</label>
+                      <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Status</label>
                       <select
                         value={form.status}
                         onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
-                        className="w-full px-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                        className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                       >
                         {STATUSES.map((s) => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Start Date</label>
+                      <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Start Date</label>
                       <input
                         type="date"
                         value={form.start_date}
                         onChange={(e) => setForm((f) => ({ ...f, start_date: e.target.value }))}
-                        className="w-full px-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                        className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">End Date</label>
+                      <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">End Date</label>
                       <input
                         type="date"
                         value={form.end_date}
                         onChange={(e) => setForm((f) => ({ ...f, end_date: e.target.value }))}
-                        className="w-full px-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                        className="w-full px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-1.5">Budget (AUD)</label>
+                    <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">Budget (AUD)</label>
                     <div className="relative max-w-40">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm">$</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] text-sm">$</span>
                       <input
                         type="number"
                         min={0}
@@ -764,13 +764,13 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                         value={form.budget}
                         onChange={(e) => setForm((f) => ({ ...f, budget: e.target.value }))}
                         placeholder="0"
-                        className="w-full pl-7 pr-3 py-2 bg-[#131729] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
+                        className="w-full pl-7 pr-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm placeholder-[#475569] focus:outline-none focus:border-[#7C3AED] transition-colors"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wide mb-2">Assign to Clubs</label>
+                    <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-2">Assign to Clubs</label>
                     <div className="flex flex-wrap gap-2">
                       {clubs.map((cl) => {
                         const checked = form.clubIds.includes(cl.id);
@@ -781,8 +781,8 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                             onClick={() => toggleClub(cl.id)}
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
                               checked
-                                ? "bg-[#3B1F7A] border-[#7C3AED] text-[#A78BFA]"
-                                : "bg-[#131729] border-[#252B45] text-[#64748B] hover:border-[#7C3AED]/50 hover:text-[#94A3B8]"
+                                ? "bg-[#EDE9FE] border-[#7C3AED] text-[#6D28D9]"
+                                : "bg-[#FFFFFF] border-[#E2E8F0] text-[#94A3B8] hover:border-[#7C3AED]/50 hover:text-[#64748B]"
                             }`}
                           >
                             <span className={`w-3.5 h-3.5 rounded flex-shrink-0 border flex items-center justify-center ${checked ? "bg-[#7C3AED] border-[#7C3AED]" : "border-[#475569]"}`}>
@@ -798,7 +798,7 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
               </div>
 
               {/* ── Activity Pills ── */}
-              <div className="border-t border-[#252B45] pt-5">
+              <div className="border-t border-[#E2E8F0] pt-5">
                 <div className="mb-3">
                   <p className="text-[11px] uppercase tracking-widest font-bold text-[#475569]">Marketing Activities</p>
                   <p className="text-xs text-[#475569] mt-0.5">Select all channels active in this campaign. Each gets a pre-built task checklist.</p>
@@ -816,7 +816,7 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold border transition-all ${
                           active
                             ? def.color
-                            : "bg-[#131729] border-[#252B45] text-[#64748B] hover:border-[#7C3AED]/40 hover:text-[#94A3B8]"
+                            : "bg-[#FFFFFF] border-[#E2E8F0] text-[#94A3B8] hover:border-[#7C3AED]/40 hover:text-[#64748B]"
                         }`}
                       >
                         <span>{def.emoji}</span>
@@ -838,49 +838,49 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                       const total     = activity.tasks.length;
 
                       return (
-                        <div key={activity.key} className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
+                        <div key={activity.key} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
                           {/* Activity header */}
                           <button
                             type="button"
                             onClick={() => setExpandedActivity(isOpen ? null : activity.key)}
-                            className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#1A1F35]/50 transition-colors"
+                            className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#F8FAFC]/50 transition-colors"
                           >
                             <div className="flex items-center gap-2.5">
                               <span className="text-base">{def.emoji}</span>
-                              <span className="font-semibold text-[#F1F5F9] text-sm">{def.label}</span>
+                              <span className="font-semibold text-[#0F172A] text-sm">{def.label}</span>
                               <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border ${def.color}`}>
                                 {done}/{total} done
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <div className="w-16 h-1.5 bg-[#252B45] rounded-full overflow-hidden">
+                              <div className="w-16 h-1.5 bg-[#E2E8F0] rounded-full overflow-hidden">
                                 <div className="h-full bg-[#7C3AED] rounded-full transition-all" style={{ width: `${(done / total) * 100}%` }} />
                               </div>
-                              {isOpen ? <ChevronUp size={14} className="text-[#64748B]" /> : <ChevronDown size={14} className="text-[#64748B]" />}
+                              {isOpen ? <ChevronUp size={14} className="text-[#94A3B8]" /> : <ChevronDown size={14} className="text-[#94A3B8]" />}
                             </div>
                           </button>
 
                           {/* Checklist */}
                           {isOpen && (
-                            <div className="border-t border-[#252B45]">
+                            <div className="border-t border-[#E2E8F0]">
                               {activity.tasks.length === 0 && (
                                 <p className="px-4 py-3 text-xs text-[#475569] italic">No tasks yet — add one below.</p>
                               )}
                               {activity.tasks.map((task) => (
                                 <div
                                   key={task.id}
-                                  className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#1A1F35]/40 group border-b border-[#252B45]/50 last:border-b-0"
+                                  className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#F8FAFC]/40 group border-b border-[#E2E8F0]/50 last:border-b-0"
                                 >
                                   <button
                                     type="button"
                                     onClick={() => toggleTask(activity.key, task.id)}
                                     className={`w-4 h-4 rounded flex-shrink-0 flex items-center justify-center transition-colors ${
-                                      task.completed ? "bg-[#7C3AED] border border-[#7C3AED]" : "border border-[#334155] hover:border-[#7C3AED]/60"
+                                      task.completed ? "bg-[#7C3AED] border border-[#7C3AED]" : "border border-[#94A3B8] hover:border-[#7C3AED]/60"
                                     }`}
                                   >
                                     {task.completed && <Check size={10} className="text-white" strokeWidth={3} />}
                                   </button>
-                                  <span className={`flex-1 text-sm transition-colors ${task.completed ? "line-through text-[#475569]" : "text-[#94A3B8]"}`}>
+                                  <span className={`flex-1 text-sm transition-colors ${task.completed ? "line-through text-[#475569]" : "text-[#64748B]"}`}>
                                     {task.label}
                                   </span>
                                   <button
@@ -893,20 +893,20 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
                                 </div>
                               ))}
                               {/* Add task input */}
-                              <div className="flex items-center gap-2 px-4 py-2.5 border-t border-[#252B45]/50">
+                              <div className="flex items-center gap-2 px-4 py-2.5 border-t border-[#E2E8F0]/50">
                                 <input
                                   type="text"
                                   value={newTaskText[activity.key] ?? ""}
                                   onChange={(e) => setNewTaskText((prev) => ({ ...prev, [activity.key]: e.target.value }))}
                                   onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addTask(activity.key); } }}
                                   placeholder="Add a task…"
-                                  className="flex-1 bg-transparent text-sm text-[#94A3B8] placeholder-[#334155] focus:outline-none"
+                                  className="flex-1 bg-transparent text-sm text-[#64748B] placeholder-[#94A3B8] focus:outline-none"
                                 />
                                 <button
                                   type="button"
                                   onClick={() => addTask(activity.key)}
                                   disabled={!(newTaskText[activity.key] ?? "").trim()}
-                                  className="p-1 rounded text-[#64748B] hover:text-[#A78BFA] hover:bg-[#252B45] transition-colors disabled:opacity-30"
+                                  className="p-1 rounded text-[#94A3B8] hover:text-[#6D28D9] hover:bg-[#E2E8F0] transition-colors disabled:opacity-30"
                                 >
                                   <Plus size={14} />
                                 </button>
@@ -922,16 +922,16 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
             </div>
 
             {/* Footer */}
-            <div className="sticky bottom-0 bg-[#0B0E1A] border-t border-[#252B45]">
+            <div className="sticky bottom-0 bg-[#FFFFFF] border-t border-[#E2E8F0]">
               {saveError && (
-                <div className="px-6 py-3 bg-[#7F1D1D]/30 border-b border-[#EF4444]/30 text-xs text-[#EF4444]">
+                <div className="px-6 py-3 bg-[#FEE2E2]/30 border-b border-[#EF4444]/30 text-xs text-[#EF4444]">
                   <strong>Error:</strong> {saveError}
                 </div>
               )}
               <div className="flex items-center justify-end gap-3 px-6 py-4">
                 <button
                   onClick={closeModal}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#1A1F35] transition-colors"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-colors"
                 >
                   Cancel
                 </button>

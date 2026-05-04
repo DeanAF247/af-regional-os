@@ -150,23 +150,23 @@ export default function MembershipEditor({ clubs, periods, counts }: Props) {
         const isCollapsed = collapsed.has(fy);
 
         return (
-          <div key={fy} className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
+          <div key={fy} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
             {/* FY header / toggle */}
             <button
               onClick={() => toggleFY(fy)}
-              className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#1A1F35]/50 transition-colors border-b border-[#252B45]"
+              className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#F8FAFC]/50 transition-colors border-b border-[#E2E8F0]"
             >
               <div className="flex items-center gap-2.5">
                 {isCollapsed
-                  ? <ChevronRight size={14} className="text-[#64748B]" />
-                  : <ChevronDown size={14} className="text-[#64748B]" />
+                  ? <ChevronRight size={14} className="text-[#94A3B8]" />
+                  : <ChevronDown size={14} className="text-[#94A3B8]" />
                 }
                 {!isCurrentFY && <Archive size={13} className="text-[#475569]" />}
-                <span className={`text-sm font-bold ${isCurrentFY ? "text-[#A78BFA]" : "text-[#64748B]"}`}>
+                <span className={`text-sm font-bold ${isCurrentFY ? "text-[#6D28D9]" : "text-[#94A3B8]"}`}>
                   {fyLabel(fy)}
                 </span>
                 {isCurrentFY && (
-                  <span className="text-[10px] bg-[#3B1F7A] text-[#A78BFA] px-2 py-0.5 rounded-full font-semibold">Current</span>
+                  <span className="text-[10px] bg-[#EDE9FE] text-[#6D28D9] px-2 py-0.5 rounded-full font-semibold">Current</span>
                 )}
                 {!isCurrentFY && isCollapsed && (
                   <span className="text-[11px] text-[#475569]">{fyPeriods.length} months archived</span>
@@ -181,15 +181,15 @@ export default function MembershipEditor({ clubs, periods, counts }: Props) {
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide">
-                        <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#1A1F35] min-w-[140px]">Club</th>
+                      <tr className="bg-[#F8FAFC] text-[#64748B] text-[11px] uppercase tracking-wide">
+                        <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#F8FAFC] min-w-[140px]">Club</th>
                         {fyPeriods.map((p) => (
                           <th key={p.id} className="text-right px-3 py-3 font-semibold whitespace-nowrap min-w-[90px]">
                             {p.period_label.split(" ")[0].slice(0, 3)} {p.period_label.split(" ")[1]?.slice(2)}
                           </th>
                         ))}
                         {/* FY YTD column */}
-                        <th className="text-right px-4 py-3 font-semibold whitespace-nowrap min-w-[90px] border-l border-[#252B45] bg-[#1A1F35]">
+                        <th className="text-right px-4 py-3 font-semibold whitespace-nowrap min-w-[90px] border-l border-[#E2E8F0] bg-[#F8FAFC]">
                           FY YTD
                         </th>
                       </tr>
@@ -198,8 +198,8 @@ export default function MembershipEditor({ clubs, periods, counts }: Props) {
                       {clubs.map((club) => {
                         const ytd = fyYTD(club.id, fyPeriods);
                         return (
-                          <tr key={club.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/30 transition-colors">
-                            <td className="px-4 py-2.5 font-semibold text-[#F1F5F9] sticky left-0 bg-[#131729]">
+                          <tr key={club.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/30 transition-colors">
+                            <td className="px-4 py-2.5 font-semibold text-[#0F172A] sticky left-0 bg-[#FFFFFF]">
                               {club.name}
                             </td>
                             {fyPeriods.map((period) => {
@@ -218,22 +218,22 @@ export default function MembershipEditor({ clubs, periods, counts }: Props) {
                                       onChange={(e) => setValues((v) => ({ ...v, [k]: e.target.value }))}
                                       onBlur={() => handleBlur(club.id, period.id)}
                                       onKeyDown={(e) => handleKeyDown(e, club.id, period.id)}
-                                      className="w-20 px-2 py-1 bg-[#0B0E1A] border border-[#7C3AED] rounded text-right text-[#F1F5F9] text-sm focus:outline-none"
+                                      className="w-20 px-2 py-1 bg-[#FFFFFF] border border-[#7C3AED] rounded text-right text-[#0F172A] text-sm focus:outline-none"
                                     />
                                   ) : (
                                     <button
                                       onClick={() => setEditing(k)}
-                                      className="w-20 px-2 py-1 text-right rounded hover:bg-[#1A1F35] transition-colors group"
+                                      className="w-20 px-2 py-1 text-right rounded hover:bg-[#F8FAFC] transition-colors group"
                                     >
                                       {status === "saving" ? (
                                         <Loader2 size={12} className="animate-spin ml-auto text-[#7C3AED]" />
                                       ) : status === "saved" ? (
-                                        <span className="flex items-center justify-end gap-1 text-[#10B981] text-xs">
+                                        <span className="flex items-center justify-end gap-1 text-[#059669] text-xs">
                                           <Check size={11} />
                                           {val || "—"}
                                         </span>
                                       ) : (
-                                        <span className={val ? "text-[#F1F5F9] font-semibold" : "text-[#475569] group-hover:text-[#64748B]"}>
+                                        <span className={val ? "text-[#0F172A] font-semibold" : "text-[#475569] group-hover:text-[#94A3B8]"}>
                                           {val ? parseInt(val).toLocaleString() : "—"}
                                         </span>
                                       )}
@@ -243,11 +243,11 @@ export default function MembershipEditor({ clubs, periods, counts }: Props) {
                               );
                             })}
                             {/* FY YTD cell */}
-                            <td className="px-4 py-2.5 text-right border-l border-[#252B45]">
+                            <td className="px-4 py-2.5 text-right border-l border-[#E2E8F0]">
                               {ytd == null ? (
                                 <span className="text-[#475569] text-xs">—</span>
                               ) : (
-                                <span className={`font-bold text-sm ${ytd.diff > 0 ? "text-[#10B981]" : ytd.diff < 0 ? "text-[#EF4444]" : "text-[#64748B]"}`}>
+                                <span className={`font-bold text-sm ${ytd.diff > 0 ? "text-[#059669]" : ytd.diff < 0 ? "text-[#EF4444]" : "text-[#94A3B8]"}`}>
                                   {ytd.diff > 0 ? `+${ytd.diff.toLocaleString()}` : ytd.diff.toLocaleString()}
                                 </span>
                               )}
@@ -257,23 +257,23 @@ export default function MembershipEditor({ clubs, periods, counts }: Props) {
                       })}
 
                       {/* Group Total row */}
-                      <tr className="border-t-2 border-[#252B45] bg-[#1A1F35] font-bold">
-                        <td className="px-4 py-3 text-[#A78BFA] sticky left-0 bg-[#1A1F35]">Group Total</td>
+                      <tr className="border-t-2 border-[#E2E8F0] bg-[#F8FAFC] font-bold">
+                        <td className="px-4 py-3 text-[#6D28D9] sticky left-0 bg-[#F8FAFC]">Group Total</td>
                         {fyPeriods.map((p) => {
                           const total = colTotal(p.id);
                           return (
-                            <td key={p.id} className="px-2 py-3 text-right text-[#F1F5F9] pr-4">
+                            <td key={p.id} className="px-2 py-3 text-right text-[#0F172A] pr-4">
                               {total != null ? total.toLocaleString() : "—"}
                             </td>
                           );
                         })}
                         {/* Group FY YTD */}
-                        <td className="px-4 py-3 text-right border-l border-[#252B45]">
+                        <td className="px-4 py-3 text-right border-l border-[#E2E8F0]">
                           {(() => {
                             const total = fyYTDTotal(fyPeriods);
                             if (total == null) return <span className="text-[#475569]">—</span>;
                             return (
-                              <span className={`font-bold ${total > 0 ? "text-[#10B981]" : total < 0 ? "text-[#EF4444]" : "text-[#64748B]"}`}>
+                              <span className={`font-bold ${total > 0 ? "text-[#059669]" : total < 0 ? "text-[#EF4444]" : "text-[#94A3B8]"}`}>
                                 {total > 0 ? `+${total.toLocaleString()}` : total.toLocaleString()}
                               </span>
                             );
@@ -283,7 +283,7 @@ export default function MembershipEditor({ clubs, periods, counts }: Props) {
                     </tbody>
                   </table>
                 </div>
-                <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#252B45]">
+                <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#E2E8F0]">
                   Click any cell to edit · Enter or Tab to save · FY YTD = latest month vs July opening
                 </p>
               </>

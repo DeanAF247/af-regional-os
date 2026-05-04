@@ -26,23 +26,23 @@ interface TrendPoint {
 const CHART_STYLE = {
   background: "transparent",
   fontSize: 11,
-  color: "#94A3B8",
+  color: "#64748B",
 };
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-[#131729] border border-[#252B45] rounded-xl p-5">
-      <div className="text-sm font-bold text-[#F1F5F9] mb-4">{title}</div>
+    <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5">
+      <div className="text-sm font-bold text-[#0F172A] mb-4">{title}</div>
       <div className="h-52">{children}</div>
     </div>
   );
 }
 
 const tooltipStyle = {
-  backgroundColor: "#1A1F35",
-  border: "1px solid #252B45",
+  backgroundColor: "#F8FAFC",
+  border: "1px solid #E2E8F0",
   borderRadius: "8px",
-  color: "#F1F5F9",
+  color: "#0F172A",
   fontSize: 12,
 };
 
@@ -53,16 +53,16 @@ export default function GroupTrendCharts({ data }: { data: TrendPoint[] }) {
       <ChartCard title="Group Leads — Actual vs Target">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} style={CHART_STYLE}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#252B45" />
-            <XAxis dataKey="label" tick={{ fill: "#64748B", fontSize: 10 }} tickLine={false} axisLine={false} />
-            <YAxis tick={{ fill: "#64748B", fontSize: 10 }} tickLine={false} axisLine={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+            <XAxis dataKey="label" tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} />
+            <YAxis tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} />
             <Tooltip contentStyle={tooltipStyle} />
             <Legend
-              wrapperStyle={{ fontSize: 11, color: "#94A3B8" }}
-              formatter={(value) => <span style={{ color: "#94A3B8" }}>{value}</span>}
+              wrapperStyle={{ fontSize: 11, color: "#64748B" }}
+              formatter={(value) => <span style={{ color: "#64748B" }}>{value}</span>}
             />
             <Line type="monotone" dataKey="leads_actual" name="Actual" stroke="#7C3AED" strokeWidth={2} dot={{ r: 3, fill: "#7C3AED" }} />
-            <Line type="monotone" dataKey="leads_target" name="Target" stroke="#3B1F7A" strokeWidth={1.5} strokeDasharray="4 3" dot={false} />
+            <Line type="monotone" dataKey="leads_target" name="Target" stroke="#EDE9FE" strokeWidth={1.5} strokeDasharray="4 3" dot={false} />
           </LineChart>
         </ResponsiveContainer>
       </ChartCard>
@@ -71,16 +71,16 @@ export default function GroupTrendCharts({ data }: { data: TrendPoint[] }) {
       <ChartCard title="Group Sales — Actual vs Target">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} style={CHART_STYLE}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#252B45" />
-            <XAxis dataKey="label" tick={{ fill: "#64748B", fontSize: 10 }} tickLine={false} axisLine={false} />
-            <YAxis tick={{ fill: "#64748B", fontSize: 10 }} tickLine={false} axisLine={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+            <XAxis dataKey="label" tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} />
+            <YAxis tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} />
             <Tooltip contentStyle={tooltipStyle} />
             <Legend
               wrapperStyle={{ fontSize: 11 }}
-              formatter={(value) => <span style={{ color: "#94A3B8" }}>{value}</span>}
+              formatter={(value) => <span style={{ color: "#64748B" }}>{value}</span>}
             />
-            <Line type="monotone" dataKey="sales_actual" name="Actual" stroke="#10B981" strokeWidth={2} dot={{ r: 3, fill: "#10B981" }} />
-            <Line type="monotone" dataKey="sales_target" name="Target" stroke="#064E3B" strokeWidth={1.5} strokeDasharray="4 3" dot={false} />
+            <Line type="monotone" dataKey="sales_actual" name="Actual" stroke="#059669" strokeWidth={2} dot={{ r: 3, fill: "#059669" }} />
+            <Line type="monotone" dataKey="sales_target" name="Target" stroke="#D1FAE5" strokeWidth={1.5} strokeDasharray="4 3" dot={false} />
           </LineChart>
         </ResponsiveContainer>
       </ChartCard>
@@ -89,9 +89,9 @@ export default function GroupTrendCharts({ data }: { data: TrendPoint[] }) {
       <ChartCard title="Net New Members (NNM) by Month">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} style={CHART_STYLE}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#252B45" />
-            <XAxis dataKey="label" tick={{ fill: "#64748B", fontSize: 10 }} tickLine={false} axisLine={false} />
-            <YAxis tick={{ fill: "#64748B", fontSize: 10 }} tickLine={false} axisLine={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+            <XAxis dataKey="label" tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} />
+            <YAxis tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} />
             <Tooltip contentStyle={tooltipStyle} />
             <Bar dataKey="nnm_actual" name="NNM" fill="#14B8A6" radius={[3, 3, 0, 0]} />
           </BarChart>
@@ -102,9 +102,9 @@ export default function GroupTrendCharts({ data }: { data: TrendPoint[] }) {
       <ChartCard title="Total Marketing Spend by Month">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} style={CHART_STYLE}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#252B45" />
-            <XAxis dataKey="label" tick={{ fill: "#64748B", fontSize: 10 }} tickLine={false} axisLine={false} />
-            <YAxis tick={{ fill: "#64748B", fontSize: 10, }} tickLine={false} axisLine={false}
+            <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+            <XAxis dataKey="label" tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} />
+            <YAxis tick={{ fill: "#94A3B8", fontSize: 10, }} tickLine={false} axisLine={false}
               tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
             <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`$${v.toLocaleString()}`, "Spend"]} />
             <Bar dataKey="spend_actual" name="Spend ($)" fill="#3B82F6" radius={[3, 3, 0, 0]} />

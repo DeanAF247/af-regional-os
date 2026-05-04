@@ -86,12 +86,12 @@ export default function TransferEditor({ clubs, periods, transfers }: Props) {
     const val = values[k] ?? "";
     const status = saving[k];
     const isIn = field === "in";
-    const color = isIn ? "text-[#10B981]" : "text-[#EF4444]";
+    const color = isIn ? "text-[#059669]" : "text-[#EF4444]";
 
     return (
       <div className="flex items-center justify-end gap-1">
         {isIn
-          ? <ArrowDownLeft size={10} className="text-[#10B981] flex-shrink-0" />
+          ? <ArrowDownLeft size={10} className="text-[#059669] flex-shrink-0" />
           : <ArrowUpRight  size={10} className="text-[#EF4444] flex-shrink-0" />
         }
         {isEditing ? (
@@ -103,17 +103,17 @@ export default function TransferEditor({ clubs, periods, transfers }: Props) {
             onChange={(e) => setValues((v) => ({ ...v, [k]: e.target.value }))}
             onBlur={() => handleBlur(clubId, periodId, field)}
             onKeyDown={(e) => handleKeyDown(e, clubId, periodId, field)}
-            className="w-14 px-1.5 py-0.5 bg-[#0B0E1A] border border-[#7C3AED] rounded text-right text-[#F1F5F9] text-xs focus:outline-none"
+            className="w-14 px-1.5 py-0.5 bg-[#FFFFFF] border border-[#7C3AED] rounded text-right text-[#0F172A] text-xs focus:outline-none"
           />
         ) : (
           <button
             onClick={() => setEditing(k)}
-            className="w-14 text-right px-1 py-0.5 rounded hover:bg-[#252B45] transition-colors"
+            className="w-14 text-right px-1 py-0.5 rounded hover:bg-[#E2E8F0] transition-colors"
           >
             {status === "saving" ? (
               <Loader2 size={10} className="animate-spin ml-auto" />
             ) : status === "saved" ? (
-              <span className="flex items-center justify-end gap-0.5 text-[#10B981] text-[10px]">
+              <span className="flex items-center justify-end gap-0.5 text-[#059669] text-[10px]">
                 <Check size={9} />{val || "0"}
               </span>
             ) : (
@@ -138,12 +138,12 @@ export default function TransferEditor({ clubs, periods, transfers }: Props) {
   }
 
   return (
-    <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden mb-8">
+    <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden mb-8">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide">
-              <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#1A1F35] min-w-[150px]">Club</th>
+            <tr className="bg-[#F8FAFC] text-[#64748B] text-[11px] uppercase tracking-wide">
+              <th className="text-left px-4 py-3 font-semibold sticky left-0 bg-[#F8FAFC] min-w-[150px]">Club</th>
               {periods.map((p) => (
                 <th key={p.id} className="text-right px-3 py-3 font-semibold whitespace-nowrap min-w-[100px]">
                   {p.period_label.split(" ")[0].slice(0, 3)} {p.period_label.split(" ")[1]?.slice(2)}
@@ -162,9 +162,9 @@ export default function TransferEditor({ clubs, periods, transfers }: Props) {
               const ytdNet = ytdIn - ytdOut;
 
               return (
-                <tr key={club.id} className="border-t border-[#252B45]/60">
+                <tr key={club.id} className="border-t border-[#E2E8F0]/60">
                   {/* Club name — spans 2 sub-rows via rowSpan isn't easy in React, so use a single row with stacked cells */}
-                  <td className="px-4 py-2 font-semibold text-[#F1F5F9] sticky left-0 bg-[#131729] align-middle">
+                  <td className="px-4 py-2 font-semibold text-[#0F172A] sticky left-0 bg-[#FFFFFF] align-middle">
                     {club.name}
                   </td>
                   {periods.map((p) => {
@@ -177,7 +177,7 @@ export default function TransferEditor({ clubs, periods, transfers }: Props) {
                           {renderCell(club.id, p.id, "in")}
                           {renderCell(club.id, p.id, "out")}
                           {(inVal > 0 || outVal > 0) && (
-                            <span className={`text-[10px] font-bold border-t border-[#252B45] pt-0.5 w-full text-right ${net > 0 ? "text-[#10B981]" : net < 0 ? "text-[#EF4444]" : "text-[#64748B]"}`}>
+                            <span className={`text-[10px] font-bold border-t border-[#E2E8F0] pt-0.5 w-full text-right ${net > 0 ? "text-[#059669]" : net < 0 ? "text-[#EF4444]" : "text-[#94A3B8]"}`}>
                               {net > 0 ? `+${net}` : net}
                             </span>
                           )}
@@ -186,7 +186,7 @@ export default function TransferEditor({ clubs, periods, transfers }: Props) {
                     );
                   })}
                   <td className="px-4 py-2 text-right align-middle">
-                    <span className={`text-sm font-bold ${ytdNet > 0 ? "text-[#10B981]" : ytdNet < 0 ? "text-[#EF4444]" : "text-[#64748B]"}`}>
+                    <span className={`text-sm font-bold ${ytdNet > 0 ? "text-[#059669]" : ytdNet < 0 ? "text-[#EF4444]" : "text-[#94A3B8]"}`}>
                       {ytdIn > 0 || ytdOut > 0 ? (ytdNet > 0 ? `+${ytdNet}` : ytdNet) : "—"}
                     </span>
                   </td>
@@ -195,17 +195,17 @@ export default function TransferEditor({ clubs, periods, transfers }: Props) {
             })}
 
             {/* Group total row */}
-            <tr className="border-t-2 border-[#252B45] bg-[#1A1F35] font-bold">
-              <td className="px-4 py-3 text-[#A78BFA] sticky left-0 bg-[#1A1F35]">Group Total</td>
+            <tr className="border-t-2 border-[#E2E8F0] bg-[#F8FAFC] font-bold">
+              <td className="px-4 py-3 text-[#6D28D9] sticky left-0 bg-[#F8FAFC]">Group Total</td>
               {periods.map((p) => {
                 const { totalIn, totalOut, net } = colTotals(p.id);
                 return (
                   <td key={p.id} className="px-3 py-3 text-right">
                     <div className="flex flex-col items-end gap-0.5">
-                      <span className="text-[#10B981] text-xs">↓ {totalIn > 0 ? totalIn : "—"}</span>
+                      <span className="text-[#059669] text-xs">↓ {totalIn > 0 ? totalIn : "—"}</span>
                       <span className="text-[#EF4444] text-xs">↑ {totalOut > 0 ? totalOut : "—"}</span>
                       {(totalIn > 0 || totalOut > 0) && (
-                        <span className={`text-xs font-bold border-t border-[#252B45]/60 pt-0.5 ${net > 0 ? "text-[#10B981]" : net < 0 ? "text-[#EF4444]" : "text-[#64748B]"}`}>
+                        <span className={`text-xs font-bold border-t border-[#E2E8F0]/60 pt-0.5 ${net > 0 ? "text-[#059669]" : net < 0 ? "text-[#EF4444]" : "text-[#94A3B8]"}`}>
                           Net {net > 0 ? `+${net}` : net}
                         </span>
                       )}
@@ -223,7 +223,7 @@ export default function TransferEditor({ clubs, periods, transfers }: Props) {
                   }
                   const net = tIn - tOut;
                   return (
-                    <span className={`text-sm font-bold ${net > 0 ? "text-[#10B981]" : net < 0 ? "text-[#EF4444]" : "text-[#64748B]"}`}>
+                    <span className={`text-sm font-bold ${net > 0 ? "text-[#059669]" : net < 0 ? "text-[#EF4444]" : "text-[#94A3B8]"}`}>
                       {tIn > 0 || tOut > 0 ? (net > 0 ? `+${net}` : net) : "—"}
                     </span>
                   );
@@ -233,7 +233,7 @@ export default function TransferEditor({ clubs, periods, transfers }: Props) {
           </tbody>
         </table>
       </div>
-      <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#252B45]">
+      <p className="px-4 py-2.5 text-[11px] text-[#475569] border-t border-[#E2E8F0]">
         ↓ In = members transferring into this club &nbsp;·&nbsp; ↑ Out = members leaving to another club &nbsp;·&nbsp; Click to edit · Enter to save
       </p>
     </div>

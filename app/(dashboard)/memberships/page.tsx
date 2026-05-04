@@ -120,11 +120,11 @@ export default async function MembershipsPage() {
 
       {!hasAnyPeriods ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#1A1F35] border border-[#252B45] flex items-center justify-center mb-4">
-            <Users size={28} className="text-[#64748B]" />
+          <div className="w-16 h-16 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center mb-4">
+            <Users size={28} className="text-[#94A3B8]" />
           </div>
-          <h2 className="text-lg font-bold text-[#F1F5F9] mb-2">No periods yet</h2>
-          <p className="text-[#64748B] text-sm max-w-sm">
+          <h2 className="text-lg font-bold text-[#0F172A] mb-2">No periods yet</h2>
+          <p className="text-[#94A3B8] text-sm max-w-sm">
             Upload your first KPI period first — membership data shares the same monthly periods.
           </p>
         </div>

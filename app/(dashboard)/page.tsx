@@ -17,6 +17,7 @@ const CLUB_SLUGS: Record<string, string> = {
   "Kotara":         "kotara",
   "Edgeworth":      "edgeworth",
   "Lake Haven":     "lake-haven",
+  "Toukley":        "toukley",
 };
 
 export default async function OverviewPage({
@@ -155,11 +156,11 @@ export default async function OverviewPage({
       {!hasData ? (
         /* Empty state */
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#1A1F35] border border-[#252B45] flex items-center justify-center mb-4">
-            <UploadCloud size={28} className="text-[#64748B]" />
+          <div className="w-16 h-16 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center mb-4">
+            <UploadCloud size={28} className="text-[#94A3B8]" />
           </div>
-          <h2 className="text-lg font-bold text-[#F1F5F9] mb-2">No KPI data yet</h2>
-          <p className="text-[#64748B] text-sm mb-6 max-w-sm">
+          <h2 className="text-lg font-bold text-[#0F172A] mb-2">No KPI data yet</h2>
+          <p className="text-[#94A3B8] text-sm mb-6 max-w-sm">
             Upload your Group Summary Sheet to start tracking performance across all 6 clubs.
           </p>
           <Link
@@ -245,11 +246,11 @@ export default async function OverviewPage({
           {hasData && (
             <>
               <SectionLabel>Marketing Spend · {latestPeriod?.period_label}</SectionLabel>
-              <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden mb-8">
+              <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden mb-8">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-[#1A1F35] text-[#94A3B8] text-[11px] uppercase tracking-wide">
+                      <tr className="bg-[#F8FAFC] text-[#64748B] text-[11px] uppercase tracking-wide">
                         <th className="text-left px-4 py-3 font-semibold">Club</th>
                         <th className="text-right px-4 py-3 font-semibold">Spend</th>
                         <th className="text-right px-4 py-3 font-semibold">Budget</th>
@@ -264,28 +265,28 @@ export default async function OverviewPage({
                         const isOver = surplusOver < 0;
                         const barWidth = club.spend_pct != null ? Math.min(club.spend_pct, 150) : 0;
                         return (
-                          <tr key={club.id} className="border-t border-[#252B45]/60 hover:bg-[#1A1F35]/50 transition-colors">
-                            <td className="px-4 py-3 font-semibold text-[#F1F5F9]">
-                              <Link href={`/clubs/${club.slug}`} className="hover:text-[#A78BFA] transition-colors">
+                          <tr key={club.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/50 transition-colors">
+                            <td className="px-4 py-3 font-semibold text-[#0F172A]">
+                              <Link href={`/clubs/${club.slug}`} className="hover:text-[#6D28D9] transition-colors">
                                 {club.name}
                               </Link>
                             </td>
-                            <td className="px-4 py-3 text-right text-[#F1F5F9]">
+                            <td className="px-4 py-3 text-right text-[#0F172A]">
                               {formatCurrency(club.spend_actual)}
                             </td>
-                            <td className="px-4 py-3 text-right text-[#94A3B8]">
+                            <td className="px-4 py-3 text-right text-[#64748B]">
                               {formatCurrency(club.spend_budget)}
                             </td>
                             <td className={`px-4 py-3 text-right font-semibold ${
-                              club.spend_pct != null && club.spend_pct > 100 ? "text-[#EF4444]" : "text-[#10B981]"
+                              club.spend_pct != null && club.spend_pct > 100 ? "text-[#EF4444]" : "text-[#059669]"
                             }`}>
                               {formatPercent(club.spend_pct)}
                             </td>
-                            <td className={`px-4 py-3 text-right font-semibold ${isOver ? "text-[#EF4444]" : "text-[#10B981]"}`}>
+                            <td className={`px-4 py-3 text-right font-semibold ${isOver ? "text-[#EF4444]" : "text-[#059669]"}`}>
                               {isOver ? "-" : "+"}{formatCurrency(Math.abs(surplusOver))}
                             </td>
                             <td className="px-4 py-3">
-                              <div className="h-1.5 bg-[#252B45] rounded-full overflow-hidden">
+                              <div className="h-1.5 bg-[#E2E8F0] rounded-full overflow-hidden">
                                 <div
                                   className={`h-full rounded-full ${
                                     club.spend_pct != null && club.spend_pct > 105 ? "bg-[#EF4444]" : "bg-[#7C3AED]"
@@ -298,14 +299,14 @@ export default async function OverviewPage({
                         );
                       })}
                       {/* Total row */}
-                      <tr className="border-t-2 border-[#252B45] bg-[#1A1F35] font-bold">
-                        <td className="px-4 py-3 text-[#A78BFA]">Group Total</td>
-                        <td className="px-4 py-3 text-right text-[#F1F5F9]">{formatCurrency(totalSpend)}</td>
-                        <td className="px-4 py-3 text-right text-[#94A3B8]">{formatCurrency(totalBudget)}</td>
-                        <td className={`px-4 py-3 text-right ${spendPct != null && spendPct > 100 ? "text-[#EF4444]" : "text-[#10B981]"}`}>
+                      <tr className="border-t-2 border-[#E2E8F0] bg-[#F8FAFC] font-bold">
+                        <td className="px-4 py-3 text-[#6D28D9]">Group Total</td>
+                        <td className="px-4 py-3 text-right text-[#0F172A]">{formatCurrency(totalSpend)}</td>
+                        <td className="px-4 py-3 text-right text-[#64748B]">{formatCurrency(totalBudget)}</td>
+                        <td className={`px-4 py-3 text-right ${spendPct != null && spendPct > 100 ? "text-[#EF4444]" : "text-[#059669]"}`}>
                           {formatPercent(spendPct)}
                         </td>
-                        <td className={`px-4 py-3 text-right ${totalBudget - totalSpend < 0 ? "text-[#EF4444]" : "text-[#10B981]"}`}>
+                        <td className={`px-4 py-3 text-right ${totalBudget - totalSpend < 0 ? "text-[#EF4444]" : "text-[#059669]"}`}>
                           {totalBudget - totalSpend < 0 ? "-" : "+"}{formatCurrency(Math.abs(totalBudget - totalSpend))}
                         </td>
                         <td className="px-4 py-3" />

@@ -41,7 +41,7 @@ function blank(clubs: Club[]): Row[] {
   }));
 }
 
-const INPUT = "w-full px-2 py-1.5 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm text-right focus:outline-none focus:border-[#7C3AED] transition-colors placeholder:text-[#2D3555]";
+const INPUT = "w-full px-2 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm text-right focus:outline-none focus:border-[#7C3AED] transition-colors placeholder:text-[#CBD5E1]";
 
 const FIELDS: { key: keyof Row; label: string; group?: string }[] = [
   { key: "leads_actual",  label: "Leads",       group: "KPIs"      },
@@ -194,9 +194,9 @@ export default function KpiEntryForm({
   if (success) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
-        <CheckCircle size={48} className="text-[#10B981] mb-4" />
-        <h2 className="text-xl font-bold text-[#F1F5F9] mb-2">KPIs Saved!</h2>
-        <p className="text-[#94A3B8] text-sm">Returning to dashboard…</p>
+        <CheckCircle size={48} className="text-[#059669] mb-4" />
+        <h2 className="text-xl font-bold text-[#0F172A] mb-2">KPIs Saved!</h2>
+        <p className="text-[#64748B] text-sm">Returning to dashboard…</p>
       </div>
     );
   }
@@ -209,8 +209,8 @@ export default function KpiEntryForm({
     <form onSubmit={handleSubmit} className="space-y-6">
 
       {/* ── Period selector ──────────────────────────────────────────────────── */}
-      <div className="bg-[#131729] border border-[#252B45] rounded-xl p-5">
-        <div className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-widest mb-4">Select Period</div>
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5">
+        <div className="text-[11px] font-bold text-[#64748B] uppercase tracking-widest mb-4">Select Period</div>
 
         {/* Mode toggle */}
         <div className="flex gap-2 mb-4">
@@ -221,7 +221,7 @@ export default function KpiEntryForm({
               className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                 mode === "existing"
                   ? "bg-[#7C3AED] text-white"
-                  : "bg-[#1A1F35] border border-[#252B45] text-[#64748B] hover:text-[#F1F5F9]"
+                  : "bg-[#F8FAFC] border border-[#E2E8F0] text-[#94A3B8] hover:text-[#0F172A]"
               }`}
             >
               <PencilLine size={14} className="inline mr-1.5 -mt-0.5" />
@@ -234,7 +234,7 @@ export default function KpiEntryForm({
             className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
               mode === "new"
                 ? "bg-[#7C3AED] text-white"
-                : "bg-[#1A1F35] border border-[#252B45] text-[#64748B] hover:text-[#F1F5F9]"
+                : "bg-[#F8FAFC] border border-[#E2E8F0] text-[#94A3B8] hover:text-[#0F172A]"
             }`}
           >
             <Plus size={14} className="inline mr-1.5 -mt-0.5" />
@@ -247,14 +247,14 @@ export default function KpiEntryForm({
             <select
               value={selPeriod}
               onChange={(e) => setSelPeriod(e.target.value)}
-              className="px-3 py-2 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED]"
+              className="px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED]"
             >
               {periods.map((p) => (
                 <option key={p.id} value={p.id}>{p.period_label}</option>
               ))}
             </select>
             {fetching && (
-              <span className="text-[#64748B] text-sm animate-pulse">Loading data…</span>
+              <span className="text-[#94A3B8] text-sm animate-pulse">Loading data…</span>
             )}
           </div>
         ) : (
@@ -262,45 +262,45 @@ export default function KpiEntryForm({
             <select
               value={newMonth}
               onChange={(e) => setNewMonth(e.target.value)}
-              className="px-3 py-2 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED]"
+              className="px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED]"
             >
               {MONTHS.map((m) => <option key={m}>{m}</option>)}
             </select>
             <select
               value={newYear}
               onChange={(e) => setNewYear(e.target.value)}
-              className="px-3 py-2 bg-[#0B0E1A] border border-[#252B45] rounded-lg text-[#F1F5F9] text-sm focus:outline-none focus:border-[#7C3AED]"
+              className="px-3 py-2 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED]"
             >
               {YEARS.map((y) => <option key={y}>{y}</option>)}
             </select>
           </div>
         )}
 
-        <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-[#3B1F7A]/30 border border-[#7C3AED]/30 rounded-lg text-[#A78BFA] text-sm font-semibold">
+        <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-[#EDE9FE]/30 border border-[#7C3AED]/30 rounded-lg text-[#6D28D9] text-sm font-semibold">
           {periodLabel}
         </div>
       </div>
 
       {/* ── KPI Entry Table ───────────────────────────────────────────────────── */}
-      <div className="bg-[#131729] border border-[#252B45] rounded-xl overflow-hidden">
-        <div className="bg-[#1A1F35] px-4 py-3 border-b border-[#252B45] flex items-center justify-between">
-          <span className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-widest">
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
+        <div className="bg-[#F8FAFC] px-4 py-3 border-b border-[#E2E8F0] flex items-center justify-between">
+          <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-widest">
             Club KPIs — {periodLabel}
           </span>
-          <span className="text-[11px] text-[#64748B]">Tab between cells to move quickly</span>
+          <span className="text-[11px] text-[#94A3B8]">Tab between cells to move quickly</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#0B0E1A]/60 text-[#64748B] text-[10px] uppercase tracking-wide border-b border-[#252B45]">
-                <th className="text-left px-4 py-2.5 font-semibold sticky left-0 bg-[#0B0E1A]/80">Club</th>
+              <tr className="bg-[#FFFFFF]/60 text-[#94A3B8] text-[10px] uppercase tracking-wide border-b border-[#E2E8F0]">
+                <th className="text-left px-4 py-2.5 font-semibold sticky left-0 bg-[#FFFFFF]/80">Club</th>
                 {FIELDS.map((f, i) => (
                   <th
                     key={f.key}
                     className={`text-right px-2 py-2.5 font-semibold whitespace-nowrap ${
-                      f.group === "Transfers" ? "text-[#60A5FA]" : ""
-                    } ${i > 0 && FIELDS[i - 1].group !== f.group ? "border-l border-[#252B45]" : ""}`}
+                      f.group === "Transfers" ? "text-[#2563EB]" : ""
+                    } ${i > 0 && FIELDS[i - 1].group !== f.group ? "border-l border-[#E2E8F0]" : ""}`}
                   >
                     {f.label}
                   </th>
@@ -311,14 +311,14 @@ export default function KpiEntryForm({
               {clubs.map((club, i) => {
                 const row = rows.find((r) => r.club_id === club.id)!;
                 return (
-                  <tr key={club.id} className={`border-t border-[#252B45]/60 ${i % 2 === 1 ? "bg-[#1A1F35]/20" : ""}`}>
-                    <td className="px-4 py-2 font-semibold text-[#F1F5F9] whitespace-nowrap sticky left-0 bg-[#131729]">
+                  <tr key={club.id} className={`border-t border-[#E2E8F0]/60 ${i % 2 === 1 ? "bg-[#F8FAFC]/20" : ""}`}>
+                    <td className="px-4 py-2 font-semibold text-[#0F172A] whitespace-nowrap sticky left-0 bg-[#FFFFFF]">
                       {club.name}
                     </td>
                     {FIELDS.map((f, i) => (
                       <td
                         key={f.key}
-                        className={`px-1.5 py-1.5 ${i > 0 && FIELDS[i - 1].group !== f.group ? "border-l border-[#252B45]" : ""}`}
+                        className={`px-1.5 py-1.5 ${i > 0 && FIELDS[i - 1].group !== f.group ? "border-l border-[#E2E8F0]" : ""}`}
                       >
                         <input
                           type="number"
@@ -341,7 +341,7 @@ export default function KpiEntryForm({
 
       {/* ── Error ────────────────────────────────────────────────────────────── */}
       {error && (
-        <div className="flex items-start gap-3 bg-[#7F1D1D]/40 border border-[#EF4444]/30 rounded-lg px-4 py-3 text-[#EF4444] text-sm">
+        <div className="flex items-start gap-3 bg-[#FEE2E2]/40 border border-[#EF4444]/30 rounded-lg px-4 py-3 text-[#EF4444] text-sm">
           <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
           {error}
         </div>
@@ -359,7 +359,7 @@ export default function KpiEntryForm({
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-6 py-2.5 bg-[#1A1F35] border border-[#252B45] hover:border-[#3B1F7A] text-[#94A3B8] hover:text-[#F1F5F9] font-semibold rounded-lg text-sm transition-colors"
+          className="px-6 py-2.5 bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#EDE9FE] text-[#64748B] hover:text-[#0F172A] font-semibold rounded-lg text-sm transition-colors"
         >
           Cancel
         </button>
