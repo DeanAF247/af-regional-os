@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Fragment } from "react";
 import PageHeader from "@/components/page-header";
 import {
   Plus, X, ChevronDown, Calendar, Circle, CheckCircle2, Clock,
@@ -236,184 +236,7 @@ function ProjectModal({ mode, onSave, onClose }: {
   );
 }
 
-// ─── Project detail panel (tasks live here) ───────────────────────────────────
-
-function DetailPanel({ project, onClose, onUpdateTasks, onEdit }: {
-  project: Project;
-  onClose: () => void;
-  onUpdateTasks: (projectId: string, tasks: Task[]) => void;
-  onEdit: (project: Project) => void;
-}) {
-  const [newTaskText, setNewTaskText] = useState("");
-  const [newTaskDue, setNewTaskDue]   = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => { inputRef.current?.focus(); }, [project.id]);
-
-  function addTask() {
-    if (!newTaskText.trim()) return;
-    const task: Task = { id: crypto.randomUUID(), text: newTaskText.trim(), done: false, dueDate: newTaskDue };
-    onUpdateTasks(project.id, [...project.tasks, task]);
-    setNewTaskText("");
-    setNewTaskDue("");
-  }
-
-  function toggleTask(id: string) {
-    onUpdateTasks(project.id, project.tasks.map((t) => t.id === id ? { ...t, done: !t.done } : t));
-  }
-
-  function deleteTask(id: string) {
-    onUpdateTasks(project.id, project.tasks.filter((t) => t.id !== id));
-  }
-
-  const prog = taskProgress(project.tasks);
-  const statusCfg = STATUS_CONFIG[project.status];
-
-  const pending   = project.tasks.filter((t) => !t.done);
-  const completed = project.tasks.filter((t) => t.done);
-
-  return (
-    <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
-
-      {/* Panel */}
-      <div className="fixed inset-y-0 right-0 w-full max-w-[480px] bg-[#0D1120] border-l border-[#252B45] z-50 flex flex-col shadow-2xl">
-
-        {/* Header */}
-        <div className="flex items-start justify-between px-6 py-5 border-b border-[#252B45] flex-shrink-0">
-          <div className="flex-1 min-w-0 pr-4">
-            <h2 className="text-[#F1F5F9] font-bold text-[16px] leading-snug">{project.name}</h2>
-            <div className="flex items-center gap-2 mt-2 flex-wrap">
-              <StatusBadge status={project.status} />
-              <PriorityBadge priority={project.priority} />
-            </div>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <button onClick={() => onEdit(project)} className="p-2 text-[#64748B] hover:text-[#A78BFA] hover:bg-[#1A1F35] rounded-lg transition-colors">
-              <Pencil size={15} />
-            </button>
-            <button onClick={onClose} className="p-2 text-[#64748B] hover:text-[#F1F5F9] hover:bg-[#1A1F35] rounded-lg transition-colors">
-              <X size={15} />
-            </button>
-          </div>
-        </div>
-
-        {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
-
-          {/* Meta */}
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label: "Club",     value: project.club },
-              { label: "Owner",    value: project.owner || "—" },
-              { label: "Due Date", value: project.dueDate ? formatDate(project.dueDate) : "—" },
-            ].map(({ label, value }) => (
-              <div key={label} className="bg-[#131729] border border-[#252B45] rounded-xl px-4 py-3">
-                <div className="text-[#64748B] text-[10px] font-semibold uppercase tracking-wider mb-1">{label}</div>
-                <div className="text-[#F1F5F9] text-[13px] font-semibold">{value}</div>
-              </div>
-            ))}
-          </div>
-
-          {project.notes && (
-            <div className="bg-[#131729] border border-[#252B45] rounded-xl px-4 py-3">
-              <div className="text-[#64748B] text-[10px] font-semibold uppercase tracking-wider mb-1.5">Notes</div>
-              <p className="text-[#94A3B8] text-[13px] leading-relaxed">{project.notes}</p>
-            </div>
-          )}
-
-          {/* Task progress bar */}
-          {prog && (
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2 text-[#94A3B8] text-[12px] font-semibold">
-                  <ListChecks size={14} />
-                  Tasks
-                </div>
-                <span className="text-[12px] font-semibold text-[#64748B]">
-                  <span className="text-[#34D399]">{prog.done}</span> / {prog.total} done
-                </span>
-              </div>
-              <div className="h-1.5 bg-[#252B45] rounded-full overflow-hidden">
-                <div
-                  className={cn("h-full rounded-full transition-all duration-500", prog.pct === 100 ? "bg-[#10B981]" : "bg-[#7C3AED]")}
-                  style={{ width: `${prog.pct}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          {!prog && (
-            <div className="flex items-center gap-2 text-[#94A3B8] text-[12px] font-semibold">
-              <ListChecks size={14} />
-              Tasks
-            </div>
-          )}
-
-          {/* Add task input */}
-          <div className="bg-[#131729] border border-[#252B45] rounded-xl p-3 space-y-2">
-            <input
-              ref={inputRef}
-              value={newTaskText}
-              onChange={(e) => setNewTaskText(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && addTask()}
-              placeholder="Add a task… (press Enter)"
-              className="w-full bg-[#1A1F35] border border-[#252B45] text-[#F1F5F9] text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[#7C3AED] placeholder:text-[#334155]"
-            />
-            <div className="flex items-center gap-2">
-              <input
-                type="date"
-                value={newTaskDue}
-                onChange={(e) => setNewTaskDue(e.target.value)}
-                title="Optional due date"
-                className="flex-1 bg-[#1A1F35] border border-[#252B45] text-[#94A3B8] text-[12px] rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#7C3AED]"
-              />
-              <button
-                onClick={addTask}
-                disabled={!newTaskText.trim()}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:opacity-40 disabled:cursor-not-allowed text-white text-[12px] font-semibold rounded-lg transition-colors"
-              >
-                <Plus size={13} />
-                Add
-              </button>
-            </div>
-          </div>
-
-          {/* Pending tasks */}
-          {pending.length > 0 && (
-            <div className="space-y-1.5">
-              {pending.map((task) => (
-                <TaskRow key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} />
-              ))}
-            </div>
-          )}
-
-          {/* Completed tasks */}
-          {completed.length > 0 && (
-            <div>
-              <div className="text-[#475569] text-[10px] font-semibold uppercase tracking-widest mb-2">
-                Completed · {completed.length}
-              </div>
-              <div className="space-y-1.5">
-                {completed.map((task) => (
-                  <TaskRow key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {project.tasks.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-8 text-center text-[#334155]">
-              <ListChecks size={28} className="mb-2 opacity-40" />
-              <p className="text-[13px]">No tasks yet — add one above</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </>
-  );
-}
+// ─── Task row ─────────────────────────────────────────────────────────────────
 
 function TaskRow({ task, onToggle, onDelete }: {
   task: Task;
@@ -429,10 +252,7 @@ function TaskRow({ task, onToggle, onDelete }: {
         ? "bg-[#0D1120] border-[#1A1F35]"
         : "bg-[#131729] border-[#252B45] hover:border-[#334155]",
     )}>
-      <button
-        onClick={() => onToggle(task.id)}
-        className="flex-shrink-0 mt-0.5"
-      >
+      <button onClick={() => onToggle(task.id)} className="flex-shrink-0 mt-0.5">
         {task.done
           ? <CheckCircle2 size={16} className="text-[#10B981]" />
           : <Circle size={16} className="text-[#334155] hover:text-[#7C3AED] transition-colors" />
@@ -456,6 +276,110 @@ function TaskRow({ task, onToggle, onDelete }: {
       >
         <Trash2 size={12} />
       </button>
+    </div>
+  );
+}
+
+// ─── Inline tasks panel ───────────────────────────────────────────────────────
+
+function InlineTasks({ project, onUpdateTasks }: {
+  project: Project;
+  onUpdateTasks: (projectId: string, tasks: Task[]) => void;
+}) {
+  const [newTaskText, setNewTaskText] = useState("");
+  const [newTaskDue,  setNewTaskDue]  = useState("");
+
+  function addTask() {
+    if (!newTaskText.trim()) return;
+    const task: Task = { id: crypto.randomUUID(), text: newTaskText.trim(), done: false, dueDate: newTaskDue };
+    onUpdateTasks(project.id, [...project.tasks, task]);
+    setNewTaskText("");
+    setNewTaskDue("");
+  }
+
+  function toggleTask(id: string) {
+    onUpdateTasks(project.id, project.tasks.map((t) => t.id === id ? { ...t, done: !t.done } : t));
+  }
+
+  function deleteTask(id: string) {
+    onUpdateTasks(project.id, project.tasks.filter((t) => t.id !== id));
+  }
+
+  const prog      = taskProgress(project.tasks);
+  const pending   = project.tasks.filter((t) => !t.done);
+  const completed = project.tasks.filter((t) => t.done);
+
+  return (
+    <div className="space-y-3">
+      {/* Progress bar */}
+      {prog && (
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-1.5 text-[#94A3B8] text-[11px] font-semibold">
+              <ListChecks size={13} /> Tasks
+            </div>
+            <span className="text-[11px] font-semibold text-[#64748B]">
+              <span className="text-[#34D399]">{prog.done}</span> / {prog.total} done
+            </span>
+          </div>
+          <div className="h-1.5 bg-[#252B45] rounded-full overflow-hidden">
+            <div
+              className={cn("h-full rounded-full transition-all duration-500", prog.pct === 100 ? "bg-[#10B981]" : "bg-[#7C3AED]")}
+              style={{ width: `${prog.pct}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Add task input */}
+      <div className="flex items-center gap-2">
+        <input
+          value={newTaskText}
+          onChange={(e) => setNewTaskText(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && addTask()}
+          placeholder="Add a task… (press Enter)"
+          className="flex-1 bg-[#1A1F35] border border-[#252B45] text-[#F1F5F9] text-[12px] rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#7C3AED] placeholder:text-[#334155]"
+        />
+        <input
+          type="date"
+          value={newTaskDue}
+          onChange={(e) => setNewTaskDue(e.target.value)}
+          className="bg-[#1A1F35] border border-[#252B45] text-[#94A3B8] text-[12px] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#7C3AED] w-36"
+        />
+        <button
+          onClick={addTask}
+          disabled={!newTaskText.trim()}
+          className="flex items-center gap-1 px-2.5 py-1.5 bg-[#7C3AED] hover:bg-[#6D28D9] disabled:opacity-40 disabled:cursor-not-allowed text-white text-[12px] font-semibold rounded-lg transition-colors flex-shrink-0"
+        >
+          <Plus size={12} /> Add
+        </button>
+      </div>
+
+      {/* Pending tasks */}
+      {pending.length > 0 && (
+        <div className="space-y-1.5">
+          {pending.map((task) => <TaskRow key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} />)}
+        </div>
+      )}
+
+      {/* Completed tasks */}
+      {completed.length > 0 && (
+        <div>
+          <div className="text-[#475569] text-[10px] font-semibold uppercase tracking-widest mb-1.5">
+            Completed · {completed.length}
+          </div>
+          <div className="space-y-1.5">
+            {completed.map((task) => <TaskRow key={task.id} task={task} onToggle={toggleTask} onDelete={deleteTask} />)}
+          </div>
+        </div>
+      )}
+
+      {project.tasks.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-4 text-center text-[#334155]">
+          <ListChecks size={22} className="mb-1.5 opacity-40" />
+          <p className="text-[12px]">No tasks yet — add one above</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -488,9 +412,8 @@ const STORAGE_KEY = "af_projects_v1";
 
 export default function ProjectsPage() {
   const [projects,       setProjects]       = useState<Project[]>(INITIAL_PROJECTS);
-  const [hydrated,       setHydrated]       = useState(false);
   const [modal,          setModal]          = useState<ModalMode | null>(null);
-  const [detailId,       setDetailId]       = useState<string | null>(null);
+  const [expandedId,     setExpandedId]     = useState<string | null>(null);
   const [filterStatus,   setFilterStatus]   = useState<Status | "All">("All");
   const [filterClub,     setFilterClub]     = useState("All Clubs");
   const [filterPriority, setFilterPriority] = useState<Priority | "All">("All");
@@ -501,15 +424,12 @@ export default function ProjectsPage() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) setProjects(JSON.parse(stored));
     } catch {}
-    setHydrated(true);
   }, []);
 
-  // Persist to localStorage whenever projects change (after hydration)
+  // Persist to localStorage whenever projects change
   const persist = useCallback((updated: Project[]) => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch {}
   }, []);
-
-  const detailProject = projects.find((p) => p.id === detailId) ?? null;
 
   function saveProject(p: Project) {
     setProjects((prev) => {
@@ -523,7 +443,7 @@ export default function ProjectsPage() {
   }
 
   function deleteProject(id: string) {
-    if (detailId === id) setDetailId(null);
+    if (expandedId === id) setExpandedId(null);
     setProjects((prev) => {
       const updated = prev.filter((p) => p.id !== id);
       persist(updated);
@@ -537,6 +457,10 @@ export default function ProjectsPage() {
       persist(updated);
       return updated;
     });
+  }
+
+  function toggleExpand(id: string) {
+    setExpandedId((prev) => (prev === id ? null : id));
   }
 
   const filtered = projects.filter((p) => {
@@ -554,8 +478,6 @@ export default function ProjectsPage() {
     blocked: projects.filter((p) => p.status === "Blocked").length,
     overdue: projects.filter((p) => p.dueDate && new Date(p.dueDate) < new Date() && p.status !== "Done").length,
   };
-
-  function openDetail(id: string) { setDetailId(id); }
 
   return (
     <div>
@@ -613,55 +535,70 @@ export default function ProjectsPage() {
                 {items.length === 0 && (
                   <div className="flex items-center justify-center h-16 text-[#334155] text-[12px]">No projects</div>
                 )}
-                {items.map((p) => (
-                  <div
-                    key={p.id}
-                    onClick={() => openDetail(p.id)}
-                    className={cn(
-                      "bg-[#131729] border rounded-xl p-3 group transition-all duration-150 cursor-pointer",
-                      detailId === p.id ? "border-[#7C3AED]" : "border-[#252B45] hover:border-[#3B2D6A]",
-                    )}
-                  >
-                    <div className="flex items-start justify-between gap-1 mb-2">
-                      <p className="text-[#F1F5F9] text-[13px] font-semibold leading-tight">{p.name}</p>
-                      <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                        <button onClick={() => setModal({ type: "edit", project: p })} className="p-1 text-[#64748B] hover:text-[#A78BFA] transition-colors opacity-0 group-hover:opacity-100">
-                          <Pencil size={12} />
-                        </button>
-                        <button onClick={() => deleteProject(p.id)} className="p-1 text-[#64748B] hover:text-[#EF4444] transition-colors opacity-0 group-hover:opacity-100">
-                          <Trash2 size={12} />
-                        </button>
-                      </div>
-                    </div>
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between">
-                        <PriorityBadge priority={p.priority} />
-                        <span className={cn(
-                          "text-[11px] rounded px-1.5 py-0.5",
-                          p.club === "Group" ? "text-[#A78BFA] bg-[#3B1F7A]/30" : "text-[#64748B] bg-[#1A1F35]",
-                        )}>
-                          {p.club}
-                        </span>
-                      </div>
-                      {p.dueDate && (
-                        <div className={cn("flex items-center gap-1.5 text-[11px]", isOverdue(p) ? "text-[#F87171]" : "text-[#64748B]")}>
-                          <Calendar size={11} />
-                          {formatDate(p.dueDate)}
-                          {isOverdue(p) && <span className="font-semibold">· Overdue</span>}
-                        </div>
+                {items.map((p) => {
+                  const isExpanded = expandedId === p.id;
+                  return (
+                    <div
+                      key={p.id}
+                      className={cn(
+                        "bg-[#131729] border rounded-xl p-3 group transition-all duration-150",
+                        isExpanded ? "border-[#7C3AED]" : "border-[#252B45] hover:border-[#3B2D6A]",
                       )}
-                      {p.owner && (
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-4 h-4 rounded-full bg-[#7C3AED]/40 border border-[#7C3AED]/60 flex items-center justify-center">
-                            <span className="text-[#A78BFA] text-[8px] font-bold">{p.owner[0].toUpperCase()}</span>
+                    >
+                      {/* Card header — click to expand */}
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => toggleExpand(p.id)}
+                      >
+                        <div className="flex items-start justify-between gap-1 mb-2">
+                          <p className="text-[#F1F5F9] text-[13px] font-semibold leading-tight">{p.name}</p>
+                          <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                            <button onClick={() => setModal({ type: "edit", project: p })} className="p-1 text-[#64748B] hover:text-[#A78BFA] transition-colors opacity-0 group-hover:opacity-100">
+                              <Pencil size={12} />
+                            </button>
+                            <button onClick={() => deleteProject(p.id)} className="p-1 text-[#64748B] hover:text-[#EF4444] transition-colors opacity-0 group-hover:opacity-100">
+                              <Trash2 size={12} />
+                            </button>
                           </div>
-                          <span className="text-[11px] text-[#64748B]">{p.owner}</span>
+                        </div>
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <PriorityBadge priority={p.priority} />
+                            <span className={cn(
+                              "text-[11px] rounded px-1.5 py-0.5",
+                              p.club === "Group" ? "text-[#A78BFA] bg-[#3B1F7A]/30" : "text-[#64748B] bg-[#1A1F35]",
+                            )}>
+                              {p.club}
+                            </span>
+                          </div>
+                          {p.dueDate && (
+                            <div className={cn("flex items-center gap-1.5 text-[11px]", isOverdue(p) ? "text-[#F87171]" : "text-[#64748B]")}>
+                              <Calendar size={11} />
+                              {formatDate(p.dueDate)}
+                              {isOverdue(p) && <span className="font-semibold">· Overdue</span>}
+                            </div>
+                          )}
+                          {p.owner && (
+                            <div className="flex items-center gap-1.5">
+                              <div className="w-4 h-4 rounded-full bg-[#7C3AED]/40 border border-[#7C3AED]/60 flex items-center justify-center">
+                                <span className="text-[#A78BFA] text-[8px] font-bold">{p.owner[0].toUpperCase()}</span>
+                              </div>
+                              <span className="text-[11px] text-[#64748B]">{p.owner}</span>
+                            </div>
+                          )}
+                          <TaskPill tasks={p.tasks} />
+                        </div>
+                      </div>
+
+                      {/* Inline tasks — shown when expanded */}
+                      {isExpanded && (
+                        <div className="mt-3 pt-3 border-t border-[#252B45]">
+                          <InlineTasks project={p} onUpdateTasks={updateTasks} />
                         </div>
                       )}
-                      <TaskPill tasks={p.tasks} />
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           );
@@ -688,61 +625,72 @@ export default function ProjectsPage() {
               </thead>
               <tbody>
                 {filtered.map((p) => {
-                  const prog = taskProgress(p.tasks);
+                  const prog       = taskProgress(p.tasks);
+                  const isExpanded = expandedId === p.id;
                   return (
-                    <tr
-                      key={p.id}
-                      onClick={() => openDetail(p.id)}
-                      className={cn(
-                        "border-t border-[#252B45]/60 transition-colors cursor-pointer group",
-                        detailId === p.id ? "bg-[#1A1F35]" : "hover:bg-[#1A1F35]/50",
-                      )}
-                    >
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <ChevronRight size={13} className={cn("text-[#334155] transition-transform", detailId === p.id && "rotate-90 text-[#A78BFA]")} />
-                          <div>
-                            <div className="text-[#F1F5F9] font-semibold">{p.name}</div>
-                            {p.notes && <div className="text-[#475569] text-[11px] mt-0.5 truncate max-w-xs">{p.notes}</div>}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3"><StatusBadge status={p.status} /></td>
-                      <td className="px-4 py-3"><PriorityBadge priority={p.priority} /></td>
-                      <td className="px-4 py-3 text-[#94A3B8] text-[13px]">{p.club}</td>
-                      <td className={cn("px-4 py-3 text-[13px]", isOverdue(p) ? "text-[#F87171] font-semibold" : "text-[#94A3B8]")}>
-                        {formatDate(p.dueDate)}
-                        {isOverdue(p) && <span className="ml-1 text-[10px]">⚠</span>}
-                      </td>
-                      <td className="px-4 py-3">
-                        {prog ? (
-                          <div className="flex items-center gap-2">
-                            <div className="w-16 h-1.5 bg-[#252B45] rounded-full overflow-hidden">
-                              <div
-                                className={cn("h-full rounded-full", prog.pct === 100 ? "bg-[#10B981]" : "bg-[#7C3AED]")}
-                                style={{ width: `${prog.pct}%` }}
-                              />
-                            </div>
-                            <span className={cn("text-[12px] font-semibold tabular-nums", prog.pct === 100 ? "text-[#34D399]" : "text-[#64748B]")}>
-                              {prog.done}/{prog.total}
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-[#334155] text-[12px]">—</span>
+                    <Fragment key={p.id}>
+                      <tr
+                        onClick={() => toggleExpand(p.id)}
+                        className={cn(
+                          "border-t border-[#252B45]/60 transition-colors cursor-pointer group",
+                          isExpanded ? "bg-[#1A1F35]" : "hover:bg-[#1A1F35]/50",
                         )}
-                      </td>
-                      <td className="px-4 py-3 text-[#94A3B8] text-[13px]">{p.owner || "—"}</td>
-                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button onClick={() => setModal({ type: "edit", project: p })} className="p-1.5 text-[#64748B] hover:text-[#A78BFA] hover:bg-[#1A1F35] rounded-lg transition-colors">
-                            <Pencil size={13} />
-                          </button>
-                          <button onClick={() => deleteProject(p.id)} className="p-1.5 text-[#64748B] hover:text-[#EF4444] hover:bg-[#1A1F35] rounded-lg transition-colors">
-                            <Trash2 size={13} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                      >
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <ChevronRight size={13} className={cn("text-[#334155] transition-transform flex-shrink-0", isExpanded && "rotate-90 text-[#A78BFA]")} />
+                            <div>
+                              <div className="text-[#F1F5F9] font-semibold">{p.name}</div>
+                              {p.notes && <div className="text-[#475569] text-[11px] mt-0.5 truncate max-w-xs">{p.notes}</div>}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3"><StatusBadge status={p.status} /></td>
+                        <td className="px-4 py-3"><PriorityBadge priority={p.priority} /></td>
+                        <td className="px-4 py-3 text-[#94A3B8] text-[13px]">{p.club}</td>
+                        <td className={cn("px-4 py-3 text-[13px]", isOverdue(p) ? "text-[#F87171] font-semibold" : "text-[#94A3B8]")}>
+                          {formatDate(p.dueDate)}
+                          {isOverdue(p) && <span className="ml-1 text-[10px]">⚠</span>}
+                        </td>
+                        <td className="px-4 py-3">
+                          {prog ? (
+                            <div className="flex items-center gap-2">
+                              <div className="w-16 h-1.5 bg-[#252B45] rounded-full overflow-hidden">
+                                <div
+                                  className={cn("h-full rounded-full", prog.pct === 100 ? "bg-[#10B981]" : "bg-[#7C3AED]")}
+                                  style={{ width: `${prog.pct}%` }}
+                                />
+                              </div>
+                              <span className={cn("text-[12px] font-semibold tabular-nums", prog.pct === 100 ? "text-[#34D399]" : "text-[#64748B]")}>
+                                {prog.done}/{prog.total}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-[#334155] text-[12px]">—</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-[#94A3B8] text-[13px]">{p.owner || "—"}</td>
+                        <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onClick={() => setModal({ type: "edit", project: p })} className="p-1.5 text-[#64748B] hover:text-[#A78BFA] hover:bg-[#1A1F35] rounded-lg transition-colors">
+                              <Pencil size={13} />
+                            </button>
+                            <button onClick={() => deleteProject(p.id)} className="p-1.5 text-[#64748B] hover:text-[#EF4444] hover:bg-[#1A1F35] rounded-lg transition-colors">
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      {/* Inline task expansion row */}
+                      {isExpanded && (
+                        <tr className="border-t border-[#7C3AED]/30 bg-[#0D1120]">
+                          <td colSpan={8} className="px-6 py-4">
+                            <InlineTasks project={p} onUpdateTasks={updateTasks} />
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
                   );
                 })}
                 {filtered.length === 0 && (
@@ -764,16 +712,6 @@ export default function ProjectsPage() {
           mode={modal}
           onSave={saveProject}
           onClose={() => setModal(null)}
-        />
-      )}
-
-      {/* Detail panel */}
-      {detailProject && (
-        <DetailPanel
-          project={detailProject}
-          onClose={() => setDetailId(null)}
-          onUpdateTasks={updateTasks}
-          onEdit={(p) => { setModal({ type: "edit", project: p }); }}
         />
       )}
     </div>
