@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PageHeader from "@/components/page-header";
 import { Plus, X, Pencil, Trash2, ChevronDown, Calendar, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -212,7 +212,19 @@ function CampaignModal({ mode, year, onSave, onClose }: {
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function MarketingYearPage() {
-  const [campaigns, setCampaigns] = useState<Campaign[]>(INITIAL_CAMPAIGNS);
+  const [campaigns, setCampaigns] = useState<Campaign[]>(() => {
+    if (typeof window === "undefined") return INITIAL_CAMPAIGNS;
+    try {
+      const stored = localStorage.getItem("year-overview-campaigns");
+      return stored ? JSON.parse(stored) : INITIAL_CAMPAIGNS;
+    } catch {
+      return INITIAL_CAMPAIGNS;
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem("year-overview-campaigns", JSON.stringify(campaigns));
+  }, [campaigns]);
   const [modal,     setModal]     = useState<ModalMode | null>(null);
   const [year,      setYear]      = useState(CURRENT_YEAR);
   const [typeFilter, setTypeFilter] = useState<CampaignType | "All">("All");
