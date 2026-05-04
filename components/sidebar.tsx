@@ -139,7 +139,7 @@ function NavItem({
       {hasChildren && open && (
         <div className="mt-0.5 mb-1">
           {item.children!.map((child) => {
-            const childActive = pathname === child.href || pathname.startsWith(child.href + "/");
+            const childActive = child.href === "/" ? pathname === "/" : pathname === child.href;
             return (
               <Link
                 key={child.href}

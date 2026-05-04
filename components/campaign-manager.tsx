@@ -421,8 +421,12 @@ export default function CampaignManager({ campaigns: initial, clubs }: { campaig
   async function handleDelete(id: string) {
     setDeleting(id);
     const supabase = createClient();
-    await supabase.from("campaigns").delete().eq("id", id);
-    setCampaigns((prev) => prev.filter((c) => c.id !== id));
+    await supabase.from("campaign_clubs").delete().eq("campaign_id", id);
+    const { error } = await supabase.from("campaigns").delete().eq("id", id);
+    if (!error) {
+      setCampaigns((prev) => prev.filter((c) => c.id !== id));
+      router.refresh();
+    }
     setDeleting(null);
   }
 
