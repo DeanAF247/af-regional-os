@@ -147,23 +147,24 @@ export default function KpiEntryForm({
         periodId = period.id;
       }
 
-      const kpiRows = rows
-        .filter((r) => r.leads_actual || r.sales_actual || r.spend_actual || r.nnm_actual)
-        .map((r) => ({
-          club_id:      r.club_id,
-          period_id:    periodId,
-          leads_actual: numOrNull(r.leads_actual),
-          leads_target: numOrNull(r.leads_target),
-          sales_actual: numOrNull(r.sales_actual),
-          sales_target: numOrNull(r.sales_target),
-          nnm_actual:   numOrNull(r.nnm_actual),
-          nnm_target:   numOrNull(r.nnm_target),
-          cpl:          numOrNull(r.cpl),
-          spend_actual: numOrNull(r.spend_actual),
-          spend_budget: numOrNull(r.spend_budget),
-        }));
+      const hasAnyData = rows.some((r) => r.leads_actual || r.sales_actual || r.spend_actual || r.nnm_actual);
+      if (!hasAnyData) throw new Error("Enter data for at least one club before saving.");
 
-      if (kpiRows.length === 0) throw new Error("Enter data for at least one club before saving.");
+      // Include ALL clubs in the upsert (with nulls for blank cells) so that
+      // cleared values are written back to the DB and don't reappear on reload.
+      const kpiRows = rows.map((r) => ({
+        club_id:      r.club_id,
+        period_id:    periodId,
+        leads_actual: numOrNull(r.leads_actual),
+        leads_target: numOrNull(r.leads_target),
+        sales_actual: numOrNull(r.sales_actual),
+        sales_target: numOrNull(r.sales_target),
+        nnm_actual:   numOrNull(r.nnm_actual),
+        nnm_target:   numOrNull(r.nnm_target),
+        cpl:          numOrNull(r.cpl),
+        spend_actual: numOrNull(r.spend_actual),
+        spend_budget: numOrNull(r.spend_budget),
+      }));
 
       const { error: kpiErr } = await supabase
         .from("club_kpis")
