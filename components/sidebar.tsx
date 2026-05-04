@@ -62,7 +62,10 @@ const NAV_ITEMS = [
     label: "Marketing",
     href: "/marketing",
     icon: Megaphone,
-    children: [],
+    children: [
+      { label: "Campaigns",     href: "/marketing" },
+      { label: "Year Overview", href: "/marketing/year" },
+    ],
   },
   {
     label: "Projects",

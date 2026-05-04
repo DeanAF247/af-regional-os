@@ -5,6 +5,7 @@ import SectionLabel from "@/components/section-label";
 import KpiCard from "@/components/kpi-card";
 import ClubKpiHistory from "@/components/club-kpi-history";
 import ClubMembershipMini from "@/components/club-membership-mini";
+import ClubGrowthTracker from "@/components/club-growth-tracker";
 import PeriodSelector from "@/components/period-selector";
 import { formatCurrency, formatPercent, pct } from "@/lib/utils";
 import {
@@ -428,6 +429,16 @@ export default async function ClubDetailPage({
           <p className="text-sm text-[#64748B]">No KPI data for this period.</p>
         </div>
       )}
+
+      {/* ── Yearly Growth Tracker ────────────────────────────────────────────── */}
+      <SectionLabel>Yearly Growth Tracker</SectionLabel>
+      <ClubGrowthTracker
+        clubId={club.id}
+        periods={allPeriods ?? []}
+        kpis={(histKpis as any[]) ?? []}
+        transfers={(transfers as any[]) ?? []}
+        counts={(membershipCounts as any[]) ?? []}
+      />
 
       {/* ── Two column: Membership trend + Campaigns ─────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
