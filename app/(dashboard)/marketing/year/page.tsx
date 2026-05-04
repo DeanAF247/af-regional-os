@@ -44,38 +44,6 @@ interface Campaign {
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = [CURRENT_YEAR - 1, CURRENT_YEAR, CURRENT_YEAR + 1];
 
-const INITIAL_CAMPAIGNS: Campaign[] = [
-  {
-    id: "1", name: "New Year New You", type: "National", channel: "Multi-Channel",
-    startMonth: 0, endMonth: 1, year: CURRENT_YEAR,
-    targetAudience: "Non-members, lapsed members", notes: "Annual January campaign — HQ provides creative assets",
-    hqProvided: true,
-  },
-  {
-    id: "2", name: "Get Active — Easter Promo", type: "Seasonal", channel: "Social Media",
-    startMonth: 2, endMonth: 3, year: CURRENT_YEAR,
-    targetAudience: "General public", notes: "School holiday push, family memberships focus",
-    hqProvided: false,
-  },
-  {
-    id: "3", name: "Winter Challenge", type: "National", channel: "Digital",
-    startMonth: 5, endMonth: 7, year: CURRENT_YEAR,
-    targetAudience: "Current members + prospects", notes: "12-week challenge. HQ supplies digital assets and landing page.",
-    hqProvided: true,
-  },
-  {
-    id: "4", name: "Spring Into Shape", type: "Seasonal", channel: "Social Media",
-    startMonth: 8, endMonth: 9, year: CURRENT_YEAR,
-    targetAudience: "Prospects", notes: "Pre-summer body transformation push",
-    hqProvided: false,
-  },
-  {
-    id: "5", name: "Black Friday / EOFY Offer", type: "Promotional", channel: "Email",
-    startMonth: 10, endMonth: 11, year: CURRENT_YEAR,
-    targetAudience: "Prospects + lapsed members", notes: "Join fee waiver or discounted rates",
-    hqProvided: true,
-  },
-];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -212,19 +180,21 @@ function CampaignModal({ mode, year, onSave, onClose }: {
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function MarketingYearPage() {
-  const [campaigns, setCampaigns] = useState<Campaign[]>(() => {
-    if (typeof window === "undefined") return INITIAL_CAMPAIGNS;
-    try {
-      const stored = localStorage.getItem("year-overview-campaigns");
-      return stored ? JSON.parse(stored) : INITIAL_CAMPAIGNS;
-    } catch {
-      return INITIAL_CAMPAIGNS;
-    }
-  });
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    try {
+      const stored = localStorage.getItem("year-overview-campaigns");
+      if (stored) setCampaigns(JSON.parse(stored));
+    } catch { /* ignore */ }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
     localStorage.setItem("year-overview-campaigns", JSON.stringify(campaigns));
-  }, [campaigns]);
+  }, [campaigns, hydrated]);
   const [modal,     setModal]     = useState<ModalMode | null>(null);
   const [year,      setYear]      = useState(CURRENT_YEAR);
   const [typeFilter, setTypeFilter] = useState<CampaignType | "All">("All");
@@ -352,11 +322,11 @@ export default function MarketingYearPage() {
                       className="p-1.5 flex items-center"
                     >
                       <div className={cn(
-                        "w-full h-9 rounded-lg border px-3 flex items-center gap-2 transition-all cursor-pointer",
+                        "w-full h-9 rounded-lg border px-2 flex items-center gap-1.5 transition-all cursor-pointer min-w-0",
                         cfg.bg,
                       )}>
-                        <span className={cn("text-[12px] font-semibold truncate flex-1", cfg.text)}>{c.name}</span>
-                        {c.hqProvided && (
+                        <span className={cn("text-[12px] font-semibold truncate min-w-0 flex-1", cfg.text)}>{c.name}</span>
+                        {c.hqProvided && spanCols >= 2 && (
                           <span className="flex-shrink-0 text-[10px] text-[#64748B] bg-[#252B45] rounded px-1.5 py-0.5">HQ</span>
                         )}
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" onClick={(e) => e.stopPropagation()}>
