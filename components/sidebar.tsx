@@ -5,22 +5,17 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard,
   Building2,
   BarChart3,
-  FileText,
   Megaphone,
-  Users,
-  GraduationCap,
   Package,
-  AlertTriangle,
   ChevronDown,
   ChevronRight,
   LogOut,
   Menu,
   X,
-  TrendingUp,
   Briefcase,
+  FolderKanban,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -43,8 +38,6 @@ const NAV_ITEMS = [
       { label: "Group Overview", href: "/" },
       { label: "Year Overview",  href: "/kpis/year" },
       { label: "Membership",     href: "/memberships" },
-      { label: "CHS & OSAT",     href: "/scores" },
-      { label: "Yield",           href: "/yield" },
     ],
   },
   {
@@ -61,20 +54,21 @@ const NAV_ITEMS = [
     href: "/sops",
     icon: Briefcase,
     children: [
-      { label: "SOPs",       href: "/sops" },
-      { label: "Marketing",  href: "/marketing" },
-      { label: "Vendors",    href: "/vendors" },
-      { label: "Incidents",  href: "/incidents" },
+      { label: "SOPs",     href: "/sops" },
+      { label: "Vendors",  href: "/vendors" },
     ],
   },
   {
-    label: "People",
-    href: "/staff",
-    icon: Users,
-    children: [
-      { label: "Staff",    href: "/staff" },
-      { label: "Training", href: "/training" },
-    ],
+    label: "Marketing",
+    href: "/marketing",
+    icon: Megaphone,
+    children: [],
+  },
+  {
+    label: "Projects",
+    href: "/projects",
+    icon: FolderKanban,
+    children: [],
   },
 ];
 
