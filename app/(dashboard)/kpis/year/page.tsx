@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import PageHeader from "@/components/page-header";
 import SectionLabel from "@/components/section-label";
 import Link from "next/link";
-import { formatCurrency, formatPercent, pct } from "@/lib/utils";
+import { formatCurrency, formatPercent, pct, currentPeriod } from "@/lib/utils";
 import { Calendar } from "lucide-react";
 
 const CLUB_ORDER = [
@@ -39,6 +39,11 @@ export default async function YearOverviewPage({
   searchParams: Promise<{ metric?: string }>;
 }) {
   const supabase = await createClient();
+
+  // Auto-create the current month's period if it doesn't exist yet
+  const cp = currentPeriod();
+  await supabase.from("kpi_periods").upsert(cp, { onConflict: "period_label" });
+
   const { metric: metricParam } = await searchParams;
   const activeMetric = (METRICS.find((m) => m.key === metricParam) ?? METRICS[0]).key;
 

@@ -36,3 +36,16 @@ export function statusColor(pctValue: number | null): "green" | "amber" | "red" 
   if (pctValue >= 70) return "amber";
   return "red";
 }
+
+const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+/** Returns the current calendar month as a kpi_periods label and date. */
+export function currentPeriod(): { period_label: string; period_date: string } {
+  const now = new Date();
+  const month = now.getMonth();
+  const year = now.getFullYear();
+  return {
+    period_label: `${MONTH_NAMES[month]} ${year}`,
+    period_date: `${year}-${String(month + 1).padStart(2, "0")}-01`,
+  };
+}

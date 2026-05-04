@@ -2,11 +2,15 @@ import { createClient } from "@/lib/supabase/server";
 import PageHeader from "@/components/page-header";
 import SectionLabel from "@/components/section-label";
 import Link from "next/link";
-import { formatCurrency, formatPercent, pct } from "@/lib/utils";
+import { formatCurrency, formatPercent, pct, currentPeriod } from "@/lib/utils";
 import { PencilLine, Edit2, BarChart3 } from "lucide-react";
 
 export default async function KpisPage() {
   const supabase = await createClient();
+
+  // Auto-create the current month's period if it doesn't exist yet
+  const cp = currentPeriod();
+  await supabase.from("kpi_periods").upsert(cp, { onConflict: "period_label" });
 
   const { data: periods } = await supabase
     .from("kpi_periods")

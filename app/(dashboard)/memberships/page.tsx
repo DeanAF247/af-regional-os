@@ -7,6 +7,7 @@ import TransferEditor from "@/components/transfer-editor";
 import ReconTable from "@/components/recon-table";
 import FpSummary from "@/components/fp-summary";
 import { Users } from "lucide-react";
+import { currentPeriod } from "@/lib/utils";
 
 const CLUB_ORDER = [
   "Greenhills",
@@ -19,6 +20,10 @@ const CLUB_ORDER = [
 
 export default async function MembershipsPage() {
   const supabase = await createClient();
+
+  // Auto-create the current month's period if it doesn't exist yet
+  const cp = currentPeriod();
+  await supabase.from("kpi_periods").upsert(cp, { onConflict: "period_label" });
 
   const [
     { data: clubs },
