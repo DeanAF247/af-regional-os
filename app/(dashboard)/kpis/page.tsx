@@ -3,7 +3,7 @@ import PageHeader from "@/components/page-header";
 import SectionLabel from "@/components/section-label";
 import Link from "next/link";
 import { formatCurrency, formatPercent, pct } from "@/lib/utils";
-import { UploadCloud, Edit2 } from "lucide-react";
+import { PencilLine, Edit2, BarChart3 } from "lucide-react";
 
 export default async function KpisPage() {
   const supabase = await createClient();
@@ -53,14 +53,14 @@ export default async function KpisPage() {
     <div>
       <PageHeader
         title="KPI Management"
-        subtitle="Upload and manage monthly KPI data for all clubs"
+        subtitle="Enter and manage monthly KPI data for all clubs"
         action={
           <Link
             href="/kpis/upload"
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-semibold rounded-lg transition-colors"
           >
-            <UploadCloud size={16} />
-            Upload Period
+            <PencilLine size={16} />
+            Enter KPIs
           </Link>
         }
       />
@@ -70,18 +70,18 @@ export default async function KpisPage() {
       {periodSummaries.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <div className="w-16 h-16 rounded-2xl bg-[#1A1F35] border border-[#252B45] flex items-center justify-center mb-4">
-            <UploadCloud size={28} className="text-[#64748B]" />
+            <BarChart3 size={28} className="text-[#64748B]" />
           </div>
           <h2 className="text-lg font-bold text-[#F1F5F9] mb-2">No KPI data yet</h2>
           <p className="text-[#64748B] text-sm mb-6 max-w-sm">
-            Upload your first monthly period to start tracking group performance.
+            Enter your first monthly period to start tracking group performance.
           </p>
           <Link
             href="/kpis/upload"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-semibold rounded-lg transition-colors"
           >
-            <UploadCloud size={16} />
-            Upload First Period
+            <PencilLine size={16} />
+            Enter First Period
           </Link>
         </div>
       ) : (

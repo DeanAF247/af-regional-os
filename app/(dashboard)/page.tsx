@@ -7,7 +7,7 @@ import GroupTrendCharts from "@/components/group-trend-charts";
 import PeriodSelector from "@/components/period-selector";
 import Link from "next/link";
 import { formatCurrency, formatPercent, pct } from "@/lib/utils";
-import { UploadCloud } from "lucide-react";
+import { PencilLine, UploadCloud } from "lucide-react";
 
 // Slug mapping for club names → URL slugs
 const CLUB_SLUGS: Record<string, string> = {
@@ -145,8 +145,8 @@ export default async function OverviewPage({
               href="/kpis/upload"
               className="inline-flex items-center gap-2 px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-semibold rounded-lg transition-colors"
             >
-              <UploadCloud size={16} />
-              Upload KPIs
+              <PencilLine size={16} />
+              Enter KPIs
             </Link>
           </div>
         }
@@ -166,8 +166,8 @@ export default async function OverviewPage({
             href="/kpis/upload"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-semibold rounded-lg transition-colors"
           >
-            <UploadCloud size={16} />
-            Upload First Period
+            <PencilLine size={16} />
+            Enter First Period
           </Link>
         </div>
       ) : (

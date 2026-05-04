@@ -38,6 +38,7 @@ const NAV_ITEMS = [
       { label: "Group Overview", href: "/" },
       { label: "Year Overview",  href: "/kpis/year" },
       { label: "Membership",     href: "/memberships" },
+      { label: "Enter KPIs",     href: "/kpis/upload" },
     ],
   },
   {
