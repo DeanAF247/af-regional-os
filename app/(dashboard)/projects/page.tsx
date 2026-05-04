@@ -535,70 +535,51 @@ export default function ProjectsPage() {
                 {items.length === 0 && (
                   <div className="flex items-center justify-center h-16 text-[#334155] text-[12px]">No projects</div>
                 )}
-                {items.map((p) => {
-                  const isExpanded = expandedId === p.id;
-                  return (
-                    <div
-                      key={p.id}
-                      className={cn(
-                        "bg-[#131729] border rounded-xl p-3 group transition-all duration-150",
-                        isExpanded ? "border-[#7C3AED]" : "border-[#252B45] hover:border-[#3B2D6A]",
-                      )}
-                    >
-                      {/* Card header — click to expand */}
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => toggleExpand(p.id)}
-                      >
-                        <div className="flex items-start justify-between gap-1 mb-2">
-                          <p className="text-[#F1F5F9] text-[13px] font-semibold leading-tight">{p.name}</p>
-                          <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                            <button onClick={() => setModal({ type: "edit", project: p })} className="p-1 text-[#64748B] hover:text-[#A78BFA] transition-colors opacity-0 group-hover:opacity-100">
-                              <Pencil size={12} />
-                            </button>
-                            <button onClick={() => deleteProject(p.id)} className="p-1 text-[#64748B] hover:text-[#EF4444] transition-colors opacity-0 group-hover:opacity-100">
-                              <Trash2 size={12} />
-                            </button>
-                          </div>
-                        </div>
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <PriorityBadge priority={p.priority} />
-                            <span className={cn(
-                              "text-[11px] rounded px-1.5 py-0.5",
-                              p.club === "Group" ? "text-[#A78BFA] bg-[#3B1F7A]/30" : "text-[#64748B] bg-[#1A1F35]",
-                            )}>
-                              {p.club}
-                            </span>
-                          </div>
-                          {p.dueDate && (
-                            <div className={cn("flex items-center gap-1.5 text-[11px]", isOverdue(p) ? "text-[#F87171]" : "text-[#64748B]")}>
-                              <Calendar size={11} />
-                              {formatDate(p.dueDate)}
-                              {isOverdue(p) && <span className="font-semibold">· Overdue</span>}
-                            </div>
-                          )}
-                          {p.owner && (
-                            <div className="flex items-center gap-1.5">
-                              <div className="w-4 h-4 rounded-full bg-[#7C3AED]/40 border border-[#7C3AED]/60 flex items-center justify-center">
-                                <span className="text-[#A78BFA] text-[8px] font-bold">{p.owner[0].toUpperCase()}</span>
-                              </div>
-                              <span className="text-[11px] text-[#64748B]">{p.owner}</span>
-                            </div>
-                          )}
-                          <TaskPill tasks={p.tasks} />
-                        </div>
+                {items.map((p) => (
+                  <div
+                    key={p.id}
+                    className="bg-[#131729] border border-[#252B45] hover:border-[#3B2D6A] rounded-xl p-3 group transition-all duration-150"
+                  >
+                    <div className="flex items-start justify-between gap-1 mb-2">
+                      <p className="text-[#F1F5F9] text-[13px] font-semibold leading-tight">{p.name}</p>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <button onClick={() => setModal({ type: "edit", project: p })} className="p-1 text-[#64748B] hover:text-[#A78BFA] transition-colors opacity-0 group-hover:opacity-100">
+                          <Pencil size={12} />
+                        </button>
+                        <button onClick={() => deleteProject(p.id)} className="p-1 text-[#64748B] hover:text-[#EF4444] transition-colors opacity-0 group-hover:opacity-100">
+                          <Trash2 size={12} />
+                        </button>
                       </div>
-
-                      {/* Inline tasks — shown when expanded */}
-                      {isExpanded && (
-                        <div className="mt-3 pt-3 border-t border-[#252B45]">
-                          <InlineTasks project={p} onUpdateTasks={updateTasks} />
+                    </div>
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <PriorityBadge priority={p.priority} />
+                        <span className={cn(
+                          "text-[11px] rounded px-1.5 py-0.5",
+                          p.club === "Group" ? "text-[#A78BFA] bg-[#3B1F7A]/30" : "text-[#64748B] bg-[#1A1F35]",
+                        )}>
+                          {p.club}
+                        </span>
+                      </div>
+                      {p.dueDate && (
+                        <div className={cn("flex items-center gap-1.5 text-[11px]", isOverdue(p) ? "text-[#F87171]" : "text-[#64748B]")}>
+                          <Calendar size={11} />
+                          {formatDate(p.dueDate)}
+                          {isOverdue(p) && <span className="font-semibold">· Overdue</span>}
                         </div>
                       )}
+                      {p.owner && (
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-4 h-4 rounded-full bg-[#7C3AED]/40 border border-[#7C3AED]/60 flex items-center justify-center">
+                            <span className="text-[#A78BFA] text-[8px] font-bold">{p.owner[0].toUpperCase()}</span>
+                          </div>
+                          <span className="text-[11px] text-[#64748B]">{p.owner}</span>
+                        </div>
+                      )}
+                      <TaskPill tasks={p.tasks} />
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             </div>
           );
