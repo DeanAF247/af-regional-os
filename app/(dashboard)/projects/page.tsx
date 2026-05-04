@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import PageHeader from "@/components/page-header";
 import {
   Plus, X, ChevronDown, Calendar, Circle, CheckCircle2, Clock,
@@ -484,31 +484,59 @@ function TaskPill({ tasks }: { tasks: Task[] }) {
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
+const STORAGE_KEY = "af_projects_v1";
+
 export default function ProjectsPage() {
   const [projects,       setProjects]       = useState<Project[]>(INITIAL_PROJECTS);
+  const [hydrated,       setHydrated]       = useState(false);
   const [modal,          setModal]          = useState<ModalMode | null>(null);
   const [detailId,       setDetailId]       = useState<string | null>(null);
   const [filterStatus,   setFilterStatus]   = useState<Status | "All">("All");
   const [filterClub,     setFilterClub]     = useState("All Clubs");
   const [filterPriority, setFilterPriority] = useState<Priority | "All">("All");
 
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) setProjects(JSON.parse(stored));
+    } catch {}
+    setHydrated(true);
+  }, []);
+
+  // Persist to localStorage whenever projects change (after hydration)
+  const persist = useCallback((updated: Project[]) => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch {}
+  }, []);
+
   const detailProject = projects.find((p) => p.id === detailId) ?? null;
 
   function saveProject(p: Project) {
     setProjects((prev) => {
       const idx = prev.findIndex((x) => x.id === p.id);
-      if (idx >= 0) { const next = [...prev]; next[idx] = p; return next; }
-      return [...prev, p];
+      const updated = idx >= 0
+        ? prev.map((x, i) => i === idx ? p : x)
+        : [...prev, p];
+      persist(updated);
+      return updated;
     });
   }
 
   function deleteProject(id: string) {
     if (detailId === id) setDetailId(null);
-    setProjects((prev) => prev.filter((p) => p.id !== id));
+    setProjects((prev) => {
+      const updated = prev.filter((p) => p.id !== id);
+      persist(updated);
+      return updated;
+    });
   }
 
   function updateTasks(projectId: string, tasks: Task[]) {
-    setProjects((prev) => prev.map((p) => p.id === projectId ? { ...p, tasks } : p));
+    setProjects((prev) => {
+      const updated = prev.map((p) => p.id === projectId ? { ...p, tasks } : p);
+      persist(updated);
+      return updated;
+    });
   }
 
   const filtered = projects.filter((p) => {
