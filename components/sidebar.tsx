@@ -38,6 +38,7 @@ const NAV_ITEMS = [
     children: [
       { label: "Group Overview", href: "/" },
       { label: "Enter KPIs",     href: "/kpis/upload" },
+      { label: "Forecasts",      href: "/forecasts" },
     ],
   },
   {
