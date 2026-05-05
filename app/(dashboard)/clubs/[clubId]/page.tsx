@@ -33,11 +33,6 @@ const STATUS_DOT: Record<string, string> = {
   planned: "bg-[#94A3B8]", active: "bg-[#059669]",
   completed: "bg-[#475569]", paused: "bg-[#D97706]",
 };
-const STAFF_STATUS: Record<string, string> = {
-  active:   "bg-[#D1FAE5] text-[#059669]",
-  inactive: "bg-[#E2E8F0] text-[#94A3B8]",
-  on_leave: "bg-[#FEF3C7] text-[#D97706]",
-};
 
 export default async function ClubDetailPage({
   params,
@@ -74,7 +69,6 @@ export default async function ClubDetailPage({
     { data: kpis },
     { data: histKpis },
     { data: membershipCounts },
-    { data: staff },
     { data: campaignClubRows },
     { data: transfers },
   ] = await Promise.all([
@@ -88,8 +82,6 @@ export default async function ClubDetailPage({
       : Promise.resolve({ data: [] }),
     // Membership counts across all periods
     supabase.from("membership_counts").select("period_id, count").eq("club_id", club.id),
-    // Staff at this club
-    supabase.from("staff").select("id, name, position, status").eq("club_id", club.id).order("name"),
     // Campaigns for this club via junction
     supabase
       .from("campaign_clubs")
@@ -98,21 +90,6 @@ export default async function ClubDetailPage({
     // Transfers for all periods
     supabase.from("transfers").select("period_id, transfers_in, transfers_out").eq("club_id", club.id),
   ]);
-
-  // Step 3 — fetch training records now that we have staff IDs
-  const staffIds = (staff ?? []).map((s: any) => s.id);
-  const { data: trainingRecords } = staffIds.length > 0
-    ? await supabase.from("training_records").select("id, expiry_date").in("staff_id", staffIds)
-    : { data: [] };
-
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const in30   = new Date(today); in30.setDate(in30.getDate() + 30);
-  const expiredCerts  = (trainingRecords ?? []).filter((r: any) => r.expiry_date && new Date(r.expiry_date) < today).length;
-  const expiringSoon  = (trainingRecords ?? []).filter((r: any) => {
-    if (!r.expiry_date) return false;
-    const d = new Date(r.expiry_date);
-    return d >= today && d <= in30;
-  }).length;
 
   const latestKpi = (kpis as any[])?.[0] ?? null;
 
@@ -165,9 +142,6 @@ export default async function ClubDetailPage({
   const transfersIn  = (currentTransfer as any)?.transfers_in  ?? 0;
   const transfersOut = (currentTransfer as any)?.transfers_out ?? 0;
   const transferNet  = transfersIn - transfersOut;
-
-  // ── Staff ─────────────────────────────────────────────────────────────────
-  const activeStaff = (staff ?? []).filter((s: any) => s.status === "active");
 
   // ── Campaigns ─────────────────────────────────────────────────────────────
   const campaigns = (campaignClubRows ?? [])
@@ -236,20 +210,7 @@ export default async function ClubDetailPage({
       </div>
 
       {/* ── Quick Stats ──────────────────────────────────────────────────────── */}
-
-      {/* Cert alerts */}
-      {expiredCerts > 0 && (
-        <div className="bg-[#FEE2E2]/30 border border-[#EF4444]/30 rounded-xl px-4 py-3 mb-4 flex items-center gap-2 text-sm text-[#EF4444] font-semibold">
-          ⚠️ {expiredCerts} certification{expiredCerts !== 1 ? "s" : ""} expired for staff at this club
-        </div>
-      )}
-      {expiringSoon > 0 && (
-        <div className="bg-[#FEF3C7]/30 border border-[#D97706]/30 rounded-xl px-4 py-3 mb-4 flex items-center gap-2 text-sm text-[#D97706] font-semibold">
-          ⏰ {expiringSoon} certification{expiringSoon !== 1 ? "s" : ""} expiring within 30 days
-        </div>
-      )}
-
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
 
         {/* Members */}
         <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4">
@@ -286,22 +247,6 @@ export default async function ClubDetailPage({
           </div>
           <p className="text-xs text-[#94A3B8] mt-1">
             {fyOpener ? `Since ${fyOpener.period_label}` : "FY opening not found"}
-          </p>
-        </div>
-
-        {/* Active Staff */}
-        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-4">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-semibold uppercase tracking-wide text-[#94A3B8]">Active Staff</span>
-            <div className="w-7 h-7 rounded-lg bg-[#D1FAE5]/40 flex items-center justify-center">
-              <User size={13} className="text-[#059669]" />
-            </div>
-          </div>
-          <div className="text-2xl font-bold text-[#0F172A]">{activeStaff.length}</div>
-          <p className="text-xs text-[#94A3B8] mt-1">
-            {(staff ?? []).length > activeStaff.length
-              ? `${(staff ?? []).length - activeStaff.length} inactive / on leave`
-              : "All staff active"}
           </p>
         </div>
 
@@ -515,40 +460,6 @@ export default async function ClubDetailPage({
           )}
         </div>
       </div>
-
-      {/* ── Staff ────────────────────────────────────────────────────────────── */}
-      <SectionLabel>Staff</SectionLabel>
-      {(staff ?? []).length === 0 ? (
-        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-8 mb-8 flex flex-col items-center justify-center text-center">
-          <Users size={22} className="text-[#E2E8F0] mb-2" />
-          <p className="text-xs text-[#475569]">No staff added for this club yet.</p>
-        </div>
-      ) : (
-        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden mb-8">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-[#F8FAFC] text-[#94A3B8] text-[11px] uppercase tracking-wide border-b border-[#E2E8F0]">
-                <th className="text-left px-4 py-3 font-semibold">Name</th>
-                <th className="text-left px-4 py-3 font-semibold">Position</th>
-                <th className="text-left px-4 py-3 font-semibold">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(staff as any[]).map((member) => (
-                <tr key={member.id} className="border-t border-[#E2E8F0]/60 hover:bg-[#F8FAFC]/40 transition-colors">
-                  <td className="px-4 py-3 font-semibold text-[#0F172A]">{member.name}</td>
-                  <td className="px-4 py-3 text-[#64748B]">{member.position ?? "—"}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ${STAFF_STATUS[member.status] ?? ""}`}>
-                      {member.status?.replace("_", " ")}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
 
       {/* ── Historical KPI Chart ─────────────────────────────────────────────── */}
       {history.length > 1 && (
