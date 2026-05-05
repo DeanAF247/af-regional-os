@@ -8,6 +8,16 @@ import { CheckCircle, AlertCircle, Plus, PencilLine } from "lucide-react";
 interface Club   { id: string; name: string; }
 interface Period { id: string; period_label: string; period_date: string; }
 
+const LEAD_SOURCES = [
+  "Web / Online",
+  "Referral",
+  "Mobile App",
+  "Brand / Marketing",
+  "In-Person / Walk-in",
+  "None",
+] as const;
+type LeadSource = (typeof LEAD_SOURCES)[number] | "";
+
 interface Row {
   club_id:       string;
   leads_actual:  string;
@@ -21,6 +31,7 @@ interface Row {
   spend_budget:  string;
   transfers_in:  string;
   transfers_out: string;
+  lead_source:   LeadSource;
 }
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -38,6 +49,7 @@ function blank(clubs: Club[]): Row[] {
     sales_actual: "", sales_target: "", nnm_actual: "", nnm_target: "",
     cpl: "", spend_actual: "", spend_budget: "",
     transfers_in: "", transfers_out: "",
+    lead_source: "",
   }));
 }
 
@@ -109,6 +121,7 @@ export default function KpiEntryForm({
         spend_budget:  kpi?.spend_budget  != null ? String(kpi.spend_budget)  : "",
         transfers_in:  tr?.transfers_in   != null ? String(tr.transfers_in)   : "",
         transfers_out: tr?.transfers_out  != null ? String(tr.transfers_out)  : "",
+        lead_source:   (kpi?.lead_source  ?? "") as LeadSource,
       };
     }));
     setFetching(false);
@@ -164,6 +177,7 @@ export default function KpiEntryForm({
         cpl:          numOrNull(r.cpl),
         spend_actual: numOrNull(r.spend_actual),
         spend_budget: numOrNull(r.spend_budget),
+        lead_source:  r.lead_source || null,
       }));
 
       const { error: kpiErr } = await supabase
@@ -306,6 +320,9 @@ export default function KpiEntryForm({
                     {f.label}
                   </th>
                 ))}
+                <th className="text-left px-2 py-2.5 font-semibold whitespace-nowrap border-l border-[#E2E8F0] text-[#059669]">
+                  Lead Source
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -332,6 +349,19 @@ export default function KpiEntryForm({
                         />
                       </td>
                     ))}
+                    <td className="px-1.5 py-1.5 border-l border-[#E2E8F0]">
+                      <select
+                        value={row.lead_source}
+                        onChange={(e) => update(club.id, "lead_source", e.target.value)}
+                        className="w-full px-2 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
+                        style={{ minWidth: 160 }}
+                      >
+                        <option value="">—</option>
+                        {LEAD_SOURCES.map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </td>
                   </tr>
                 );
               })}

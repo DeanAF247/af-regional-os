@@ -38,6 +38,7 @@ export interface ClubKpi {
   cpl: number | null;
   spend_actual: number | null;
   spend_budget: number | null;
+  lead_source: string | null;
   created_at: string;
   // joined
   club?: Club;
