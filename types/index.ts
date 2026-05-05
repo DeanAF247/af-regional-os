@@ -38,7 +38,6 @@ export interface ClubKpi {
   cpl: number | null;
   spend_actual: number | null;
   spend_budget: number | null;
-  lead_source: string | null;
   created_at: string;
   // joined
   club?: Club;
@@ -47,6 +46,19 @@ export interface ClubKpi {
 
 export interface ClubKpiWithClub extends ClubKpi {
   club: Club;
+}
+
+// ─── Club Lead Sources ────────────────────────────────────────────────────────
+
+export interface ClubLeadSources {
+  club_id:            string;
+  period_id:          string;
+  web_online:         number | null;
+  referral:           number | null;
+  mobile_app:         number | null;
+  brand_marketing:    number | null;
+  in_person_walk_in:  number | null;
+  none:               number | null;
 }
 
 // ─── Group Summary (computed) ─────────────────────────────────────────────────

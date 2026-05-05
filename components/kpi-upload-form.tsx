@@ -8,16 +8,6 @@ import { CheckCircle, AlertCircle, Plus, PencilLine } from "lucide-react";
 interface Club   { id: string; name: string; }
 interface Period { id: string; period_label: string; period_date: string; }
 
-const LEAD_SOURCES = [
-  "Web / Online",
-  "Referral",
-  "Mobile App",
-  "Brand / Marketing",
-  "In-Person / Walk-in",
-  "None",
-] as const;
-type LeadSource = (typeof LEAD_SOURCES)[number] | "";
-
 interface Row {
   club_id:       string;
   leads_actual:  string;
@@ -31,7 +21,16 @@ interface Row {
   spend_budget:  string;
   transfers_in:  string;
   transfers_out: string;
-  lead_source:   LeadSource;
+}
+
+interface LeadSourceRow {
+  club_id:            string;
+  web_online:         string;
+  referral:           string;
+  mobile_app:         string;
+  brand_marketing:    string;
+  in_person_walk_in:  string;
+  none:               string;
 }
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -49,24 +48,39 @@ function blank(clubs: Club[]): Row[] {
     sales_actual: "", sales_target: "", nnm_actual: "", nnm_target: "",
     cpl: "", spend_actual: "", spend_budget: "",
     transfers_in: "", transfers_out: "",
-    lead_source: "",
+  }));
+}
+
+function blankLeadSources(clubs: Club[]): LeadSourceRow[] {
+  return clubs.map((c) => ({
+    club_id: c.id, web_online: "", referral: "", mobile_app: "",
+    brand_marketing: "", in_person_walk_in: "", none: "",
   }));
 }
 
 const INPUT = "w-full px-2 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm text-right focus:outline-none focus:border-[#7C3AED] transition-colors placeholder:text-[#CBD5E1]";
 
 const FIELDS: { key: keyof Row; label: string; group?: string }[] = [
-  { key: "leads_actual",  label: "Leads",       group: "KPIs"      },
-  { key: "leads_target",  label: "Leads Tgt",   group: "KPIs"      },
-  { key: "sales_actual",  label: "Sales",        group: "KPIs"      },
-  { key: "sales_target",  label: "Sales Tgt",   group: "KPIs"      },
-  { key: "nnm_actual",    label: "NNM",          group: "KPIs"      },
-  { key: "nnm_target",    label: "NNM Tgt",     group: "KPIs"      },
-  { key: "cpl",           label: "CPL ($)",      group: "KPIs"      },
-  { key: "spend_actual",  label: "Spend ($)",    group: "KPIs"      },
-  { key: "spend_budget",  label: "Budget ($)",   group: "KPIs"      },
-  { key: "transfers_in",  label: "T/In",         group: "Transfers" },
-  { key: "transfers_out", label: "T/Out",        group: "Transfers" },
+  { key: "leads_actual",  label: "Leads",      group: "KPIs"      },
+  { key: "leads_target",  label: "Leads Tgt",  group: "KPIs"      },
+  { key: "sales_actual",  label: "Sales",      group: "KPIs"      },
+  { key: "sales_target",  label: "Sales Tgt",  group: "KPIs"      },
+  { key: "nnm_actual",    label: "NNM",        group: "KPIs"      },
+  { key: "nnm_target",    label: "NNM Tgt",    group: "KPIs"      },
+  { key: "cpl",           label: "CPL ($)",    group: "KPIs"      },
+  { key: "spend_actual",  label: "Spend ($)",  group: "KPIs"      },
+  { key: "spend_budget",  label: "Budget ($)", group: "KPIs"      },
+  { key: "transfers_in",  label: "T/In",       group: "Transfers" },
+  { key: "transfers_out", label: "T/Out",      group: "Transfers" },
+];
+
+const LEAD_SOURCE_FIELDS: { key: keyof LeadSourceRow; label: string }[] = [
+  { key: "web_online",        label: "Web / Online"        },
+  { key: "referral",          label: "Referral"            },
+  { key: "mobile_app",        label: "Mobile App"          },
+  { key: "brand_marketing",   label: "Brand / Marketing"   },
+  { key: "in_person_walk_in", label: "In-Person / Walk-in" },
+  { key: "none",              label: "None"                },
 ];
 
 export default function KpiEntryForm({
@@ -80,30 +94,38 @@ export default function KpiEntryForm({
   const searchParams = useSearchParams();
   const preselected  = searchParams.get("period");
 
-  // "existing" = editing a known period id, "new" = creating fresh
-  const [mode,     setMode]     = useState<"existing" | "new">(preselected ? "existing" : periods.length > 0 ? "existing" : "new");
-  const [selPeriod, setSelPeriod] = useState<string>(preselected ?? periods[0]?.id ?? "");
-  const [newMonth,  setNewMonth]  = useState(MONTHS[new Date().getMonth()]);
-  const [newYear,   setNewYear]   = useState(String(CY));
-  const [rows,      setRows]      = useState<Row[]>(blank(clubs));
-  const [loading,   setLoading]   = useState(false);
-  const [fetching,  setFetching]  = useState(false);
-  const [success,   setSuccess]   = useState(false);
-  const [error,     setError]     = useState("");
+  const [mode,           setMode]           = useState<"existing" | "new">(preselected ? "existing" : periods.length > 0 ? "existing" : "new");
+  const [selPeriod,      setSelPeriod]      = useState<string>(preselected ?? periods[0]?.id ?? "");
+  const [newMonth,       setNewMonth]       = useState(MONTHS[new Date().getMonth()]);
+  const [newYear,        setNewYear]        = useState(String(CY));
+  const [rows,           setRows]           = useState<Row[]>(blank(clubs));
+  const [leadSourceRows, setLeadSourceRows] = useState<LeadSourceRow[]>(blankLeadSources(clubs));
+  const [loading,        setLoading]        = useState(false);
+  const [fetching,       setFetching]       = useState(false);
+  const [success,        setSuccess]        = useState(false);
+  const [error,          setError]          = useState("");
 
-  // Load existing data when period selection changes
   const loadPeriod = useCallback(async (periodId: string) => {
     if (!periodId) return;
     setFetching(true);
     setError("");
     const supabase = createClient();
 
-    const [{ data: kpiData, error: kpiErr }, { data: transferData, error: tErr }] = await Promise.all([
+    const [
+      { data: kpiData,        error: kpiErr },
+      { data: transferData,   error: tErr   },
+      { data: leadSourceData, error: lsErr  },
+    ] = await Promise.all([
       supabase.from("club_kpis").select("*").eq("period_id", periodId),
       supabase.from("transfers").select("*").eq("period_id", periodId),
+      supabase.from("club_lead_sources").select("*").eq("period_id", periodId),
     ]);
 
-    if (kpiErr || tErr) { setError((kpiErr ?? tErr)!.message); setFetching(false); return; }
+    if (kpiErr || tErr || lsErr) {
+      setError((kpiErr ?? tErr ?? lsErr)!.message);
+      setFetching(false);
+      return;
+    }
 
     setRows(blank(clubs).map((r) => {
       const kpi = kpiData?.find((k) => k.club_id === r.club_id);
@@ -121,19 +143,39 @@ export default function KpiEntryForm({
         spend_budget:  kpi?.spend_budget  != null ? String(kpi.spend_budget)  : "",
         transfers_in:  tr?.transfers_in   != null ? String(tr.transfers_in)   : "",
         transfers_out: tr?.transfers_out  != null ? String(tr.transfers_out)  : "",
-        lead_source:   (kpi?.lead_source  ?? "") as LeadSource,
       };
     }));
+
+    setLeadSourceRows(blankLeadSources(clubs).map((r) => {
+      const ls = leadSourceData?.find((l) => l.club_id === r.club_id);
+      return {
+        club_id:            r.club_id,
+        web_online:         ls?.web_online         != null ? String(ls.web_online)         : "",
+        referral:           ls?.referral           != null ? String(ls.referral)           : "",
+        mobile_app:         ls?.mobile_app         != null ? String(ls.mobile_app)         : "",
+        brand_marketing:    ls?.brand_marketing    != null ? String(ls.brand_marketing)    : "",
+        in_person_walk_in:  ls?.in_person_walk_in  != null ? String(ls.in_person_walk_in)  : "",
+        none:               ls?.none               != null ? String(ls.none)               : "",
+      };
+    }));
+
     setFetching(false);
   }, [clubs]);
 
   useEffect(() => {
     if (mode === "existing" && selPeriod) loadPeriod(selPeriod);
-    if (mode === "new") setRows(blank(clubs));
+    if (mode === "new") {
+      setRows(blank(clubs));
+      setLeadSourceRows(blankLeadSources(clubs));
+    }
   }, [mode, selPeriod, loadPeriod, clubs]);
 
   function update(clubId: string, field: keyof Row, value: string) {
     setRows((prev) => prev.map((r) => r.club_id === clubId ? { ...r, [field]: value } : r));
+  }
+
+  function updateLeadSource(clubId: string, field: keyof LeadSourceRow, value: string) {
+    setLeadSourceRows((prev) => prev.map((r) => r.club_id === clubId ? { ...r, [field]: value } : r));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -148,9 +190,9 @@ export default function KpiEntryForm({
       if (mode === "existing") {
         periodId = selPeriod;
       } else {
-        const label = `${newMonth} ${newYear}`;
+        const label    = `${newMonth} ${newYear}`;
         const monthNum = MONTHS.indexOf(newMonth) + 1;
-        const date  = `${newYear}-${String(monthNum).padStart(2, "0")}-01`;
+        const date     = `${newYear}-${String(monthNum).padStart(2, "0")}-01`;
         const { data: period, error: pErr } = await supabase
           .from("kpi_periods")
           .upsert({ period_label: label, period_date: date }, { onConflict: "period_label" })
@@ -163,8 +205,6 @@ export default function KpiEntryForm({
       const hasAnyData = rows.some((r) => r.leads_actual || r.sales_actual || r.spend_actual || r.nnm_actual);
       if (!hasAnyData) throw new Error("Enter data for at least one club before saving.");
 
-      // Include ALL clubs in the upsert (with nulls for blank cells) so that
-      // cleared values are written back to the DB and don't reappear on reload.
       const kpiRows = rows.map((r) => ({
         club_id:      r.club_id,
         period_id:    periodId,
@@ -177,7 +217,6 @@ export default function KpiEntryForm({
         cpl:          numOrNull(r.cpl),
         spend_actual: numOrNull(r.spend_actual),
         spend_budget: numOrNull(r.spend_budget),
-        lead_source:  r.lead_source || null,
       }));
 
       const { error: kpiErr } = await supabase
@@ -185,7 +224,6 @@ export default function KpiEntryForm({
         .upsert(kpiRows, { onConflict: "club_id,period_id" });
       if (kpiErr) throw kpiErr;
 
-      // Save transfers (all clubs, default 0 if blank)
       const transferRows = rows.map((r) => ({
         club_id:       r.club_id,
         period_id:     periodId,
@@ -196,6 +234,27 @@ export default function KpiEntryForm({
         .from("transfers")
         .upsert(transferRows, { onConflict: "club_id,period_id" });
       if (tErr) throw tErr;
+
+      // Save lead source breakdown (only clubs that have at least one value)
+      const lsRows = leadSourceRows
+        .filter((r) => LEAD_SOURCE_FIELDS.some((f) => r[f.key] !== ""))
+        .map((r) => ({
+          club_id:            r.club_id,
+          period_id:          periodId,
+          web_online:         numOrNull(r.web_online),
+          referral:           numOrNull(r.referral),
+          mobile_app:         numOrNull(r.mobile_app),
+          brand_marketing:    numOrNull(r.brand_marketing),
+          in_person_walk_in:  numOrNull(r.in_person_walk_in),
+          none:               numOrNull(r.none),
+        }));
+
+      if (lsRows.length > 0) {
+        const { error: lsErr } = await supabase
+          .from("club_lead_sources")
+          .upsert(lsRows, { onConflict: "club_id,period_id" });
+        if (lsErr) throw lsErr;
+      }
 
       setSuccess(true);
       setTimeout(() => router.push("/"), 1200);
@@ -227,7 +286,6 @@ export default function KpiEntryForm({
       <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5">
         <div className="text-[11px] font-bold text-[#64748B] uppercase tracking-widest mb-4">Select Period</div>
 
-        {/* Mode toggle */}
         <div className="flex gap-2 mb-4">
           {periods.length > 0 && (
             <button
@@ -320,9 +378,6 @@ export default function KpiEntryForm({
                     {f.label}
                   </th>
                 ))}
-                <th className="text-left px-2 py-2.5 font-semibold whitespace-nowrap border-l border-[#E2E8F0] text-[#059669]">
-                  Lead Source
-                </th>
               </tr>
             </thead>
             <tbody>
@@ -349,19 +404,57 @@ export default function KpiEntryForm({
                         />
                       </td>
                     ))}
-                    <td className="px-1.5 py-1.5 border-l border-[#E2E8F0]">
-                      <select
-                        value={row.lead_source}
-                        onChange={(e) => update(club.id, "lead_source", e.target.value)}
-                        className="w-full px-2 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm focus:outline-none focus:border-[#7C3AED] transition-colors"
-                        style={{ minWidth: 160 }}
-                      >
-                        <option value="">—</option>
-                        {LEAD_SOURCES.map((s) => (
-                          <option key={s} value={s}>{s}</option>
-                        ))}
-                      </select>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ── Lead Source Breakdown Table ───────────────────────────────────────── */}
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
+        <div className="bg-[#F8FAFC] px-4 py-3 border-b border-[#E2E8F0] flex items-center justify-between">
+          <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-widest">
+            Lead Source Breakdown — {periodLabel}
+          </span>
+          <span className="text-[11px] text-[#94A3B8]">Leads per source per club</span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-[#FFFFFF]/60 text-[#059669] text-[10px] uppercase tracking-wide border-b border-[#E2E8F0]">
+                <th className="text-left px-4 py-2.5 font-semibold sticky left-0 bg-[#FFFFFF]/80 text-[#94A3B8]">Club</th>
+                {LEAD_SOURCE_FIELDS.map((f) => (
+                  <th key={f.key} className="text-right px-2 py-2.5 font-semibold whitespace-nowrap">
+                    {f.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {clubs.map((club, i) => {
+                const row = leadSourceRows.find((r) => r.club_id === club.id)!;
+                return (
+                  <tr key={club.id} className={`border-t border-[#E2E8F0]/60 ${i % 2 === 1 ? "bg-[#F8FAFC]/20" : ""}`}>
+                    <td className="px-4 py-2 font-semibold text-[#0F172A] whitespace-nowrap sticky left-0 bg-[#FFFFFF]">
+                      {club.name}
                     </td>
+                    {LEAD_SOURCE_FIELDS.map((f) => (
+                      <td key={f.key} className="px-1.5 py-1.5">
+                        <input
+                          type="number"
+                          step="1"
+                          min="0"
+                          placeholder="—"
+                          value={row[f.key]}
+                          onChange={(e) => updateLeadSource(club.id, f.key, e.target.value)}
+                          className={INPUT}
+                          style={{ minWidth: 80 }}
+                        />
+                      </td>
+                    ))}
                   </tr>
                 );
               })}
