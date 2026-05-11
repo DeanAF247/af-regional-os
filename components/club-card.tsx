@@ -17,6 +17,8 @@ interface ClubKpiData {
   spend_budget: number | null;
   spend_pct: number | null;
   cpl: number | null;
+  transfers_in: number | null;
+  transfers_out: number | null;
 }
 
 function statusDot(pct: number | null) {
@@ -109,11 +111,11 @@ export default function ClubCard({ club }: { club: ClubKpiData }) {
           />
 
           {/* Stats row */}
-          <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-[#E2E8F0]">
+          <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t border-[#E2E8F0]">
             <div>
               <div className="text-[10px] text-[#94A3B8] uppercase tracking-wide mb-0.5">NNM</div>
               <div className={cn(
-                "text-lg font-extrabold",
+                "text-base font-extrabold",
                 club.nnm_actual != null && club.nnm_target != null
                   ? club.nnm_actual >= club.nnm_target ? "text-[#059669]" : "text-[#EF4444]"
                   : "text-[#64748B]"
@@ -123,14 +125,14 @@ export default function ClubCard({ club }: { club: ClubKpiData }) {
             </div>
             <div>
               <div className="text-[10px] text-[#94A3B8] uppercase tracking-wide mb-0.5">CPL</div>
-              <div className="text-lg font-extrabold text-[#6D28D9]">
+              <div className="text-base font-extrabold text-[#6D28D9]">
                 {club.cpl != null ? formatCurrency(club.cpl) : "—"}
               </div>
             </div>
             <div>
               <div className="text-[10px] text-[#94A3B8] uppercase tracking-wide mb-0.5">Spend</div>
               <div className={cn(
-                "text-lg font-extrabold",
+                "text-base font-extrabold",
                 club.spend_pct != null && club.spend_pct > 105 ? "text-[#EF4444]" : "text-[#059669]"
               )}>
                 {club.spend_actual != null ? formatCurrency(club.spend_actual) : "—"}
@@ -138,8 +140,23 @@ export default function ClubCard({ club }: { club: ClubKpiData }) {
             </div>
             <div>
               <div className="text-[10px] text-[#94A3B8] uppercase tracking-wide mb-0.5">Budget</div>
-              <div className="text-lg font-extrabold text-[#64748B]">
+              <div className="text-base font-extrabold text-[#64748B]">
                 {club.spend_budget != null ? formatCurrency(club.spend_budget) : "—"}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] text-[#2563EB] uppercase tracking-wide mb-0.5">T/In</div>
+              <div className="text-base font-extrabold text-[#059669]">
+                {club.transfers_in != null ? `+${club.transfers_in}` : "—"}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] text-[#2563EB] uppercase tracking-wide mb-0.5">T/Out</div>
+              <div className={cn(
+                "text-base font-extrabold",
+                club.transfers_out != null && club.transfers_out > 0 ? "text-[#EF4444]" : "text-[#64748B]"
+              )}>
+                {club.transfers_out != null ? (club.transfers_out > 0 ? `-${club.transfers_out}` : "0") : "—"}
               </div>
             </div>
           </div>

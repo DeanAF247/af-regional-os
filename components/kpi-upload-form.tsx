@@ -9,18 +9,18 @@ interface Club   { id: string; name: string; }
 interface Period { id: string; period_label: string; period_date: string; }
 
 interface Row {
-  club_id:       string;
-  leads_actual:  string;
-  leads_target:  string;
-  sales_actual:  string;
-  sales_target:  string;
-  nnm_actual:    string;
-  nnm_target:    string;
-  cpl:           string;
-  spend_actual:  string;
-  spend_budget:  string;
-  transfers_in:  string;
-  transfers_out: string;
+  club_id:        string;
+  leads_actual:   string;
+  leads_target:   string;
+  sales_actual:   string;
+  sales_target:   string;
+  cancels_actual: string;
+  cancels_target: string;
+  nnm_target:     string;
+  spend_actual:   string;
+  spend_budget:   string;
+  transfers_in:   string;
+  transfers_out:  string;
 }
 
 interface LeadSourceRow {
@@ -45,8 +45,10 @@ function numOrNull(v: string): number | null {
 function blank(clubs: Club[]): Row[] {
   return clubs.map((c) => ({
     club_id: c.id, leads_actual: "", leads_target: "",
-    sales_actual: "", sales_target: "", nnm_actual: "", nnm_target: "",
-    cpl: "", spend_actual: "", spend_budget: "",
+    sales_actual: "", sales_target: "",
+    cancels_actual: "", cancels_target: "",
+    nnm_target: "",
+    spend_actual: "", spend_budget: "",
     transfers_in: "", transfers_out: "",
   }));
 }
@@ -58,20 +60,45 @@ function blankLeadSources(clubs: Club[]): LeadSourceRow[] {
   }));
 }
 
-const INPUT = "w-full px-2 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm text-right focus:outline-none focus:border-[#7C3AED] transition-colors placeholder:text-[#CBD5E1]";
+/** Auto-computed CPL: spend / leads */
+function computeCpl(row: Row): string {
+  const spend = numOrNull(row.spend_actual);
+  const leads = numOrNull(row.leads_actual);
+  if (spend === null || leads === null || leads === 0) return "";
+  return (spend / leads).toFixed(2);
+}
 
-const FIELDS: { key: keyof Row; label: string; group?: string }[] = [
-  { key: "leads_actual",  label: "Leads",      group: "KPIs"      },
-  { key: "leads_target",  label: "Leads Tgt",  group: "KPIs"      },
-  { key: "sales_actual",  label: "Sales",      group: "KPIs"      },
-  { key: "sales_target",  label: "Sales Tgt",  group: "KPIs"      },
-  { key: "nnm_actual",    label: "NNM",        group: "KPIs"      },
-  { key: "nnm_target",    label: "NNM Tgt",    group: "KPIs"      },
-  { key: "cpl",           label: "CPL ($)",    group: "KPIs"      },
-  { key: "spend_actual",  label: "Spend ($)",  group: "KPIs"      },
-  { key: "spend_budget",  label: "Budget ($)", group: "KPIs"      },
-  { key: "transfers_in",  label: "T/In",       group: "Transfers" },
-  { key: "transfers_out", label: "T/Out",      group: "Transfers" },
+/** Auto-computed NMM: sales - cancels + (transfers_in - transfers_out) */
+function computeNmm(row: Row): string {
+  const sales   = numOrNull(row.sales_actual);
+  const cancels = numOrNull(row.cancels_actual);
+  const tIn     = numOrNull(row.transfers_in);
+  const tOut    = numOrNull(row.transfers_out);
+  if (sales === null && cancels === null) return "";
+  return String((sales ?? 0) - (cancels ?? 0) + (tIn ?? 0) - (tOut ?? 0));
+}
+
+const INPUT = "w-full px-2 py-1.5 bg-[#FFFFFF] border border-[#E2E8F0] rounded-lg text-[#0F172A] text-sm text-right focus:outline-none focus:border-[#7C3AED] transition-colors placeholder:text-[#CBD5E1]";
+const COMPUTED_CELL = "w-full px-2 py-1.5 bg-[#F1F5F9] border border-[#E2E8F0] rounded-lg text-sm text-right font-semibold text-[#6D28D9]";
+
+type InputCol   = { kind: "input";    key: keyof Row; label: string; group: string };
+type ComputedCol = { kind: "computed"; key: "cpl_auto" | "nmm_auto"; label: string; group: string; compute: (row: Row) => string };
+type Col = InputCol | ComputedCol;
+
+const COLS: Col[] = [
+  { kind: "input",    key: "leads_actual",   label: "Leads",       group: "KPIs" },
+  { kind: "input",    key: "leads_target",   label: "Leads Tgt",   group: "KPIs" },
+  { kind: "input",    key: "sales_actual",   label: "Sales",       group: "KPIs" },
+  { kind: "input",    key: "sales_target",   label: "Sales Tgt",   group: "KPIs" },
+  { kind: "input",    key: "cancels_actual", label: "Cancels",     group: "KPIs" },
+  { kind: "input",    key: "cancels_target", label: "Cancels Tgt", group: "KPIs" },
+  { kind: "computed", key: "nmm_auto",       label: "NMM",         group: "KPIs", compute: computeNmm },
+  { kind: "input",    key: "nnm_target",     label: "NMM Tgt",     group: "KPIs" },
+  { kind: "input",    key: "spend_actual",   label: "Spend ($)",   group: "KPIs" },
+  { kind: "input",    key: "spend_budget",   label: "Budget ($)",  group: "KPIs" },
+  { kind: "computed", key: "cpl_auto",       label: "CPL ($)",     group: "KPIs", compute: computeCpl },
+  { kind: "input",    key: "transfers_in",   label: "T/In",        group: "Transfers" },
+  { kind: "input",    key: "transfers_out",  label: "T/Out",       group: "Transfers" },
 ];
 
 const LEAD_SOURCE_FIELDS: { key: keyof LeadSourceRow; label: string }[] = [
@@ -131,18 +158,18 @@ export default function KpiEntryForm({
       const kpi = kpiData?.find((k) => k.club_id === r.club_id);
       const tr  = transferData?.find((t) => t.club_id === r.club_id);
       return {
-        club_id:       r.club_id,
-        leads_actual:  kpi?.leads_actual  != null ? String(kpi.leads_actual)  : "",
-        leads_target:  kpi?.leads_target  != null ? String(kpi.leads_target)  : "",
-        sales_actual:  kpi?.sales_actual  != null ? String(kpi.sales_actual)  : "",
-        sales_target:  kpi?.sales_target  != null ? String(kpi.sales_target)  : "",
-        nnm_actual:    kpi?.nnm_actual    != null ? String(kpi.nnm_actual)    : "",
-        nnm_target:    kpi?.nnm_target    != null ? String(kpi.nnm_target)    : "",
-        cpl:           kpi?.cpl           != null ? String(kpi.cpl)           : "",
-        spend_actual:  kpi?.spend_actual  != null ? String(kpi.spend_actual)  : "",
-        spend_budget:  kpi?.spend_budget  != null ? String(kpi.spend_budget)  : "",
-        transfers_in:  tr?.transfers_in   != null ? String(tr.transfers_in)   : "",
-        transfers_out: tr?.transfers_out  != null ? String(tr.transfers_out)  : "",
+        club_id:        r.club_id,
+        leads_actual:   kpi?.leads_actual   != null ? String(kpi.leads_actual)   : "",
+        leads_target:   kpi?.leads_target   != null ? String(kpi.leads_target)   : "",
+        sales_actual:   kpi?.sales_actual   != null ? String(kpi.sales_actual)   : "",
+        sales_target:   kpi?.sales_target   != null ? String(kpi.sales_target)   : "",
+        cancels_actual: kpi?.cancels_actual != null ? String(kpi.cancels_actual) : "",
+        cancels_target: kpi?.cancels_target != null ? String(kpi.cancels_target) : "",
+        nnm_target:     kpi?.nnm_target     != null ? String(kpi.nnm_target)     : "",
+        spend_actual:   kpi?.spend_actual   != null ? String(kpi.spend_actual)   : "",
+        spend_budget:   kpi?.spend_budget   != null ? String(kpi.spend_budget)   : "",
+        transfers_in:   tr?.transfers_in    != null ? String(tr.transfers_in)    : "",
+        transfers_out:  tr?.transfers_out   != null ? String(tr.transfers_out)   : "",
       };
     }));
 
@@ -202,22 +229,41 @@ export default function KpiEntryForm({
         periodId = period.id;
       }
 
-      const hasAnyData = rows.some((r) => r.leads_actual || r.sales_actual || r.spend_actual || r.nnm_actual);
+      const hasAnyData = rows.some((r) => r.leads_actual || r.sales_actual || r.spend_actual || r.cancels_actual);
       if (!hasAnyData) throw new Error("Enter data for at least one club before saving.");
 
-      const kpiRows = rows.map((r) => ({
-        club_id:      r.club_id,
-        period_id:    periodId,
-        leads_actual: numOrNull(r.leads_actual),
-        leads_target: numOrNull(r.leads_target),
-        sales_actual: numOrNull(r.sales_actual),
-        sales_target: numOrNull(r.sales_target),
-        nnm_actual:   numOrNull(r.nnm_actual),
-        nnm_target:   numOrNull(r.nnm_target),
-        cpl:          numOrNull(r.cpl),
-        spend_actual: numOrNull(r.spend_actual),
-        spend_budget: numOrNull(r.spend_budget),
-      }));
+      const kpiRows = rows.map((r) => {
+        const salesN   = numOrNull(r.sales_actual);
+        const cancelsN = numOrNull(r.cancels_actual);
+        const tiN      = numOrNull(r.transfers_in);
+        const toN      = numOrNull(r.transfers_out);
+        const spendN   = numOrNull(r.spend_actual);
+        const leadsN   = numOrNull(r.leads_actual);
+
+        const nnmActual = (salesN !== null || cancelsN !== null)
+          ? (salesN ?? 0) - (cancelsN ?? 0) + (tiN ?? 0) - (toN ?? 0)
+          : null;
+
+        const cplActual = (spendN !== null && leadsN !== null && leadsN > 0)
+          ? spendN / leadsN
+          : null;
+
+        return {
+          club_id:        r.club_id,
+          period_id:      periodId,
+          leads_actual:   leadsN,
+          leads_target:   numOrNull(r.leads_target),
+          sales_actual:   salesN,
+          sales_target:   numOrNull(r.sales_target),
+          cancels_actual: cancelsN,
+          cancels_target: numOrNull(r.cancels_target),
+          nnm_actual:     nnmActual,
+          nnm_target:     numOrNull(r.nnm_target),
+          cpl:            cplActual,
+          spend_actual:   spendN,
+          spend_budget:   numOrNull(r.spend_budget),
+        };
+      });
 
       const { error: kpiErr } = await supabase
         .from("club_kpis")
@@ -235,7 +281,6 @@ export default function KpiEntryForm({
         .upsert(transferRows, { onConflict: "club_id,period_id" });
       if (tErr) throw tErr;
 
-      // Save lead source breakdown (only clubs that have at least one value)
       const lsRows = leadSourceRows
         .filter((r) => LEAD_SOURCE_FIELDS.some((f) => r[f.key] !== ""))
         .map((r) => ({
@@ -360,7 +405,9 @@ export default function KpiEntryForm({
           <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-widest">
             Club KPIs — {periodLabel}
           </span>
-          <span className="text-[11px] text-[#94A3B8]">Tab between cells to move quickly</span>
+          <span className="text-[11px] text-[#94A3B8]">
+            Tab between cells · <span className="text-[#7C3AED]">Purple = auto-calculated</span>
+          </span>
         </div>
 
         <div className="overflow-x-auto">
@@ -368,14 +415,20 @@ export default function KpiEntryForm({
             <thead>
               <tr className="bg-[#FFFFFF]/60 text-[#94A3B8] text-[10px] uppercase tracking-wide border-b border-[#E2E8F0]">
                 <th className="text-left px-4 py-2.5 font-semibold sticky left-0 bg-[#FFFFFF]/80">Club</th>
-                {FIELDS.map((f, i) => (
+                {COLS.map((col, i) => (
                   <th
-                    key={f.key}
-                    className={`text-right px-2 py-2.5 font-semibold whitespace-nowrap ${
-                      f.group === "Transfers" ? "text-[#2563EB]" : ""
-                    } ${i > 0 && FIELDS[i - 1].group !== f.group ? "border-l border-[#E2E8F0]" : ""}`}
+                    key={col.key}
+                    className={[
+                      "text-right px-2 py-2.5 font-semibold whitespace-nowrap",
+                      col.group === "Transfers" ? "text-[#2563EB]" : "",
+                      col.kind === "computed"   ? "text-[#7C3AED]" : "",
+                      i > 0 && COLS[i - 1].group !== col.group ? "border-l border-[#E2E8F0]" : "",
+                    ].join(" ")}
                   >
-                    {f.label}
+                    {col.label}
+                    {col.kind === "computed" && (
+                      <span className="ml-1 normal-case text-[9px] text-[#A78BFA]">auto</span>
+                    )}
                   </th>
                 ))}
               </tr>
@@ -388,20 +441,26 @@ export default function KpiEntryForm({
                     <td className="px-4 py-2 font-semibold text-[#0F172A] whitespace-nowrap sticky left-0 bg-[#FFFFFF]">
                       {club.name}
                     </td>
-                    {FIELDS.map((f, i) => (
+                    {COLS.map((col, ci) => (
                       <td
-                        key={f.key}
-                        className={`px-1.5 py-1.5 ${i > 0 && FIELDS[i - 1].group !== f.group ? "border-l border-[#E2E8F0]" : ""}`}
+                        key={col.key}
+                        className={`px-1.5 py-1.5 ${ci > 0 && COLS[ci - 1].group !== col.group ? "border-l border-[#E2E8F0]" : ""}`}
                       >
-                        <input
-                          type="number"
-                          step="any"
-                          placeholder="—"
-                          value={row[f.key]}
-                          onChange={(e) => update(club.id, f.key, e.target.value)}
-                          className={INPUT}
-                          style={{ minWidth: 72 }}
-                        />
+                        {col.kind === "computed" ? (
+                          <div className={COMPUTED_CELL} style={{ minWidth: 72 }}>
+                            {col.compute(row) || "—"}
+                          </div>
+                        ) : (
+                          <input
+                            type="number"
+                            step="any"
+                            placeholder="—"
+                            value={row[col.key]}
+                            onChange={(e) => update(club.id, col.key, e.target.value)}
+                            className={INPUT}
+                            style={{ minWidth: 72 }}
+                          />
+                        )}
                       </td>
                     ))}
                   </tr>

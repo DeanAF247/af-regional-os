@@ -50,15 +50,15 @@ export default async function OverviewPage({
 
   // Get KPIs for active period
   let clubKpis: Record<string, any> = {};
+  let clubTransfers: Record<string, any> = {};
   if (latestPeriod) {
-    const { data: kpis } = await supabase
-      .from("club_kpis")
-      .select("*, club:clubs(id, name)")
-      .eq("period_id", latestPeriod.id);
+    const [{ data: kpis }, { data: transfers }] = await Promise.all([
+      supabase.from("club_kpis").select("*, club:clubs(id, name)").eq("period_id", latestPeriod.id),
+      supabase.from("transfers").select("*").eq("period_id", latestPeriod.id),
+    ]);
 
-    kpis?.forEach((k) => {
-      clubKpis[k.club_id] = k;
-    });
+    kpis?.forEach((k) => { clubKpis[k.club_id] = k; });
+    transfers?.forEach((t) => { clubTransfers[t.club_id] = t; });
   }
 
   // Use last 8 periods for trend data (most recent 8)
@@ -101,28 +101,35 @@ export default async function OverviewPage({
   const spendPct     = pct(totalSpend, totalBudget);
   const avgCpl       = totalLeads > 0 ? totalSpend / totalLeads : null;
 
+  const allTransfers     = Object.values(clubTransfers);
+  const totalTransfersIn  = allTransfers.reduce((s: number, t: any) => s + (t.transfers_in  ?? 0), 0);
+  const totalTransfersOut = allTransfers.reduce((s: number, t: any) => s + (t.transfers_out ?? 0), 0);
+
   // Build club card data
   const clubCardData = (clubs ?? []).map((club) => {
-    const k = clubKpis[club.id];
-    const lPct = pct(k?.leads_actual, k?.leads_target);
-    const sPct = pct(k?.sales_actual, k?.sales_target);
+    const k  = clubKpis[club.id];
+    const tr = clubTransfers[club.id];
+    const lPct  = pct(k?.leads_actual, k?.leads_target);
+    const sPct  = pct(k?.sales_actual, k?.sales_target);
     const spPct = pct(k?.spend_actual, k?.spend_budget);
     return {
-      id:           club.id,
-      name:         club.name,
-      slug:         CLUB_SLUGS[club.name] ?? club.name.toLowerCase().replace(/\s+/g, "-"),
-      leads_actual: k?.leads_actual ?? null,
-      leads_target: k?.leads_target ?? null,
-      leads_pct:    lPct,
-      sales_actual: k?.sales_actual ?? null,
-      sales_target: k?.sales_target ?? null,
-      sales_pct:    sPct,
-      nnm_actual:   k?.nnm_actual ?? null,
-      nnm_target:   k?.nnm_target ?? null,
-      spend_actual: k?.spend_actual ?? null,
-      spend_budget: k?.spend_budget ?? null,
-      spend_pct:    spPct,
-      cpl:          k?.cpl ?? null,
+      id:            club.id,
+      name:          club.name,
+      slug:          CLUB_SLUGS[club.name] ?? club.name.toLowerCase().replace(/\s+/g, "-"),
+      leads_actual:  k?.leads_actual  ?? null,
+      leads_target:  k?.leads_target  ?? null,
+      leads_pct:     lPct,
+      sales_actual:  k?.sales_actual  ?? null,
+      sales_target:  k?.sales_target  ?? null,
+      sales_pct:     sPct,
+      nnm_actual:    k?.nnm_actual    ?? null,
+      nnm_target:    k?.nnm_target    ?? null,
+      spend_actual:  k?.spend_actual  ?? null,
+      spend_budget:  k?.spend_budget  ?? null,
+      spend_pct:     spPct,
+      cpl:           k?.cpl           ?? null,
+      transfers_in:  tr?.transfers_in  ?? null,
+      transfers_out: tr?.transfers_out ?? null,
     };
   });
 
@@ -175,7 +182,7 @@ export default async function OverviewPage({
         <>
           {/* Group KPI Summary Cards */}
           <SectionLabel>Group KPIs · {latestPeriod?.period_label}</SectionLabel>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
             <KpiCard
               label="Total Leads"
               value={totalLeads.toLocaleString()}
@@ -223,6 +230,18 @@ export default async function OverviewPage({
               value={avgCpl != null ? formatCurrency(avgCpl) : "—"}
               sub="Cost per lead"
               color="teal"
+            />
+            <KpiCard
+              label="Transfers In"
+              value={`+${totalTransfersIn.toLocaleString()}`}
+              sub="Group total"
+              color="green"
+            />
+            <KpiCard
+              label="Transfers Out"
+              value={totalTransfersOut > 0 ? `-${totalTransfersOut.toLocaleString()}` : "0"}
+              sub="Group total"
+              color={totalTransfersOut > 0 ? "red" : "teal"}
             />
           </div>
 

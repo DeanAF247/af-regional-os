@@ -33,6 +33,8 @@ export interface ClubKpi {
   leads_target: number | null;
   sales_actual: number | null;
   sales_target: number | null;
+  cancels_actual: number | null;
+  cancels_target: number | null;
   nnm_actual: number | null;
   nnm_target: number | null;
   cpl: number | null;
