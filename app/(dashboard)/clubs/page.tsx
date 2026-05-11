@@ -32,32 +32,37 @@ export default async function ClubsPage() {
   const latestPeriod = periods?.[0] ?? null;
 
   let clubKpis: Record<string, any> = {};
+  let clubTransfers: Record<string, any> = {};
   if (latestPeriod) {
-    const { data: kpis } = await supabase
-      .from("club_kpis")
-      .select("*")
-      .eq("period_id", latestPeriod.id);
+    const [{ data: kpis }, { data: transfers }] = await Promise.all([
+      supabase.from("club_kpis").select("*").eq("period_id", latestPeriod.id),
+      supabase.from("transfers").select("*").eq("period_id", latestPeriod.id),
+    ]);
     kpis?.forEach((k) => { clubKpis[k.club_id] = k; });
+    transfers?.forEach((t) => { clubTransfers[t.club_id] = t; });
   }
 
   const clubCardData = (clubs ?? []).map((club) => {
-    const k = clubKpis[club.id];
+    const k  = clubKpis[club.id];
+    const tr = clubTransfers[club.id];
     return {
-      id:           club.id,
-      name:         club.name,
-      slug:         CLUB_SLUGS[club.name] ?? club.name.toLowerCase().replace(/\s+/g, "-"),
-      leads_actual: k?.leads_actual ?? null,
-      leads_target: k?.leads_target ?? null,
-      leads_pct:    pct(k?.leads_actual, k?.leads_target),
-      sales_actual: k?.sales_actual ?? null,
-      sales_target: k?.sales_target ?? null,
-      sales_pct:    pct(k?.sales_actual, k?.sales_target),
-      nnm_actual:   k?.nnm_actual ?? null,
-      nnm_target:   k?.nnm_target ?? null,
-      spend_actual: k?.spend_actual ?? null,
-      spend_budget: k?.spend_budget ?? null,
-      spend_pct:    pct(k?.spend_actual, k?.spend_budget),
-      cpl:          k?.cpl ?? null,
+      id:            club.id,
+      name:          club.name,
+      slug:          CLUB_SLUGS[club.name] ?? club.name.toLowerCase().replace(/\s+/g, "-"),
+      leads_actual:  k?.leads_actual  ?? null,
+      leads_target:  k?.leads_target  ?? null,
+      leads_pct:     pct(k?.leads_actual, k?.leads_target),
+      sales_actual:  k?.sales_actual  ?? null,
+      sales_target:  k?.sales_target  ?? null,
+      sales_pct:     pct(k?.sales_actual, k?.sales_target),
+      nnm_actual:    k?.nnm_actual    ?? null,
+      nnm_target:    k?.nnm_target    ?? null,
+      spend_actual:  k?.spend_actual  ?? null,
+      spend_budget:  k?.spend_budget  ?? null,
+      spend_pct:     pct(k?.spend_actual, k?.spend_budget),
+      cpl:           k?.cpl           ?? null,
+      transfers_in:  tr?.transfers_in  ?? null,
+      transfers_out: tr?.transfers_out ?? null,
     };
   });
 
