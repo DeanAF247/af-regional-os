@@ -49,20 +49,30 @@ export default async function ClubDetailPage({
   const supabase = await createClient();
 
   // Step 1 — get club record + periods in parallel
-  const [{ data: clubs }, { data: allPeriods }] = await Promise.all([
+  // No limit on periods so full history is available; filter out future
+  // forecast periods so we don't show months that haven't happened yet
+  const todayStr = new Date().toISOString().split("T")[0];
+  const [{ data: clubs }, { data: rawPeriods }] = await Promise.all([
     supabase.from("clubs").select("*").eq("name", clubName).limit(1),
     supabase.from("kpi_periods")
       .select("id, period_label, period_date")
-      .order("period_date", { ascending: false })
-      .limit(12),
+      .lte("period_date", todayStr)
+      .order("period_date", { ascending: false }),
   ]);
 
   const club = clubs?.[0];
   if (!club) notFound();
 
+  const allPeriods = rawPeriods ?? [];
+
+  // Default to current calendar month, fall back to most recent period
+  const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const now = new Date();
+  const currentMonthLabel = `${MONTH_NAMES[now.getMonth()]} ${now.getFullYear()}`;
+
   const latestPeriod = periodParam
-    ? (allPeriods?.find((p) => p.period_label === periodParam) ?? allPeriods?.[0] ?? null)
-    : (allPeriods?.[0] ?? null);
+    ? (allPeriods.find((p) => p.period_label === periodParam) ?? allPeriods[0] ?? null)
+    : (allPeriods.find((p) => p.period_label === currentMonthLabel) ?? allPeriods[0] ?? null);
 
   // Step 2 — fetch all club-specific data in parallel
   const [
@@ -76,8 +86,8 @@ export default async function ClubDetailPage({
     latestPeriod
       ? supabase.from("club_kpis").select("*").eq("club_id", club.id).eq("period_id", latestPeriod.id).limit(1)
       : Promise.resolve({ data: [] }),
-    // Historical KPIs
-    allPeriods && allPeriods.length > 0
+    // Historical KPIs (all periods)
+    allPeriods.length > 0
       ? supabase.from("club_kpis").select("*").eq("club_id", club.id).in("period_id", allPeriods.map((p) => p.id))
       : Promise.resolve({ data: [] }),
     // Membership counts across all periods
@@ -94,23 +104,24 @@ export default async function ClubDetailPage({
   const latestKpi = (kpis as any[])?.[0] ?? null;
 
   // ── Build historical KPI data for chart ──────────────────────────────────
-  const history = [...(allPeriods ?? [])].reverse().map((p) => {
+  const history = [...allPeriods].reverse().map((p) => {
     const k = (histKpis as any[])?.find((h) => h.period_id === p.id);
     return {
-      label: p.period_label,
+      label:        p.period_label,
+      period_date:  p.period_date,
       leads_actual: k?.leads_actual ?? null,
       leads_target: k?.leads_target ?? null,
       sales_actual: k?.sales_actual ?? null,
       sales_target: k?.sales_target ?? null,
       spend_actual: k?.spend_actual ?? null,
-      nnm_actual: k?.nnm_actual ?? null,
+      nnm_actual:   k?.nnm_actual ?? null,
     };
   }).filter((p) => p.leads_actual !== null || p.sales_actual !== null);
 
   // ── Build membership trend data ──────────────────────────────────────────
   const membershipMap: Record<string, number> = {};
   (membershipCounts ?? []).forEach((m: any) => { membershipMap[m.period_id] = m.count; });
-  const membershipTrend = [...(allPeriods ?? [])].reverse().map((p) => ({
+  const membershipTrend = [...allPeriods].reverse().map((p) => ({
     label: p.period_label,
     count: membershipMap[p.id] ?? null,
   }));
@@ -128,7 +139,7 @@ export default async function ClubDetailPage({
   }
   const nowDate    = new Date();
   const thisFY     = nowDate.getMonth() + 1 >= 7 ? nowDate.getFullYear() + 1 : nowDate.getFullYear();
-  const fyOpener   = [...(allPeriods ?? [])]
+  const fyOpener   = [...allPeriods]
     .filter((p) => getPeriodFY(p.period_date) === thisFY)
     .sort((a, b) => new Date(a.period_date).getTime() - new Date(b.period_date).getTime())[0];
   const fyOpeningCount = fyOpener ? (membershipMap[fyOpener.id] ?? null) : null;
@@ -163,7 +174,7 @@ export default async function ClubDetailPage({
         title={club.name}
         subtitle={latestPeriod ? `${latestPeriod.period_label} Performance` : "No KPI data yet"}
         action={
-          allPeriods && allPeriods.length > 1 && latestPeriod ? (
+          allPeriods.length > 1 && latestPeriod ? (
             <PeriodSelector
               periods={allPeriods}
               currentLabel={latestPeriod.period_label}
@@ -379,7 +390,7 @@ export default async function ClubDetailPage({
       <SectionLabel>Yearly Growth Tracker</SectionLabel>
       <ClubGrowthTracker
         clubId={club.id}
-        periods={allPeriods ?? []}
+        periods={allPeriods}
         kpis={(histKpis as any[]) ?? []}
         transfers={(transfers as any[]) ?? []}
         counts={(membershipCounts as any[]) ?? []}
