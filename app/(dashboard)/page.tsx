@@ -9,6 +9,7 @@ import Link from "next/link";
 import { formatCurrency, formatPercent, pct } from "@/lib/utils";
 import { PencilLine, UploadCloud } from "lucide-react";
 import GroupMembershipTable from "@/components/group-membership-table";
+import MembershipTrendChart from "@/components/membership-trend-chart";
 
 // Slug mapping for club names → URL slugs
 const CLUB_SLUGS: Record<string, string> = {
@@ -77,11 +78,17 @@ export default async function OverviewPage({
     .slice(0, 12);
 
   let trendData: any[] = [];
+  let membershipTrendData: any[] = [];
   if (trendPeriods && trendPeriods.length > 0) {
     const periodIds = trendPeriods.map((p) => p.id);
     const { data: trendKpis } = await supabase
       .from("club_kpis")
       .select("period_id, leads_actual, leads_target, sales_actual, sales_target, spend_actual, nnm_actual")
+      .in("period_id", periodIds);
+
+    const { data: trendMembership } = await supabase
+      .from("membership_counts")
+      .select("period_id, count, direct_debit_count")
       .in("period_id", periodIds);
 
     // Aggregate by period (oldest → newest for left-to-right chart order)
@@ -96,6 +103,21 @@ export default async function OverviewPage({
         sales_target: periodKpis.reduce((s, k) => s + (k.sales_target ?? 0), 0),
         spend_actual: periodKpis.reduce((s, k) => s + (k.spend_actual ?? 0), 0),
         nnm_actual:   periodKpis.reduce((s, k) => s + (k.nnm_actual ?? 0), 0),
+      };
+    });
+
+    // Membership trend — group totals across all clubs per period
+    membershipTrendData = [...trendPeriods].reverse().map((period) => {
+      const rows = trendMembership?.filter((m) => m.period_id === period.id) ?? [];
+      const total = rows.reduce((s, m) => s + (m.count ?? 0), 0);
+      const dd    = rows.every((m) => m.direct_debit_count == null)
+        ? null
+        : rows.reduce((s, m) => s + (m.direct_debit_count ?? 0), 0);
+      return {
+        label:        period.period_label,
+        period_date:  period.period_date,
+        total:        total > 0 ? total : null,
+        direct_debit: dd,
       };
     });
   }
@@ -274,10 +296,21 @@ export default async function OverviewPage({
             </>
           )}
 
-          {/* Group Membership Table */}
+          {/* Group Membership */}
           {hasData && (
             <>
               <SectionLabel>Membership · {latestPeriod?.period_label}</SectionLabel>
+
+              {/* Trend chart */}
+              {membershipTrendData.some((d) => d.total !== null) && (
+                <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5 mb-4">
+                  <div className="text-sm font-bold text-[#0F172A] mb-1">Group Membership Trend</div>
+                  <p className="text-xs text-[#94A3B8] mb-4">Total members and direct debit across all clubs</p>
+                  <MembershipTrendChart data={membershipTrendData} />
+                </div>
+              )}
+
+              {/* Per-club snapshot table */}
               <GroupMembershipTable
                 clubs={(clubs ?? []).map((club) => ({
                   id:                 club.id,

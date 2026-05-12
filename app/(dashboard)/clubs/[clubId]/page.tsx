@@ -4,7 +4,7 @@ import PageHeader from "@/components/page-header";
 import SectionLabel from "@/components/section-label";
 import KpiCard from "@/components/kpi-card";
 import ClubKpiHistory from "@/components/club-kpi-history";
-import ClubMembershipMini from "@/components/club-membership-mini";
+import MembershipTrendChart from "@/components/membership-trend-chart";
 import ClubGrowthTracker from "@/components/club-growth-tracker";
 import PeriodSelector from "@/components/period-selector";
 import { formatCurrency, formatPercent, pct } from "@/lib/utils";
@@ -127,7 +127,8 @@ export default async function ClubDetailPage({
   });
   const membershipTrend = [...allPeriods].reverse().map((p) => ({
     label:        p.period_label,
-    count:        membershipMap[p.id] ?? null,
+    period_date:  p.period_date,
+    total:        membershipMap[p.id] ?? null,
     direct_debit: ddMap[p.id] ?? null,
   }));
   const currentMembership = latestPeriod ? (membershipMap[latestPeriod.id] ?? null) : null;
@@ -410,12 +411,10 @@ export default async function ClubDetailPage({
         counts={(membershipCounts as any[]) ?? []}
       />
 
-      {/* ── Two column: Membership trend + Campaigns ─────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-
-        {/* Membership Trend */}
-        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5">
-          <div className="flex items-center justify-between mb-4">
+      {/* ── Membership Trend ─────────────────────────────────────────────────── */}
+      {membershipTrend.some((d) => d.total !== null) && (
+        <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5 mb-6">
+          <div className="flex items-center justify-between mb-1">
             <h3 className="text-sm font-bold text-[#0F172A]">Membership Trend</h3>
             {currentMembership != null && (
               <span className="text-xs text-[#94A3B8]">
@@ -423,9 +422,13 @@ export default async function ClubDetailPage({
               </span>
             )}
           </div>
-          <ClubMembershipMini data={membershipTrend} />
+          <p className="text-xs text-[#94A3B8] mb-4">Total and direct debit memberships over time</p>
+          <MembershipTrendChart data={membershipTrend} />
         </div>
+      )}
 
+      {/* ── Campaigns ────────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Campaigns */}
         <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
