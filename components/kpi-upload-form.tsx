@@ -121,8 +121,14 @@ export default function KpiEntryForm({
   const searchParams = useSearchParams();
   const preselected  = searchParams.get("period");
 
+  // Default to the current calendar month's period, not just periods[0]
+  // (periods[0] may be a future forecast period)
+  const currentMonthLabel = `${MONTHS[new Date().getMonth()]} ${CY}`;
+  const currentMonthPeriod = periods.find((p) => p.period_label === currentMonthLabel);
+  const defaultPeriodId = preselected ?? currentMonthPeriod?.id ?? periods[0]?.id ?? "";
+
   const [mode,           setMode]           = useState<"existing" | "new">(preselected ? "existing" : periods.length > 0 ? "existing" : "new");
-  const [selPeriod,      setSelPeriod]      = useState<string>(preselected ?? periods[0]?.id ?? "");
+  const [selPeriod,      setSelPeriod]      = useState<string>(defaultPeriodId);
   const [newMonth,       setNewMonth]       = useState(MONTHS[new Date().getMonth()]);
   const [newYear,        setNewYear]        = useState(String(CY));
   const [rows,           setRows]           = useState<Row[]>(blank(clubs));
