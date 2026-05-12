@@ -8,7 +8,7 @@ import { formatCurrency } from "@/lib/utils";
 interface Period  { id: string; period_label: string; period_date: string; }
 interface KpiRow  { period_id: string; sales_actual: number | null; nnm_actual: number | null; spend_actual: number | null; }
 interface Transfer { period_id: string; transfers_in: number | null; transfers_out: number | null; }
-interface MemberCount { period_id: string; count: number | null; }
+interface MemberCount { period_id: string; count: number | null; direct_debit_count: number | null; }
 
 interface Props {
   clubId:      string;
@@ -57,36 +57,39 @@ export default function ClubGrowthTracker({ clubId, periods, kpis, transfers, co
   // Find opening count for FY (count from the period BEFORE the first FY period, or first FY period itself)
   const firstFYPeriodIdx = sortedPeriods.findIndex((p) => getPeriodFY(p.period_date) === thisFY);
   const openingPeriod = firstFYPeriodIdx > 0 ? sortedPeriods[firstFYPeriodIdx - 1] : sortedPeriods[firstFYPeriodIdx];
-  const openingCount = openingPeriod
-    ? counts.find((c) => c.period_id === openingPeriod.id)?.count ?? null
-    : null;
+  const openingRow    = openingPeriod ? counts.find((c) => c.period_id === openingPeriod.id) : null;
+  const openingCount  = openingRow?.count ?? null;
+  const openingDD     = openingRow?.direct_debit_count ?? null;
 
   // Latest period
   const latestFYPeriod = fyPeriods[fyPeriods.length - 1];
-  const latestCount    = latestFYPeriod
-    ? counts.find((c) => c.period_id === latestFYPeriod.id)?.count ?? null
-    : null;
+  const latestRow      = latestFYPeriod ? counts.find((c) => c.period_id === latestFYPeriod.id) : null;
+  const latestCount    = latestRow?.count ?? null;
+  const latestDD       = latestRow?.direct_debit_count ?? null;
 
-  const ytdGrowth = latestCount != null && openingCount != null ? latestCount - openingCount : null;
+  const ytdGrowth   = latestCount != null && openingCount != null ? latestCount - openingCount : null;
+  const ytdDDGrowth = latestDD    != null && openingDD    != null ? latestDD    - openingDD    : null;
   const goalNum   = typeof goal === "number" ? goal : 0;
   const progressPct = goalNum > 0 && ytdGrowth != null ? Math.round((ytdGrowth / goalNum) * 100) : null;
 
   // Build rows for the table — all FY periods
-  const rows = fyPeriods.map((p, i) => {
-    const kpi       = kpis.find((k) => k.period_id === p.id);
-    const transfer  = transfers.find((t) => t.period_id === p.id);
-    const memberCount = counts.find((c) => c.period_id === p.id)?.count ?? null;
-    const sales     = kpi?.sales_actual ?? null;
-    const nnm       = kpi?.nnm_actual ?? null;
-    const cancels   = sales != null && nnm != null ? sales - nnm : null;
-    const spend     = kpi?.spend_actual ?? null;
-    const tIn       = transfer?.transfers_in ?? null;
-    const tOut      = transfer?.transfers_out ?? null;
+  const rows = fyPeriods.map((p) => {
+    const kpi         = kpis.find((k) => k.period_id === p.id);
+    const transfer    = transfers.find((t) => t.period_id === p.id);
+    const countRow    = counts.find((c) => c.period_id === p.id);
+    const memberCount = countRow?.count ?? null;
+    const ddCount     = countRow?.direct_debit_count ?? null;
+    const sales       = kpi?.sales_actual ?? null;
+    const nnm         = kpi?.nnm_actual ?? null;
+    const cancels     = sales != null && nnm != null ? sales - nnm : null;
+    const spend       = kpi?.spend_actual ?? null;
+    const tIn         = transfer?.transfers_in ?? null;
+    const tOut        = transfer?.transfers_out ?? null;
 
-    // Cumulative growth from FY opening
-    const cumGrowth = memberCount != null && openingCount != null ? memberCount - openingCount : null;
+    const cumGrowth   = memberCount != null && openingCount != null ? memberCount - openingCount : null;
+    const cumDDGrowth = ddCount     != null && openingDD    != null ? ddCount     - openingDD    : null;
 
-    return { period: p, sales, nnm, cancels, spend, tIn, tOut, memberCount, cumGrowth };
+    return { period: p, sales, nnm, cancels, spend, tIn, tOut, memberCount, ddCount, cumGrowth, cumDDGrowth };
   });
 
   if (fyPeriods.length === 0) {
@@ -143,7 +146,7 @@ export default function ClubGrowthTracker({ clubId, periods, kpis, transfers, co
         </div>
 
         {/* Progress */}
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
           <div className="bg-[#F8FAFC] rounded-xl px-4 py-3">
             <div className="text-[#94A3B8] text-[10px] font-semibold uppercase tracking-wider mb-1">YTD Growth</div>
             <div className={cn("text-xl font-bold",
@@ -152,7 +155,17 @@ export default function ClubGrowthTracker({ clubId, periods, kpis, transfers, co
             )}>
               {ytdGrowth == null ? "—" : (ytdGrowth >= 0 ? `+${ytdGrowth}` : ytdGrowth)}
             </div>
-            <div className="text-[#94A3B8] text-[11px] mt-0.5">vs FY opening</div>
+            <div className="text-[#94A3B8] text-[11px] mt-0.5">total members vs FY opening</div>
+          </div>
+          <div className="bg-[#EDE9FE]/40 border border-[#7C3AED]/20 rounded-xl px-4 py-3">
+            <div className="text-[#7C3AED] text-[10px] font-semibold uppercase tracking-wider mb-1">DD Growth</div>
+            <div className={cn("text-xl font-bold",
+              ytdDDGrowth == null ? "text-[#475569]"
+              : ytdDDGrowth >= 0 ? "text-[#059669]" : "text-[#DC2626]"
+            )}>
+              {ytdDDGrowth == null ? "—" : (ytdDDGrowth >= 0 ? `+${ytdDDGrowth}` : ytdDDGrowth)}
+            </div>
+            <div className="text-[#94A3B8] text-[11px] mt-0.5">direct debit vs FY opening</div>
           </div>
           <div className="bg-[#F8FAFC] rounded-xl px-4 py-3">
             <div className="text-[#94A3B8] text-[10px] font-semibold uppercase tracking-wider mb-1">Goal Progress</div>
@@ -201,6 +214,7 @@ export default function ClubGrowthTracker({ clubId, periods, kpis, transfers, co
               <tr className="bg-[#F8FAFC] text-[#64748B] text-[11px] uppercase tracking-wide">
                 <th className="text-left px-4 py-3 font-semibold">Month</th>
                 <th className="text-right px-4 py-3 font-semibold">Members</th>
+                <th className="text-right px-4 py-3 font-semibold text-[#7C3AED]">DD Members</th>
                 <th className="text-right px-4 py-3 font-semibold">Sales</th>
                 <th className="text-right px-4 py-3 font-semibold">Cancels</th>
                 <th className="text-right px-4 py-3 font-semibold">NNM</th>
@@ -208,6 +222,7 @@ export default function ClubGrowthTracker({ clubId, periods, kpis, transfers, co
                 <th className="text-right px-4 py-3 font-semibold">T/In</th>
                 <th className="text-right px-4 py-3 font-semibold">T/Out</th>
                 <th className="text-right px-4 py-3 font-semibold">Cum. Growth</th>
+                <th className="text-right px-4 py-3 font-semibold text-[#7C3AED]">DD Growth</th>
               </tr>
             </thead>
             <tbody>
@@ -219,6 +234,9 @@ export default function ClubGrowthTracker({ clubId, periods, kpis, transfers, co
                     <td className="px-4 py-3 font-semibold text-[#0F172A]">{row.period.period_label}</td>
                     <td className="px-4 py-3 text-right text-[#0F172A]">
                       {row.memberCount != null ? row.memberCount.toLocaleString() : <span className="text-[#94A3B8]">—</span>}
+                    </td>
+                    <td className="px-4 py-3 text-right font-semibold text-[#6D28D9]">
+                      {row.ddCount != null ? row.ddCount.toLocaleString() : <span className="text-[#94A3B8] font-normal">—</span>}
                     </td>
                     <td className="px-4 py-3 text-right text-[#0F172A]">
                       {row.sales != null ? row.sales : <span className="text-[#94A3B8]">—</span>}
@@ -246,6 +264,11 @@ export default function ClubGrowthTracker({ clubId, periods, kpis, transfers, co
                       : isPositiveCum ? "text-[#059669]" : "text-[#DC2626]")}>
                       {row.cumGrowth != null ? (row.cumGrowth >= 0 ? `+${row.cumGrowth}` : row.cumGrowth) : "—"}
                     </td>
+                    <td className={cn("px-4 py-3 text-right font-bold",
+                      row.cumDDGrowth == null ? "text-[#94A3B8]"
+                      : row.cumDDGrowth >= 0 ? "text-[#059669]" : "text-[#DC2626]")}>
+                      {row.cumDDGrowth != null ? (row.cumDDGrowth >= 0 ? `+${row.cumDDGrowth}` : row.cumDDGrowth) : "—"}
+                    </td>
                   </tr>
                 );
               })}
@@ -262,6 +285,7 @@ export default function ClubGrowthTracker({ clubId, periods, kpis, transfers, co
                   <tr className="border-t-2 border-[#E2E8F0] bg-[#F8FAFC] font-bold text-[13px]">
                     <td className="px-4 py-3 text-[#6D28D9]">FY{thisFY} Total</td>
                     <td className="px-4 py-3 text-right text-[#94A3B8]">—</td>
+                    <td className="px-4 py-3 text-right text-[#94A3B8]">—</td>
                     <td className="px-4 py-3 text-right text-[#0F172A]">{totSales}</td>
                     <td className="px-4 py-3 text-right text-[#DC2626]">{totCancels}</td>
                     <td className={cn("px-4 py-3 text-right", totNnm >= 0 ? "text-[#059669]" : "text-[#DC2626]")}>
@@ -272,6 +296,9 @@ export default function ClubGrowthTracker({ clubId, periods, kpis, transfers, co
                     <td className="px-4 py-3 text-right text-[#DC2626]">-{totTOut}</td>
                     <td className={cn("px-4 py-3 text-right", (ytdGrowth ?? 0) >= 0 ? "text-[#059669]" : "text-[#DC2626]")}>
                       {ytdGrowth != null ? (ytdGrowth >= 0 ? `+${ytdGrowth}` : ytdGrowth) : "—"}
+                    </td>
+                    <td className={cn("px-4 py-3 text-right", (ytdDDGrowth ?? 0) >= 0 ? "text-[#059669]" : "text-[#DC2626]")}>
+                      {ytdDDGrowth != null ? (ytdDDGrowth >= 0 ? `+${ytdDDGrowth}` : ytdDDGrowth) : "—"}
                     </td>
                   </tr>
                 </tfoot>
