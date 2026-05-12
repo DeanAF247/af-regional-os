@@ -90,8 +90,8 @@ export default async function ClubDetailPage({
     allPeriods.length > 0
       ? supabase.from("club_kpis").select("*").eq("club_id", club.id).in("period_id", allPeriods.map((p) => p.id))
       : Promise.resolve({ data: [] }),
-    // Membership counts across all periods
-    supabase.from("membership_counts").select("period_id, count").eq("club_id", club.id),
+    // Membership counts across all periods (including DD)
+    supabase.from("membership_counts").select("period_id, count, direct_debit_count").eq("club_id", club.id),
     // Campaigns for this club via junction
     supabase
       .from("campaign_clubs")
@@ -120,12 +120,18 @@ export default async function ClubDetailPage({
 
   // ── Build membership trend data ──────────────────────────────────────────
   const membershipMap: Record<string, number> = {};
-  (membershipCounts ?? []).forEach((m: any) => { membershipMap[m.period_id] = m.count; });
+  const ddMap:         Record<string, number> = {};
+  (membershipCounts ?? []).forEach((m: any) => {
+    membershipMap[m.period_id] = m.count;
+    if (m.direct_debit_count != null) ddMap[m.period_id] = m.direct_debit_count;
+  });
   const membershipTrend = [...allPeriods].reverse().map((p) => ({
-    label: p.period_label,
-    count: membershipMap[p.id] ?? null,
+    label:        p.period_label,
+    count:        membershipMap[p.id] ?? null,
+    direct_debit: ddMap[p.id] ?? null,
   }));
   const currentMembership = latestPeriod ? (membershipMap[latestPeriod.id] ?? null) : null;
+  const currentDD         = latestPeriod ? (ddMap[latestPeriod.id] ?? null) : null;
   // Previous period for trend arrow
   const prevPeriod = allPeriods?.[1];
   const prevMembership = prevPeriod ? (membershipMap[prevPeriod.id] ?? null) : null;
@@ -234,6 +240,14 @@ export default async function ClubDetailPage({
           <div className="text-2xl font-bold text-[#0F172A]">
             {currentMembership != null ? currentMembership.toLocaleString() : "—"}
           </div>
+          {currentDD != null && currentMembership != null && (
+            <div className="text-xs text-[#059669] font-semibold mt-0.5">
+              ↳ {currentDD.toLocaleString()} DD
+              <span className="text-[#94A3B8] font-normal ml-1">
+                ({Math.round((currentDD / currentMembership) * 100)}%)
+              </span>
+            </div>
+          )}
           {membershipDelta != null && (
             <div className={`flex items-center gap-1 text-xs mt-1 font-semibold ${membershipDelta >= 0 ? "text-[#059669]" : "text-[#EF4444]"}`}>
               {membershipDelta >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}

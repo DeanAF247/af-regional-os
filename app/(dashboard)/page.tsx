@@ -8,6 +8,7 @@ import PeriodSelector from "@/components/period-selector";
 import Link from "next/link";
 import { formatCurrency, formatPercent, pct } from "@/lib/utils";
 import { PencilLine, UploadCloud } from "lucide-react";
+import GroupMembershipTable from "@/components/group-membership-table";
 
 // Slug mapping for club names → URL slugs
 const CLUB_SLUGS: Record<string, string> = {
@@ -52,17 +53,20 @@ export default async function OverviewPage({
     .eq("status", "active")
     .order("name");
 
-  // Get KPIs for active period
+  // Get KPIs, transfers and membership for active period
   let clubKpis: Record<string, any> = {};
   let clubTransfers: Record<string, any> = {};
+  let clubMembership: Record<string, any> = {};
   if (latestPeriod) {
-    const [{ data: kpis }, { data: transfers }] = await Promise.all([
+    const [{ data: kpis }, { data: transfers }, { data: membership }] = await Promise.all([
       supabase.from("club_kpis").select("*, club:clubs(id, name)").eq("period_id", latestPeriod.id),
       supabase.from("transfers").select("*").eq("period_id", latestPeriod.id),
+      supabase.from("membership_counts").select("club_id, count, direct_debit_count").eq("period_id", latestPeriod.id),
     ]);
 
     kpis?.forEach((k) => { clubKpis[k.club_id] = k; });
     transfers?.forEach((t) => { clubTransfers[t.club_id] = t; });
+    membership?.forEach((m) => { clubMembership[m.club_id] = m; });
   }
 
   // Use last 12 periods for trend data — cap at today so future forecast
@@ -267,6 +271,21 @@ export default async function OverviewPage({
             <>
               <SectionLabel>Monthly Trends</SectionLabel>
               <GroupTrendCharts data={trendData} />
+            </>
+          )}
+
+          {/* Group Membership Table */}
+          {hasData && (
+            <>
+              <SectionLabel>Membership · {latestPeriod?.period_label}</SectionLabel>
+              <GroupMembershipTable
+                clubs={(clubs ?? []).map((club) => ({
+                  id:                 club.id,
+                  name:               club.name,
+                  total_count:        clubMembership[club.id]?.count              ?? null,
+                  direct_debit_count: clubMembership[club.id]?.direct_debit_count ?? null,
+                }))}
+              />
             </>
           )}
 

@@ -33,6 +33,12 @@ interface LeadSourceRow {
   none:               string;
 }
 
+interface MembershipRow {
+  club_id:             string;
+  total_count:         string;
+  direct_debit_count:  string;
+}
+
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const CY     = new Date().getFullYear();
 const YEARS  = [CY - 1, CY, CY + 1];
@@ -58,6 +64,10 @@ function blankLeadSources(clubs: Club[]): LeadSourceRow[] {
     club_id: c.id, web_online: "", referral: "", mobile_app: "",
     brand_marketing: "", in_person_walk_in: "", none: "",
   }));
+}
+
+function blankMembership(clubs: Club[]): MembershipRow[] {
+  return clubs.map((c) => ({ club_id: c.id, total_count: "", direct_debit_count: "" }));
 }
 
 /** Auto-computed CPL: spend / leads */
@@ -133,6 +143,7 @@ export default function KpiEntryForm({
   const [newYear,        setNewYear]        = useState(String(CY));
   const [rows,           setRows]           = useState<Row[]>(blank(clubs));
   const [leadSourceRows, setLeadSourceRows] = useState<LeadSourceRow[]>(blankLeadSources(clubs));
+  const [membershipRows, setMembershipRows] = useState<MembershipRow[]>(blankMembership(clubs));
   const [loading,        setLoading]        = useState(false);
   const [fetching,       setFetching]       = useState(false);
   const [success,        setSuccess]        = useState(false);
@@ -148,14 +159,16 @@ export default function KpiEntryForm({
       { data: kpiData,        error: kpiErr },
       { data: transferData,   error: tErr   },
       { data: leadSourceData, error: lsErr  },
+      { data: membershipData, error: mErr   },
     ] = await Promise.all([
       supabase.from("club_kpis").select("*").eq("period_id", periodId),
       supabase.from("transfers").select("*").eq("period_id", periodId),
       supabase.from("club_lead_sources").select("*").eq("period_id", periodId),
+      supabase.from("membership_counts").select("club_id, count, direct_debit_count").eq("period_id", periodId),
     ]);
 
-    if (kpiErr || tErr || lsErr) {
-      setError((kpiErr ?? tErr ?? lsErr)!.message);
+    if (kpiErr || tErr || lsErr || mErr) {
+      setError((kpiErr ?? tErr ?? lsErr ?? mErr)!.message);
       setFetching(false);
       return;
     }
@@ -192,6 +205,15 @@ export default function KpiEntryForm({
       };
     }));
 
+    setMembershipRows(blankMembership(clubs).map((r) => {
+      const m = membershipData?.find((mc) => mc.club_id === r.club_id);
+      return {
+        club_id:            r.club_id,
+        total_count:        m?.count               != null ? String(m.count)               : "",
+        direct_debit_count: m?.direct_debit_count  != null ? String(m.direct_debit_count)  : "",
+      };
+    }));
+
     setFetching(false);
   }, [clubs]);
 
@@ -200,6 +222,7 @@ export default function KpiEntryForm({
     if (mode === "new") {
       setRows(blank(clubs));
       setLeadSourceRows(blankLeadSources(clubs));
+      setMembershipRows(blankMembership(clubs));
     }
   }, [mode, selPeriod, loadPeriod, clubs]);
 
@@ -209,6 +232,10 @@ export default function KpiEntryForm({
 
   function updateLeadSource(clubId: string, field: keyof LeadSourceRow, value: string) {
     setLeadSourceRows((prev) => prev.map((r) => r.club_id === clubId ? { ...r, [field]: value } : r));
+  }
+
+  function updateMembership(clubId: string, field: keyof MembershipRow, value: string) {
+    setMembershipRows((prev) => prev.map((r) => r.club_id === clubId ? { ...r, [field]: value } : r));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -305,6 +332,21 @@ export default function KpiEntryForm({
           .from("club_lead_sources")
           .upsert(lsRows, { onConflict: "club_id,period_id" });
         if (lsErr) throw lsErr;
+      }
+
+      const mRows = membershipRows
+        .filter((r) => r.total_count !== "" || r.direct_debit_count !== "")
+        .map((r) => ({
+          club_id:            r.club_id,
+          period_id:          periodId,
+          count:              numOrNull(r.total_count),
+          direct_debit_count: numOrNull(r.direct_debit_count),
+        }));
+      if (mRows.length > 0) {
+        const { error: mErr } = await supabase
+          .from("membership_counts")
+          .upsert(mRows, { onConflict: "club_id,period_id" });
+        if (mErr) throw mErr;
       }
 
       setSuccess(true);
@@ -520,6 +562,64 @@ export default function KpiEntryForm({
                         />
                       </td>
                     ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ── Membership Table ─────────────────────────────────────────────────── */}
+      <div className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden">
+        <div className="bg-[#F8FAFC] px-4 py-3 border-b border-[#E2E8F0] flex items-center justify-between">
+          <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-widest">
+            Membership — {periodLabel}
+          </span>
+          <span className="text-[11px] text-[#94A3B8]">End-of-month snapshot per club</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-[#FFFFFF]/60 text-[#94A3B8] text-[10px] uppercase tracking-wide border-b border-[#E2E8F0]">
+                <th className="text-left px-4 py-2.5 font-semibold sticky left-0 bg-[#FFFFFF]/80">Club</th>
+                <th className="text-right px-2 py-2.5 font-semibold whitespace-nowrap">Total Members</th>
+                <th className="text-right px-2 py-2.5 font-semibold whitespace-nowrap text-[#7C3AED]">Direct Debit</th>
+                <th className="text-right px-2 py-2.5 font-semibold whitespace-nowrap text-[#7C3AED]">DD %</th>
+              </tr>
+            </thead>
+            <tbody>
+              {clubs.map((club, i) => {
+                const row = membershipRows.find((r) => r.club_id === club.id)!;
+                const total = numOrNull(row.total_count);
+                const dd    = numOrNull(row.direct_debit_count);
+                const ddPct = total && dd != null && total > 0 ? Math.round((dd / total) * 100) : null;
+                return (
+                  <tr key={club.id} className={`border-t border-[#E2E8F0]/60 ${i % 2 === 1 ? "bg-[#F8FAFC]/20" : ""}`}>
+                    <td className="px-4 py-2 font-semibold text-[#0F172A] whitespace-nowrap sticky left-0 bg-[#FFFFFF]">
+                      {club.name}
+                    </td>
+                    <td className="px-1.5 py-1.5">
+                      <input
+                        type="number" step="1" min="0" placeholder="—"
+                        value={row.total_count}
+                        onChange={(e) => updateMembership(club.id, "total_count", e.target.value)}
+                        className={INPUT} style={{ minWidth: 100 }}
+                      />
+                    </td>
+                    <td className="px-1.5 py-1.5">
+                      <input
+                        type="number" step="1" min="0" placeholder="—"
+                        value={row.direct_debit_count}
+                        onChange={(e) => updateMembership(club.id, "direct_debit_count", e.target.value)}
+                        className={INPUT} style={{ minWidth: 100 }}
+                      />
+                    </td>
+                    <td className="px-1.5 py-1.5">
+                      <div className={COMPUTED_CELL} style={{ minWidth: 72 }}>
+                        {ddPct != null ? `${ddPct}%` : "—"}
+                      </div>
+                    </td>
                   </tr>
                 );
               })}
