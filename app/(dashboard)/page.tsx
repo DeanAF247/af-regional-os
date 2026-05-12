@@ -61,8 +61,8 @@ export default async function OverviewPage({
     transfers?.forEach((t) => { clubTransfers[t.club_id] = t; });
   }
 
-  // Use last 8 periods for trend data (most recent 8)
-  const trendPeriods = allPeriods?.slice(0, 8) ?? [];
+  // Use last 12 periods for trend data (most recent 12 months)
+  const trendPeriods = allPeriods?.slice(0, 12) ?? [];
 
   let trendData: any[] = [];
   if (trendPeriods && trendPeriods.length > 0) {
