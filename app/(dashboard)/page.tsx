@@ -65,8 +65,12 @@ export default async function OverviewPage({
     transfers?.forEach((t) => { clubTransfers[t.club_id] = t; });
   }
 
-  // Use last 12 periods for trend data (most recent 12 months)
-  const trendPeriods = allPeriods?.slice(0, 12) ?? [];
+  // Use last 12 periods for trend data — cap at today so future forecast
+  // periods (created for the Forecasts module) don't appear in charts
+  const todayStr = new Date().toISOString().split("T")[0];
+  const trendPeriods = (allPeriods ?? [])
+    .filter((p) => p.period_date <= todayStr)
+    .slice(0, 12);
 
   let trendData: any[] = [];
   if (trendPeriods && trendPeriods.length > 0) {
@@ -76,11 +80,12 @@ export default async function OverviewPage({
       .select("period_id, leads_actual, leads_target, sales_actual, sales_target, spend_actual, nnm_actual")
       .in("period_id", periodIds);
 
-    // Aggregate by period
+    // Aggregate by period (oldest → newest for left-to-right chart order)
     trendData = [...trendPeriods].reverse().map((period) => {
       const periodKpis = trendKpis?.filter((k) => k.period_id === period.id) ?? [];
       return {
-        label: period.period_label,
+        label:        period.period_label,
+        period_date:  period.period_date,
         leads_actual: periodKpis.reduce((s, k) => s + (k.leads_actual ?? 0), 0),
         leads_target: periodKpis.reduce((s, k) => s + (k.leads_target ?? 0), 0),
         sales_actual: periodKpis.reduce((s, k) => s + (k.sales_actual ?? 0), 0),
