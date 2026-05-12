@@ -34,10 +34,14 @@ export default async function OverviewPage({
     .select("id, period_label, period_date")
     .order("period_date", { ascending: false });
 
-  // Resolve the active period
+  // Resolve the active period — default to the current calendar month if available
+  const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const now = new Date();
+  const currentMonthLabel = `${MONTH_NAMES[now.getMonth()]} ${now.getFullYear()}`;
+
   const activePeriod = periodParam
     ? (allPeriods?.find((p) => p.period_label === periodParam) ?? allPeriods?.[0] ?? null)
-    : (allPeriods?.[0] ?? null);
+    : (allPeriods?.find((p) => p.period_label === currentMonthLabel) ?? allPeriods?.[0] ?? null);
 
   const latestPeriod = activePeriod;
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -54,13 +55,42 @@ const tooltipStyle = {
   fontSize: 12,
 };
 
+const RANGES: { label: string; value: number }[] = [
+  { label: "3M",  value: 3  },
+  { label: "6M",  value: 6  },
+  { label: "12M", value: 12 },
+];
+
 export default function GroupTrendCharts({ data }: { data: TrendPoint[] }) {
+  const [range, setRange] = useState(12);
+  const visible = data.slice(-range);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+    <div className="mb-8">
+      {/* Range toggle */}
+      <div className="flex justify-end mb-4">
+        <div className="inline-flex items-center gap-1 bg-[#F1F5F9] rounded-lg p-1">
+          {RANGES.map((r) => (
+            <button
+              key={r.value}
+              onClick={() => setRange(r.value)}
+              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors ${
+                range === r.value
+                  ? "bg-[#FFFFFF] text-[#7C3AED] shadow-sm"
+                  : "text-[#64748B] hover:text-[#0F172A]"
+              }`}
+            >
+              {r.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* Leads trend */}
       <ChartCard title="Group Leads — Actual vs Target">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} style={CHART_STYLE}>
+          <LineChart data={visible} style={CHART_STYLE}>
             <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
             <XAxis dataKey="label" tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={shortLabel} />
             <YAxis tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} />
@@ -78,7 +108,7 @@ export default function GroupTrendCharts({ data }: { data: TrendPoint[] }) {
       {/* Sales trend */}
       <ChartCard title="Group Sales — Actual vs Target">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} style={CHART_STYLE}>
+          <LineChart data={visible} style={CHART_STYLE}>
             <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
             <XAxis dataKey="label" tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={shortLabel} />
             <YAxis tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} />
@@ -96,7 +126,7 @@ export default function GroupTrendCharts({ data }: { data: TrendPoint[] }) {
       {/* NNM bar chart */}
       <ChartCard title="Net New Members (NNM) by Month">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} style={CHART_STYLE}>
+          <BarChart data={visible} style={CHART_STYLE}>
             <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
             <XAxis dataKey="label" tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={shortLabel} />
             <YAxis tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} />
@@ -110,7 +140,7 @@ export default function GroupTrendCharts({ data }: { data: TrendPoint[] }) {
       {/* Spend bar chart */}
       <ChartCard title="Total Marketing Spend by Month">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} style={CHART_STYLE}>
+          <BarChart data={visible} style={CHART_STYLE}>
             <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
             <XAxis dataKey="label" tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={shortLabel} />
             <YAxis tick={{ fill: "#94A3B8", fontSize: 10 }} tickLine={false} axisLine={false}
@@ -120,6 +150,7 @@ export default function GroupTrendCharts({ data }: { data: TrendPoint[] }) {
           </BarChart>
         </ResponsiveContainer>
       </ChartCard>
+    </div>
     </div>
   );
 }
