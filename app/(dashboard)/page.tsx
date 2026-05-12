@@ -4,10 +4,9 @@ import ClubCard from "@/components/club-card";
 import SectionLabel from "@/components/section-label";
 import PageHeader from "@/components/page-header";
 import GroupTrendCharts from "@/components/group-trend-charts";
-import PeriodSelector from "@/components/period-selector";
 import Link from "next/link";
 import { formatCurrency, formatPercent, pct } from "@/lib/utils";
-import { PencilLine, UploadCloud } from "lucide-react";
+import { PencilLine, UploadCloud, Calendar } from "lucide-react";
 import GroupMembershipTable from "@/components/group-membership-table";
 import MembershipTrendChart from "@/components/membership-trend-chart";
 
@@ -22,30 +21,19 @@ const CLUB_SLUGS: Record<string, string> = {
   "Toukley":        "toukley",
 };
 
-export default async function OverviewPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ period?: string }>;
-}) {
+export default async function OverviewPage() {
   const supabase = await createClient();
-  const { period: periodParam } = await searchParams;
 
-  // Get all KPI periods (for selector + trend)
+  // Get all KPI periods, filtered to today and earlier
+  const todayStr = new Date().toISOString().split("T")[0];
   const { data: allPeriods } = await supabase
     .from("kpi_periods")
     .select("id, period_label, period_date")
+    .lte("period_date", todayStr)
     .order("period_date", { ascending: false });
 
-  // Resolve the active period — default to the current calendar month if available
-  const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  const now = new Date();
-  const currentMonthLabel = `${MONTH_NAMES[now.getMonth()]} ${now.getFullYear()}`;
-
-  const activePeriod = periodParam
-    ? (allPeriods?.find((p) => p.period_label === periodParam) ?? allPeriods?.[0] ?? null)
-    : (allPeriods?.find((p) => p.period_label === currentMonthLabel) ?? allPeriods?.[0] ?? null);
-
-  const latestPeriod = activePeriod;
+  // Latest period = most recent with real data (for snapshot cards/tables)
+  const latestPeriod = allPeriods?.[0] ?? null;
 
   // Get all clubs
   const { data: clubs } = await supabase
@@ -70,9 +58,7 @@ export default async function OverviewPage({
     membership?.forEach((m) => { clubMembership[m.club_id] = m; });
   }
 
-  // Use last 12 periods for trend data — cap at today so future forecast
-  // periods (created for the Forecasts module) don't appear in charts
-  const todayStr = new Date().toISOString().split("T")[0];
+  // Use last 12 periods for trend data
   const trendPeriods = (allPeriods ?? [])
     .filter((p) => p.period_date <= todayStr)
     .slice(0, 12);
@@ -175,23 +161,15 @@ export default async function OverviewPage({
       {/* Header */}
       <PageHeader
         title="Group Overview"
-        subtitle={`${clubs?.length ?? 0} Active Clubs`}
+        subtitle={`${clubs?.length ?? 0} Active Clubs · Last 12 Months`}
         action={
-          <div className="flex items-center gap-3 flex-wrap">
-            {allPeriods && allPeriods.length > 0 && latestPeriod && (
-              <PeriodSelector
-                periods={allPeriods}
-                currentLabel={latestPeriod.period_label}
-              />
-            )}
-            <Link
-              href="/kpis/upload"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-semibold rounded-lg transition-colors"
-            >
-              <PencilLine size={16} />
-              Enter KPIs
-            </Link>
-          </div>
+          <Link
+            href="/kpis/upload"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-sm font-semibold rounded-lg transition-colors"
+          >
+            <PencilLine size={16} />
+            Enter KPIs
+          </Link>
         }
       />
 
@@ -203,7 +181,7 @@ export default async function OverviewPage({
           </div>
           <h2 className="text-lg font-bold text-[#0F172A] mb-2">No KPI data yet</h2>
           <p className="text-[#94A3B8] text-sm mb-6 max-w-sm">
-            Upload your Group Summary Sheet to start tracking performance across all 6 clubs.
+            Upload your Group Summary Sheet to start tracking performance across all clubs.
           </p>
           <Link
             href="/kpis/upload"
@@ -215,8 +193,23 @@ export default async function OverviewPage({
         </div>
       ) : (
         <>
+          {/* ── Trend Charts — hero section ──────────────────────────────────── */}
+          {trendData.length > 1 && (
+            <>
+              <SectionLabel>12-Month Trends</SectionLabel>
+              <GroupTrendCharts data={trendData} />
+            </>
+          )}
+
+          {/* ── Latest month snapshot ─────────────────────────────────────────── */}
+          <div className="flex items-center gap-2 mb-3 mt-2">
+            <Calendar size={13} className="text-[#94A3B8]" />
+            <span className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wide">
+              Latest Month · {latestPeriod?.period_label}
+            </span>
+          </div>
+
           {/* Group KPI Summary Cards */}
-          <SectionLabel>Group KPIs · {latestPeriod?.period_label}</SectionLabel>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
             <KpiCard
               label="Total Leads"
@@ -287,14 +280,6 @@ export default async function OverviewPage({
               <ClubCard key={club.id} club={club} />
             ))}
           </div>
-
-          {/* Trend Charts */}
-          {trendData.length > 1 && (
-            <>
-              <SectionLabel>Monthly Trends</SectionLabel>
-              <GroupTrendCharts data={trendData} />
-            </>
-          )}
 
           {/* Group Membership */}
           {hasData && (
